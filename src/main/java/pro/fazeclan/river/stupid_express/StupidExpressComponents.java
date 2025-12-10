@@ -24,14 +24,12 @@ public class StupidExpressComponents implements EntityComponentInitializer, Worl
         registry.beginRegistration(Player.class, AbilityCooldownComponent.KEY)
                 .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
                 .end(AbilityCooldownComponent::new);
-        registry.beginRegistration(Player.class, NecromancerComponent.KEY)
-                .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
-                .end(NecromancerComponent::new);
     }
 
     @Override
     public void registerWorldComponentFactories(WorldComponentFactoryRegistry registry) {
         registry.register(NeutralRoleWorldComponent.KEY, NeutralRoleWorldComponent::new);
         registry.register(LoversModifierWorldComponent.KEY, LoversModifierWorldComponent::new);
+        registry.register(NecromancerComponent.KEY, NecromancerComponent::new);
     }
 }

@@ -1,10 +1,12 @@
 package pro.fazeclan.river.stupid_express.role.amnesiac;
 
 import dev.doctor4t.trainmurdermystery.api.Role;
+import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
 import dev.doctor4t.trainmurdermystery.client.gui.RoleAnnouncementTexts;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
+import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -38,6 +40,9 @@ public class RoleSelectionHandler {
             ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, role);
             playerShopComponent.setBalance(200);
             if (Harpymodloader.VANNILA_ROLES.contains(role)) {
+                if (role.equals(TMMRoles.VIGILANTE)) {
+                    player.addItem(TMMItems.REVOLVER.getDefaultInstance());
+                }
                 ServerPlayNetworking.send(
                         (ServerPlayer) player,
                         new AnnounceWelcomePayload(

@@ -3,7 +3,7 @@ package pro.fazeclan.river.stupid_express.role.necromancer.cca;
 import lombok.Getter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
@@ -17,35 +17,39 @@ public class NecromancerComponent implements AutoSyncedComponent {
                     NecromancerComponent.class
             );
 
-    private final Player player;
+    private final Level level;
 
     @Getter
-    private int deadKillers;
+    private int availableRevives;
 
-    public NecromancerComponent(Player player) {
-        this.player = player;
+    public NecromancerComponent(Level level) {
+        this.level = level;
     }
 
     public void sync() {
-        KEY.sync(this.player);
+        KEY.sync(this.level);
     }
 
     public void reset() {
-        this.deadKillers = 0;
+        this.availableRevives = 0;
         sync();
     }
 
-    public void increaseDeadKillers() {
-        this.deadKillers++;
+    public void increaseAvailableRevives() {
+        this.availableRevives++;
+    }
+
+    public void decreaseAvailableRevives() {
+        this.availableRevives--;
     }
 
     @Override
     public void readFromNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
-        this.deadKillers = tag.contains("dead_killer_count") ? tag.getInt("dead_killer_count") : 0;
+        this.availableRevives = tag.contains("available_revivals") ? tag.getInt("available_revivals") : 0;
     }
 
     @Override
     public void writeToNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
-        tag.putInt("dead_killer_count", this.deadKillers);
+        tag.putInt("available_revivals", this.availableRevives);
     }
 }

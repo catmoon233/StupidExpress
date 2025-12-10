@@ -5,7 +5,6 @@ import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
 import dev.doctor4t.trainmurdermystery.client.gui.RoleAnnouncementTexts;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
-import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -17,6 +16,7 @@ import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.config.HarpyModLoaderConfig;
 import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
 import pro.fazeclan.river.stupid_express.role.neutral.cca.AbilityCooldownComponent;
 
 import java.util.ArrayList;
@@ -47,9 +47,9 @@ public class RevivalSelectionHandler {
             if (revived == null) {
                 return InteractionResult.PASS;
             }
-            var dead = serverLevel.getPlayers(p -> GameFunctions.isPlayerEliminated(p) && gameWorldComponent.canUseKillerFeatures(p));
-            if (dead.isEmpty()) {
-
+            var nc = NecromancerComponent.KEY.get(serverLevel);
+            if (nc.getAvailableRevives() < 1) {
+                return InteractionResult.PASS;
             }
 
             // activate cooldown
@@ -58,6 +58,8 @@ public class RevivalSelectionHandler {
                 return InteractionResult.PASS;
             }
             cooldown.setCooldown(3 * 60 * 20);
+            nc.decreaseAvailableRevives();
+            nc.sync();
 
             // get random killer role
             var roles = new ArrayList<>(TMMRoles.ROLES);

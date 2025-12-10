@@ -1,6 +1,5 @@
 package pro.fazeclan.river.stupid_express.modifier.lovers.cca;
 
-import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import lombok.Getter;
 import lombok.Setter;
