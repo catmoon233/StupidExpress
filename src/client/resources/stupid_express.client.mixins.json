@@ -10,9 +10,7 @@
     "role.amnesiac.AmnesiacHudMixin",
     "role.necromancer.NecromancerHudMixin",
     "role.necromancer.NecromancerNoShopMixin",
-    "modifier.lovers.LoversHudMixin",
-    "modifier.lovers.LoversEndMixin",
-    "modifier.lovers.LoversRoleTextRendering"
+    "modifier.lovers.LoversHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

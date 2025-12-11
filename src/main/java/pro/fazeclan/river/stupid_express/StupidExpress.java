@@ -69,6 +69,18 @@ public class StupidExpress implements ModInitializer {
 
     public static int LOVERS_COLOR = 0xf38aff;
 
+    public static ResourceLocation LOVERS_ID = id("lovers");
+
+    public static Role LOVERS = registerRole(new Role(
+            LOVERS_ID,
+            LOVERS_COLOR,
+            false,
+            false,
+            Role.MoodType.REAL,
+            -1,
+            true
+    ));
+
     @Override
     public void onInitialize() {
 
@@ -87,6 +99,8 @@ public class StupidExpress implements ModInitializer {
             }
         });
         RevivalSelectionHandler.init();
+
+        Harpymodloader.setRoleMaximum(LOVERS, 0); // fake role for things
 
         // mod stuff
         ModItems.init();

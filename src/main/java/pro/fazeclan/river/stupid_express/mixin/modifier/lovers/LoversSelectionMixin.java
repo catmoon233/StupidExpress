@@ -3,12 +3,13 @@ package pro.fazeclan.river.stupid_express.mixin.modifier.lovers;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import org.agmas.harpymodloader.config.HarpyModLoaderConfig;
 import org.agmas.harpymodloader.modded_murder.ModdedMurderGameMode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversModifierWorldComponent;
+import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -20,10 +21,11 @@ public class LoversSelectionMixin {
             method = "initializeGame",
             at = @At("TAIL")
     )
-    private void stupidexpress$assignLovers(ServerLevel serverWorld, GameWorldComponent gameWorldComponent, List<ServerPlayer> players, CallbackInfo ci) {
+    private void assignLovers(ServerLevel serverWorld, GameWorldComponent gameWorldComponent, List<ServerPlayer> players, CallbackInfo ci) {
 
-        var component = LoversModifierWorldComponent.KEY.get(serverWorld);
-        component.reset();
+        if (HarpyModLoaderConfig.HANDLER.instance().disabled.contains("lovers")) {
+            return;
+        }
 
         var innocentPlayers = players.stream().filter(gameWorldComponent::isInnocent).toList();
 
@@ -34,8 +36,13 @@ public class LoversSelectionMixin {
             loverTwo = innocentPlayers.get(ThreadLocalRandom.current().nextInt(innocentPlayers.size() - 1));
         } while (loverTwo.getUUID() == loverOne.getUUID());
 
-        component.setLoverOne(loverOne);
-        component.setLoverTwo(loverTwo);
+        var loverComponentOne = LoversComponent.KEY.get(loverOne);
+        var loverComponentTwo = LoversComponent.KEY.get(loverTwo);
+
+        loverComponentOne.setLover(loverTwo.getUUID());
+        loverComponentOne.sync();
+        loverComponentTwo.setLover(loverOne.getUUID());
+        loverComponentTwo.sync();
 
     }
 
