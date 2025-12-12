@@ -22,6 +22,9 @@
   "hud.necromancer.no_possible_revive": "One of your killer cohorts must die before you revive!",
   "hud.necromancer.cooldown": "You must wait %ss before attempting this.",
 
+  "announcement.goals.avaricious": "Be near victims and get rich!",
+  "announcement.role.avaricious" : "Avaricious!",
+
   "announcement.win.lovers": "The Lovers Win!",
   "game.win.lovers": "The pair managed to stay alive until they were the last two standing!",
   "tip.lovers.partner": "Your partner is %s!",

@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import pro.fazeclan.river.stupid_express.role.amnesiac.RoleSelectionHandler;
 import pro.fazeclan.river.stupid_express.role.arsonist.ArsonistItemGivingHandler;
 import pro.fazeclan.river.stupid_express.role.arsonist.OilDousingHandler;
+import pro.fazeclan.river.stupid_express.role.avaricious.AvariciousGoldHandler;
 import pro.fazeclan.river.stupid_express.role.necromancer.RevivalSelectionHandler;
 
 import java.util.HashMap;
@@ -55,6 +56,18 @@ public class StupidExpress implements ModInitializer {
             true
     ));
 
+    public static ResourceLocation AVARICIOUS_ID = id("avaricious");
+
+    public static Role AVARICIOUS = registerRole(new Role(
+            AVARICIOUS_ID,
+            0x8f00ff,
+            false,
+            true,
+            Role.MoodType.FAKE,
+            -1,
+            true
+    ));
+
     public static ResourceLocation NECROMANCER_ID = id("necromancer");
 
     public static Role NECROMANCER = registerRole(new Role(
@@ -84,8 +97,12 @@ public class StupidExpress implements ModInitializer {
     @Override
     public void onInitialize() {
 
+        /// AMNESIAC
+
         Harpymodloader.setRoleMaximum(AMNESIAC, 1);
         RoleSelectionHandler.init();
+
+        /// ARSONIST
 
         Harpymodloader.setRoleMaximum(ARSONIST, 1);
         OilDousingHandler.init();
@@ -94,11 +111,20 @@ public class StupidExpress implements ModInitializer {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             if (server.getPlayerCount() > 11) {
                 Harpymodloader.setRoleMaximum(NECROMANCER, 1);
+                Harpymodloader.setRoleMaximum(AVARICIOUS, 1);
             } else {
                 Harpymodloader.setRoleMaximum(NECROMANCER, 0);
+                Harpymodloader.setRoleMaximum(AVARICIOUS, 0);
             }
         });
+
+        /// NECROMANCER
+
         RevivalSelectionHandler.init();
+
+        /// AVARICIOUS
+
+        AvariciousGoldHandler.onGameStart();
 
         Harpymodloader.setRoleMaximum(LOVERS, 0); // fake role for things
 
