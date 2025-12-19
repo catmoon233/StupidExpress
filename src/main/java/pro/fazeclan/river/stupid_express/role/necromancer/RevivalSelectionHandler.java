@@ -15,7 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.config.HarpyModLoaderConfig;
-import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.SERoles;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
 import pro.fazeclan.river.stupid_express.role.neutral.cca.AbilityCooldownComponent;
 
@@ -33,7 +33,7 @@ public class RevivalSelectionHandler {
                 return InteractionResult.PASS;
             }
             GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
-            if (!gameWorldComponent.isRole(player, StupidExpress.NECROMANCER)) {
+            if (!gameWorldComponent.isRole(player, SERoles.NECROMANCER)) {
                 return InteractionResult.PASS;
             }
             if (!(entity instanceof PlayerBodyEntity body)) {
@@ -63,7 +63,7 @@ public class RevivalSelectionHandler {
 
             // get random killer role
             var roles = new ArrayList<>(TMMRoles.ROLES);
-            roles.remove(StupidExpress.NECROMANCER);
+            roles.remove(SERoles.NECROMANCER);
             roles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role)
                     || !role.canUseKiller()
                     || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));

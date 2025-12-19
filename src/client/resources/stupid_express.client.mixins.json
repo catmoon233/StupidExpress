@@ -4,13 +4,13 @@
   "package": "pro.fazeclan.river.stupid_express.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "role.arsonist.ArsonistHudMixin",
-    "role.neutral.NeutralRoleAnnouncementMixin",
-    "role.neutral.NeutralRoleTextRendering",
+    "modifier.lovers.LoversHudMixin",
     "role.amnesiac.AmnesiacHudMixin",
+    "role.arsonist.ArsonistHudMixin",
     "role.necromancer.NecromancerHudMixin",
     "role.necromancer.NecromancerNoShopMixin",
-    "modifier.lovers.LoversHudMixin"
+    "role.neutral.NeutralRoleAnnouncementMixin",
+    "role.neutral.NeutralRoleTextRendering"
   ],
   "injectors": {
     "defaultRequire": 1

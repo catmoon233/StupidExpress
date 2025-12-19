@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.SERoles;
 
 // disabled for now, though I do want to keep the code
 @Mixin(MurderGameMode.class)
@@ -35,7 +35,7 @@ public class ArsonistKeepAliveMixin {
     ) {
         boolean arsonistAlive = false;
         for (ServerPlayer player : serverWorld.getPlayers(GameFunctions::isPlayerAliveAndSurvival)) {
-            if (gameWorldComponent.isRole(player, StupidExpress.ARSONIST)) {
+            if (gameWorldComponent.isRole(player, SERoles.ARSONIST)) {
                 arsonistAlive = true;
             }
         }

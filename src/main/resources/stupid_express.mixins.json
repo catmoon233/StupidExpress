@@ -8,6 +8,7 @@
     "modifier.lovers.LoversSelectionMixin",
     "modifier.lovers.LoversWinConditionMixin",
     "role.arsonist.ArsonistRemoveDousedMixin",
+    "role.avaricious.AvariciousGoldPayout",
     "role.avaricious.AvariciousPassiveIncomeDestroyer",
     "role.necromancer.NecromancerStatsMixin",
     "role.neutral.NeutralGameFunctionsMixin",

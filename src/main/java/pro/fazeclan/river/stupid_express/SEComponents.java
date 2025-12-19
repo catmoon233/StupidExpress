@@ -6,15 +6,16 @@ import org.ladysnake.cca.api.v3.entity.EntityComponentInitializer;
 import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 import org.ladysnake.cca.api.v3.world.WorldComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.world.WorldComponentInitializer;
+import pro.fazeclan.river.stupid_express.cca.SEConfig;
 import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
 import pro.fazeclan.river.stupid_express.role.neutral.NeutralRoleWorldComponent;
 import pro.fazeclan.river.stupid_express.role.neutral.cca.AbilityCooldownComponent;
 
-public class StupidExpressComponents implements EntityComponentInitializer, WorldComponentInitializer {
+public class SEComponents implements EntityComponentInitializer, WorldComponentInitializer {
 
-    public StupidExpressComponents() {}
+    public SEComponents() {}
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
@@ -31,6 +32,7 @@ public class StupidExpressComponents implements EntityComponentInitializer, Worl
 
     @Override
     public void registerWorldComponentFactories(WorldComponentFactoryRegistry registry) {
+        registry.register(SEConfig.KEY, SEConfig::new);
         registry.register(NeutralRoleWorldComponent.KEY, NeutralRoleWorldComponent::new);
         registry.register(NecromancerComponent.KEY, NecromancerComponent::new);
     }

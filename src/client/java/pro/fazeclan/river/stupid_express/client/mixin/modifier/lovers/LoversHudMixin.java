@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.SERoles;
 import pro.fazeclan.river.stupid_express.client.StupidExpressClient;
 import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
 
@@ -31,12 +31,11 @@ public abstract class LoversHudMixin {
                 && !TMMClient.isPlayerSpectatingOrCreative()) {
             context.pose().pushPose();
 
-
             if (Minecraft.getInstance().player.connection.getPlayerInfo(component.getLover()) == null) return;
 
             Component name = Component.translatable("hud.lovers.notification", Minecraft.getInstance().player.connection.getPlayerInfo(component.getLover()).getProfile().getName());
             PlayerFaceRenderer.draw(context,Minecraft.getInstance().player.connection.getPlayerInfo(component.getLover()).getSkin().texture(), 2, context.guiHeight()-14,12);
-            context.drawString(renderer, name, 18, context.guiHeight()-12, StupidExpress.LOVERS_COLOR);
+            context.drawString(renderer, name, 18, context.guiHeight()-12, SERoles.LOVERS.color());
 
             context.pose().popPose();
         }
@@ -73,7 +72,7 @@ public abstract class LoversHudMixin {
                     name,
                     -renderer.width(name) / 2,
                     32,
-                    StupidExpress.LOVERS_COLOR | (int) (nametagAlpha * 255.0F) << 24
+                    SERoles.LOVERS.color() | (int) (nametagAlpha * 255.0F) << 24
             );
 
             context.pose().popPose();

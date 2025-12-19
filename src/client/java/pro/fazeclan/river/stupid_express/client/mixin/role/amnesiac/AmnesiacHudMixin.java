@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.SERoles;
 import pro.fazeclan.river.stupid_express.client.StupidExpressClient;
 
 @Mixin(RoleNameRenderer.class)
@@ -30,7 +30,7 @@ public class AmnesiacHudMixin {
         if (StupidExpressClient.targetBody == null) {
             return;
         }
-        if (gameWorldComponent.isRole(Minecraft.getInstance().player, StupidExpress.AMNESIAC) && !TMMClient.isPlayerSpectatingOrCreative()) {
+        if (gameWorldComponent.isRole(Minecraft.getInstance().player, SERoles.AMNESIAC) && !TMMClient.isPlayerSpectatingOrCreative()) {
             context.pose().pushPose();
             context.pose().translate(context.guiWidth() / 2.0f, context.guiHeight() / 2.0f + 6.0f, 0.0f);
             context.pose().scale(0.6f, 0.6f, 1.0f);

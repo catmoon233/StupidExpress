@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
-import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.SERoles;
 public class RoleSelectionHandler {
 
     public static void init() {
@@ -26,7 +26,7 @@ public class RoleSelectionHandler {
                 return InteractionResult.PASS;
             }
             GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
-            if (!gameWorldComponent.isRole(player, StupidExpress.AMNESIAC)) {
+            if (!gameWorldComponent.isRole(player, SERoles.AMNESIAC)) {
                 return InteractionResult.PASS;
             }
             if (!(entity instanceof PlayerBodyEntity victim)) {

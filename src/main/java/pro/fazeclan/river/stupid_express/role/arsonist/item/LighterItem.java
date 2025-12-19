@@ -3,8 +3,6 @@ package pro.fazeclan.river.stupid_express.role.arsonist.item;
 import dev.doctor4t.trainmurdermystery.cca.GameRoundEndComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -12,13 +10,11 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import pro.fazeclan.river.stupid_express.SERoles;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
 import pro.fazeclan.river.stupid_express.role.neutral.NeutralRoleWorldComponent;
-
-import java.util.List;
 
 public class LighterItem extends Item {
 
@@ -33,7 +29,7 @@ public class LighterItem extends Item {
         if (!(level instanceof ServerLevel serverLevel)) {
             return InteractionResultHolder.pass(player.getItemInHand(interactionHand));
         }
-        if (!gwc.isRole(player, StupidExpress.ARSONIST)) {
+        if (!gwc.isRole(player, SERoles.ARSONIST)) {
             return InteractionResultHolder.pass(player.getItemInHand(interactionHand));
         }
         if (player.getCooldowns().isOnCooldown(this)) {
@@ -52,7 +48,7 @@ public class LighterItem extends Item {
             var playersLeft = players.stream().filter(GameFunctions::isPlayerAliveAndSurvival).count();
             if (playersLeft == 1) {
                 var nrwc = NeutralRoleWorldComponent.KEY.get(serverLevel);
-                nrwc.setWinningRole(StupidExpress.ARSONIST);
+                nrwc.setWinningRole(SERoles.ARSONIST);
                 nrwc.sync();
                 GameRoundEndComponent.KEY.get(serverLevel).setRoundEndData(serverLevel.players(), GameFunctions.WinStatus.KILLERS);
 

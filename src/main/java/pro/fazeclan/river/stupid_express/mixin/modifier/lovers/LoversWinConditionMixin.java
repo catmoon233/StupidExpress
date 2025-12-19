@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.SERoles;
 import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
 import pro.fazeclan.river.stupid_express.role.neutral.NeutralRoleWorldComponent;
 
@@ -37,7 +37,7 @@ public class LoversWinConditionMixin {
             var component = LoversComponent.KEY.get(player);
             if (component.won()) {
                 var nrwc = NeutralRoleWorldComponent.KEY.get(serverWorld);
-                nrwc.setWinningRole(StupidExpress.LOVERS);
+                nrwc.setWinningRole(SERoles.LOVERS);
                 nrwc.sync();
 
                 GameRoundEndComponent.KEY.get(serverWorld)

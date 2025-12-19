@@ -8,7 +8,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import pro.fazeclan.river.stupid_express.role.arsonist.item.LighterItem;
 
-public class ModItems {
+public class SEItems {
 
     private static ItemRegistrar registrar = new ItemRegistrar(StupidExpress.MOD_ID);
 
