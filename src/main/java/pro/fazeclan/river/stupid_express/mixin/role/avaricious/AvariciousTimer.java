@@ -32,7 +32,7 @@ public class AvariciousTimer {
             method = "tickServerGameLoop",
             at = @At("TAIL")
     )
-    private void avaricious$actionbar(
+    private void actionbar(
             ServerLevel serverWorld,
             GameWorldComponent gameWorldComponent,
             CallbackInfo ci

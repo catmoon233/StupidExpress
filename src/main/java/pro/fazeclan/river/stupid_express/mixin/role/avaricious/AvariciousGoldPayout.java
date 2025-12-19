@@ -27,7 +27,7 @@ public class AvariciousGoldPayout {
             method = "tickServerGameLoop",
             at = @At("TAIL")
     )
-    private void avaricious$payout(
+    private void payout(
             ServerLevel serverWorld,
             GameWorldComponent gameWorldComponent,
             CallbackInfo ci
