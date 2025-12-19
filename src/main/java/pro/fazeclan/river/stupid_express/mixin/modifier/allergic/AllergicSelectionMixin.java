@@ -32,9 +32,9 @@ public class AllergicSelectionMixin {
         if (HarpyModLoaderConfig.HANDLER.instance().disabled.contains(StupidExpress.ALLERGIC.identifier().toString())) {
             return;
         }
-//        if (ThreadLocalRandom.current().nextInt(0, 3) != 0) {
-//            return;
-//        }
+        if (ThreadLocalRandom.current().nextInt(0, 3) != 0) {
+            return;
+        }
 
 //        var innocentPlayers = players.stream().filter(gameWorldComponent::isInnocent).toList();
 
