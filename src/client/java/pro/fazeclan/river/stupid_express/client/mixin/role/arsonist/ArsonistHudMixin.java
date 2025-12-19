@@ -26,7 +26,7 @@ import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent
 public class ArsonistHudMixin {
 
     @Inject(method = "renderHud", at = @At("TAIL"))
-    private static void stupidexpress$replaceRoleHud(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+    private static void replaceRoleHud(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
         if (StupidExpressClient.target == null) {
             return;
@@ -45,7 +45,7 @@ public class ArsonistHudMixin {
     }
 
     @Inject(method = "renderHud", at = @At(value = "INVOKE", target = "Ldev/doctor4t/trainmurdermystery/game/GameFunctions;isPlayerSpectatingOrCreative(Lnet/minecraft/world/entity/player/Player;)Z"))
-    private static void stupidexpress$playerRaycast(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+    private static void playerRaycast(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
         float range = GameFunctions.isPlayerSpectatingOrCreative(player) ? 8.0F : 2.0F;
         HitResult line = ProjectileUtil.getHitResultOnViewVector(player, entity -> entity instanceof Player, range);
         StupidExpressClient.target = null;

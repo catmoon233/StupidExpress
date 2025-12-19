@@ -40,7 +40,7 @@ public class LoversDeathMixin {
     }
 
     @Inject(method = "resetPlayer", at = @At("HEAD"))
-    private static void stupidexpress$resetPlayer(ServerPlayer player, CallbackInfo ci) {
+    private static void resetPlayer(ServerPlayer player, CallbackInfo ci) {
         var component = LoversComponent.KEY.get(player);
         component.reset();
         component.sync();

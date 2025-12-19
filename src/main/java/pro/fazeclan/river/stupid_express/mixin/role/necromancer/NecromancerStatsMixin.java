@@ -18,7 +18,7 @@ public class NecromancerStatsMixin {
             method = "killPlayer(Lnet/minecraft/world/entity/player/Player;ZLnet/minecraft/world/entity/player/Player;Lnet/minecraft/resources/ResourceLocation;)V",
             at = @At("TAIL")
     )
-    private static void stupidexpress$addKillStat(Player victim, boolean spawnBody, Player killer, ResourceLocation deathReason, CallbackInfo ci) {
+    private static void addKillStat(Player victim, boolean spawnBody, Player killer, ResourceLocation deathReason, CallbackInfo ci) {
 
         var component = GameWorldComponent.KEY.get(victim.level());
         if (component.canUseKillerFeatures(victim)) {
@@ -33,7 +33,7 @@ public class NecromancerStatsMixin {
             method = "finalizeGame",
             at = @At("TAIL")
     )
-    private static void stupidexpress$resetNecroStat(ServerLevel world, CallbackInfo ci) {
+    private static void resetNecroStat(ServerLevel world, CallbackInfo ci) {
 
         var component = NecromancerComponent.KEY.get(world);
         component.reset();

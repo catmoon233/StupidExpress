@@ -25,7 +25,7 @@ import pro.fazeclan.river.stupid_express.client.StupidExpressClient;
 public class AmnesiacHudMixin {
 
     @Inject(method = "renderHud", at = @At("TAIL"))
-    private static void stupidexpress$replaceRoleHud(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+    private static void replaceRoleHud(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
         if (StupidExpressClient.targetBody == null) {
             return;
@@ -43,7 +43,7 @@ public class AmnesiacHudMixin {
     }
 
     @Inject(method = "renderHud", at = @At(value = "INVOKE", target = "Ldev/doctor4t/trainmurdermystery/game/GameFunctions;isPlayerSpectatingOrCreative(Lnet/minecraft/world/entity/player/Player;)Z"))
-    private static void stupidexpress$playerBodyRaycast(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+    private static void playerBodyRaycast(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
         float range = GameFunctions.isPlayerSpectatingOrCreative(player) ? 8.0F : 2.0F;
         HitResult line = ProjectileUtil.getHitResultOnViewVector(player, entity -> entity instanceof PlayerBodyEntity, range);
         StupidExpressClient.targetBody = null;

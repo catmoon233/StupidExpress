@@ -30,7 +30,7 @@ public class NecromancerNoShopMixin {
             ),
             cancellable = true
     )
-    private void stupidexpress$noshop(CallbackInfo ci) {
+    private void necromancerNoShop(CallbackInfo ci) {
         var level = this.player.level();
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(level);
         SEConfig config = SEConfig.KEY.get(level);

@@ -12,7 +12,7 @@ import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent
 public class ArsonistRemoveDousedMixin {
 
     @Inject(method = "resetPlayer", at = @At("HEAD"))
-    private static void stupidexpress$resetPlayer(ServerPlayer player, CallbackInfo ci) {
+    private static void resetPlayer(ServerPlayer player, CallbackInfo ci) {
         var component = DousedPlayerComponent.KEY.get(player);
         component.reset();
         component.sync();

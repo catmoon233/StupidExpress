@@ -19,7 +19,7 @@ public class AvariciousPassiveIncomeDestroyer {
                     target = "Ldev/doctor4t/trainmurdermystery/cca/GameWorldComponent;canUseKillerFeatures(Lnet/minecraft/world/entity/player/Player;)Z"
             )
     )
-    private boolean stupidexpress$noPassiveIncomeKiller(
+    private boolean noPassiveIncomeKiller(
             boolean original,
             @Local(name = "gameWorldComponent") GameWorldComponent component,
             @Local(name = "player") ServerPlayer player

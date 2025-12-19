@@ -18,7 +18,7 @@ public class NeutralRoleAnnouncementMixin {
             method = "getEndText",
             at = @At("HEAD"),
             cancellable = true)
-    private void stupidexpress$getEndText(GameFunctions.WinStatus status, Component winner, CallbackInfoReturnable<Component> cir) {
+    private void getEndText(GameFunctions.WinStatus status, Component winner, CallbackInfoReturnable<Component> cir) {
         Level level = Minecraft.getInstance().level;
         if (level == null) {
             return;

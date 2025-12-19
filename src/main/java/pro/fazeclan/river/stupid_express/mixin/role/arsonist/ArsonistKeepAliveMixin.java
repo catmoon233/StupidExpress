@@ -27,7 +27,7 @@ public class ArsonistKeepAliveMixin {
             ),
             cancellable = true
     )
-    private void stupidexpress$keepAlive(
+    private void keepAlive(
             ServerLevel serverWorld,
             GameWorldComponent gameWorldComponent,
             CallbackInfo ci,

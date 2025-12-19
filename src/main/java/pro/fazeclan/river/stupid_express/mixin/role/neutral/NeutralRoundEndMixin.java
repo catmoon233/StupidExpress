@@ -25,7 +25,7 @@ public class NeutralRoundEndMixin {
             at = @At(value = "RETURN", ordinal = 1),
             cancellable = true
     )
-    private void stupidexpress$didWin(UUID uuid, CallbackInfoReturnable<Boolean> cir, @Local(name = "detail") GameRoundEndComponent.RoundEndData detail) {
+    private void didWin(UUID uuid, CallbackInfoReturnable<Boolean> cir, @Local(name = "detail") GameRoundEndComponent.RoundEndData detail) {
         NeutralRoleWorldComponent component = NeutralRoleWorldComponent.KEY.get(world);
         if (!component.hasNeutralWinner()) {
             return;

@@ -22,7 +22,7 @@ import pro.fazeclan.river.stupid_express.role.neutral.cca.AbilityCooldownCompone
 public class NecromancerHudMixin {
 
     @Inject(method = "renderHud", at = @At("TAIL"))
-    private static void stupidexpress$replaceRoleHud(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+    private static void replaceRoleHud(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
         if (StupidExpressClient.targetBody == null) {
             return;
