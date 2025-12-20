@@ -91,7 +91,8 @@ public class SEModifiers {
             var gameWorldComponent = GameWorldComponent.KEY.get(player.level());
             for (ServerPlayer doctor :
                     ((ServerLevel) allergicPlayer.level())
-                            .getPlayers(p -> gameWorldComponent.getRole(p).identifier().equals(ResourceLocation.parse("harpysimpleroles:doctor")))) {
+                            .getPlayers(p -> gameWorldComponent.getRole(p) != null
+                                    && gameWorldComponent.getRole(p).identifier().equals(ResourceLocation.parse("harpysimpleroles:doctor")))) {
                 doctor.sendSystemMessage(
                         Component.translatable(
                                 "hud.allergic.doctor_heads_up" // This sends to players with a role from a different mod. I'm fucking genius.
