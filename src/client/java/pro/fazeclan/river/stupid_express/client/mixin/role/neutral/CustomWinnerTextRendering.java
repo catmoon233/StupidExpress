@@ -8,10 +8,10 @@ import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import pro.fazeclan.river.stupid_express.role.neutral.NeutralRoleWorldComponent;
+import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 
 @Mixin(RoundTextRenderer.class)
-public class NeutralRoleTextRendering {
+public class CustomWinnerTextRendering {
 
     @ModifyVariable(
             method = "renderHud",
@@ -23,12 +23,11 @@ public class NeutralRoleTextRendering {
         if (level == null) {
             return winMessage;
         }
-        NeutralRoleWorldComponent component = NeutralRoleWorldComponent.KEY.get(level);
-        if (!component.hasNeutralWinner()) {
+        CustomWinnerComponent component = CustomWinnerComponent.KEY.get(level);
+        if (!component.hasCustomWinner()) {
             return winMessage;
         }
-        var role = component.getWinningRole();
-        return Component.translatable("game.win." + role.identifier().getPath());
+        return Component.translatable("game.win." + component.getWinningTextId());
     }
 
 }

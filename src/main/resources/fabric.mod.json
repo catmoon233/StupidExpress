@@ -23,7 +23,7 @@
   "custom": {
     "cardinal-components": [
       "stupid_express:doused",
-      "stupid_express:neutral_role_world",
+      "stupid_express:custom_winner",
       "stupid_express:cooldown",
       "stupid_express:lovers",
       "stupid_express:necromancer",

@@ -35,7 +35,7 @@ public abstract class AllergicEatMixin extends LivingEntity {
                     shift = At.Shift.AFTER
             )}
     )
-    private void stupidexpress$allergicConsume(@NotNull Level world, ItemStack stack, FoodProperties foodComponent, CallbackInfoReturnable<ItemStack> cir) {
+    private void allergicConsume(@NotNull Level world, ItemStack stack, FoodProperties foodComponent, CallbackInfoReturnable<ItemStack> cir) {
         if (world.isClientSide) return;
 
         Player player = (Player) (Object) this;

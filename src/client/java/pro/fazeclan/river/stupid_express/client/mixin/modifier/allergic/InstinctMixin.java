@@ -1,4 +1,4 @@
-package pro.fazeclan.river.stupid_express.client.mixin;
+package pro.fazeclan.river.stupid_express.client.mixin.modifier.allergic;
 
 import dev.doctor4t.wathe.client.WatheClient;
 import net.minecraft.client.Minecraft;

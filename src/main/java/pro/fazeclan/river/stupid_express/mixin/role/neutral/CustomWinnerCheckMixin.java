@@ -9,12 +9,12 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import pro.fazeclan.river.stupid_express.role.neutral.NeutralRoleWorldComponent;
+import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 
 import java.util.UUID;
 
 @Mixin(GameRoundEndComponent.class)
-public class NeutralRoundEndMixin {
+public class CustomWinnerCheckMixin {
 
     @Shadow
     @Final
@@ -26,12 +26,13 @@ public class NeutralRoundEndMixin {
             cancellable = true
     )
     private void didWin(UUID uuid, CallbackInfoReturnable<Boolean> cir, @Local(name = "detail") GameRoundEndComponent.RoundEndData detail) {
-        NeutralRoleWorldComponent component = NeutralRoleWorldComponent.KEY.get(world);
-        if (!component.hasNeutralWinner()) {
+        var component = CustomWinnerComponent.KEY.get(world);
+        if (!component.hasCustomWinner()) {
             return;
         }
-        var winningRole = component.getWinningText();
-        if (detail.role().equals(winningRole)) {
+        var assumedWinning = component.getWinningTextId();
+        var winningTextId = detail.role().roleText.getString();
+        if (winningTextId.equals(assumedWinning)) {
             cir.setReturnValue(true);
         } else {
             cir.setReturnValue(false);

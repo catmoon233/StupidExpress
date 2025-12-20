@@ -13,8 +13,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import pro.fazeclan.river.stupid_express.SERoles;
 import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
-import pro.fazeclan.river.stupid_express.role.neutral.NeutralRoleWorldComponent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LighterItem extends Item {
 
@@ -47,8 +50,10 @@ public class LighterItem extends Item {
 
             var playersLeft = players.stream().filter(GameFunctions::isPlayerAliveAndSurvival).count();
             if (playersLeft == 1) {
-                var nrwc = NeutralRoleWorldComponent.KEY.get(serverLevel);
-                nrwc.setWinningRole(SERoles.ARSONIST);
+                var nrwc = CustomWinnerComponent.KEY.get(serverLevel);
+                nrwc.setWinningTextId(SERoles.ARSONIST.identifier().getPath());
+                nrwc.setWinners(List.of(player));
+                nrwc.setColor(SERoles.ARSONIST.color());
                 nrwc.sync();
                 GameRoundEndComponent.KEY.get(serverLevel).setRoundEndData(serverLevel.players(), GameFunctions.WinStatus.KILLERS);
 

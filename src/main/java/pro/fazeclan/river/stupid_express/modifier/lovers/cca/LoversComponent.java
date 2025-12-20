@@ -64,10 +64,6 @@ public class LoversComponent implements AutoSyncedComponent {
         return this.lover != null && !this.lover.equals(UUID.fromString("4bdab31c-279a-4123-acac-9830ac57f5ff"));
     }
 
-    public UUID getLover() {
-        return lover;
-    }
-
     @Override
     public void readFromNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
         this.lover = tag.contains("lover") ? tag.getUUID("lover") : null;

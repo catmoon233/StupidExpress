@@ -6,16 +6,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import pro.fazeclan.river.stupid_express.role.neutral.NeutralRoleWorldComponent;
+import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 
 @Mixin(GameFunctions.class)
-public class NeutralGameFunctionsMixin {
+public class CustomWinnerResetMixin {
 
     @Inject(method = "initializeGame", at = @At("HEAD"))
     private static void initializeGame(ServerLevel serverWorld, CallbackInfo ci) {
-        NeutralRoleWorldComponent component = NeutralRoleWorldComponent.KEY.get(serverWorld);
+        CustomWinnerComponent component = CustomWinnerComponent.KEY.get(serverWorld);
         component.reset();
-        component.sync();
     }
 
 }

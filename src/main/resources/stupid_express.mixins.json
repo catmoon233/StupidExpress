@@ -6,9 +6,7 @@
   "mixins": [
     "modifier.allergic.AllergicEatMixin",
     "modifier.allergic.AllergicGameFunctionsMixin",
-    "modifier.allergic.AllergicSelectionMixin",
     "modifier.lovers.LoversDeathMixin",
-    "modifier.lovers.LoversSelectionMixin",
     "modifier.lovers.LoversWinConditionMixin",
     "role.arsonist.ArsonistKeepAliveMixin",
     "role.arsonist.ArsonistRemoveDousedMixin",
@@ -16,8 +14,8 @@
     "role.avaricious.AvariciousPassiveIncomeDestroyer",
     "role.avaricious.AvariciousTimer",
     "role.necromancer.NecromancerStatsMixin",
-    "role.neutral.NeutralGameFunctionsMixin",
-    "role.neutral.NeutralRoundEndMixin"
+    "role.neutral.CustomWinnerResetMixin",
+    "role.neutral.CustomWinnerCheckMixin"
   ],
   "injectors": {
     "defaultRequire": 1

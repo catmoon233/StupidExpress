@@ -3,13 +3,10 @@ package pro.fazeclan.river.stupid_express.mixin.modifier.allergic;
 import dev.doctor4t.wathe.game.GameConstants;
 import dev.doctor4t.wathe.game.GameFunctions;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.modifier.allergic.cca.AllergicComponent;
 
@@ -35,10 +32,4 @@ public class AllergicGameFunctionsMixin {
         return deathReason;
     }
 
-    @Inject(method = "resetPlayer", at = @At("HEAD"))
-    private static void stupidexpress$resetPlayer(ServerPlayer player, CallbackInfo ci) {
-        var component = AllergicComponent.KEY.get(player);
-        component.reset();
-        component.sync();
-    }
 }

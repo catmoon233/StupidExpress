@@ -2,8 +2,8 @@ package pro.fazeclan.river.stupid_express;
 
 import dev.doctor4t.wathe.api.Role;
 import dev.doctor4t.wathe.api.WatheRoles;
-import dev.doctor4t.wathe.cca.PlayerPoisonComponent;
 import dev.doctor4t.wathe.api.event.AllowPlayerDeath;
+import dev.doctor4t.wathe.cca.PlayerPoisonComponent;
 import dev.doctor4t.wathe.index.WatheSounds;
 import lombok.Getter;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -63,27 +63,6 @@ public class SERoles {
             true
     ));
 
-    // not really a role, but it makes it easier to put in a win condition display
-    public static Role LOVERS = registerRole(new Role(
-            StupidExpress.id("lovers"),
-            0xf38aff,
-            false,
-            false,
-            Role.MoodType.REAL,
-            -1,
-            true
-    ));
-
-    public static Role ALLERGIC = registerRole(new Role(
-            StupidExpress.id("allergic"),
-            0x70ffa2,
-            false,
-            false,
-            Role.MoodType.REAL,
-            -1,
-            true
-    ));
-
     public static void init() {
         /// AMNESIAC
 
@@ -114,29 +93,6 @@ public class SERoles {
 
         AvariciousGoldHandler.onGameStart();
 
-        /// LOVERS
-
-        Harpymodloader.setRoleMaximum(LOVERS, 0); // fake role for things
-
-        /// ALLERGIC
-
-        Harpymodloader.setRoleMaximum(ALLERGIC, 0); // fake role 2, courtesy of you!
-
-        AllowPlayerDeath.EVENT.register(((victim, killer, resourceLocation) -> {
-            AllergicComponent allergy = AllergicComponent.KEY.get(victim);
-            PlayerPoisonComponent poison = PlayerPoisonComponent.KEY.get(victim);
-            if (allergy.isAllergic()) {
-                if (poison.poisoner != victim.getUUID()) {
-                    if (allergy.armor > 0) {
-                        victim.level().playSound(victim, victim.getOnPos().above(1), WatheSounds.ITEM_PSYCHO_ARMOUR, SoundSource.MASTER, 5.0F, 1.0F);
-                        poison.setPoisonTicks(-1, victim.getUUID());
-                        allergy.armor--;
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }));
     }
 
     public static Role registerRole(Role role) {

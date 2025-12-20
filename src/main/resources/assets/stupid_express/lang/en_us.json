@@ -25,6 +25,7 @@
   "announcement.goals.avaricious": "Be near victims and get rich!",
   "announcement.role.avaricious" : "Avaricious!",
 
+  "announcement.modifier.lovers": "Lover!",
   "announcement.win.lovers": "The Lovers Win!",
   "game.win.lovers": "The pair managed to stay alive until they were the last two standing!",
   "tip.lovers.partner": "Your partner is %s!",
@@ -33,6 +34,7 @@
   "hud.lovers.notification": "You are in love with someone on the train!",
   "death_reason.stupid_express.broken_heart": "a broken heart.",
 
+  "announcement.modifier.allergic": "Allergic!",
   "hud.allergic.hint": "Allergic",
   "hud.allergic.notification": "Your medical history highlights multiple %s-related allergies.",
   "death_reason.stupid_express.allergies": "mysterious allergies.",

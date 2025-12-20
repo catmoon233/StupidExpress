@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import pro.fazeclan.river.stupid_express.role.neutral.NeutralRoleWorldComponent;
+import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 
 @Mixin(value = RoleAnnouncementTexts.RoleAnnouncementText.class, priority = 500)
-public class NeutralRoleAnnouncementMixin {
+public class CustomWinnerAnnouncementMixin {
 
     @Inject(
             method = "getEndText",
@@ -23,11 +23,11 @@ public class NeutralRoleAnnouncementMixin {
         if (level == null) {
             return;
         }
-        NeutralRoleWorldComponent component = NeutralRoleWorldComponent.KEY.get(level);
-        if (!component.hasNeutralWinner()) {
+        var component = CustomWinnerComponent.KEY.get(level);
+        if (!component.hasCustomWinner()) {
             return;
         }
-        cir.setReturnValue(component.getWinningText().winText);
+        cir.setReturnValue(Component.translatable("announcement.win." + component.getWinningTextId()).withColor(component.getColor()));
         cir.cancel();
     }
 

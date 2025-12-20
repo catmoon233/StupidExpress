@@ -1,5 +1,6 @@
 package pro.fazeclan.river.stupid_express.client.mixin.role.necromancer;
 
+import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.client.gui.screen.ingame.LimitedInventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import org.objectweb.asm.Opcodes;
@@ -23,7 +24,8 @@ public class NecromancerNoShopMixin {
             method = "init",
             at = @At(
                     value = "FIELD",
-                    target = "Ldev/doctor4t/trainmurdermystery/client/gui/screen/ingame/LimitedInventoryScreen;y:I",
+                    target = "Ldev/doctor4t/wathe/client/gui/screen/ingame/LimitedInventoryScreen;player:Lnet/minecraft/client/player/LocalPlayer;",
+                    ordinal = 1,
                     opcode = Opcodes.GETFIELD,
                     shift = At.Shift.AFTER
             ),
