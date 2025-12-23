@@ -5,6 +5,8 @@ import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.game.GameFunctions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -47,6 +49,7 @@ public class LighterItem extends Item {
                 GameFunctions.killPlayer(doused, true, player, StupidExpress.id("ignited"));
                 DousedPlayerComponent.KEY.get(doused).reset();
             }
+            player.playNotifySound(SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
 
             var playersLeft = players.stream().filter(GameFunctions::isPlayerAliveAndSurvival).count();
             if (playersLeft == 1) {
@@ -60,6 +63,7 @@ public class LighterItem extends Item {
                 GameFunctions.stopGame(serverLevel);
             }
         } else {
+            player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1.0f, 1.0f);
             GameFunctions.killPlayer(player, true, player, StupidExpress.id("failed_ignite"));
         }
         return InteractionResultHolder.pass(player.getItemInHand(interactionHand));
