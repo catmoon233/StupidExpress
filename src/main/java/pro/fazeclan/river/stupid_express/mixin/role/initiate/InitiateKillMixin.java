@@ -71,6 +71,10 @@ public abstract class InitiateKillMixin {
             ResourceLocation deathReason,
             CallbackInfo ci
     ) {
+        if (!(victim instanceof ServerPlayer)) {
+            return;
+        }
+
         var level = (ServerLevel) victim.level();
         var gameWorldComponent = GameWorldComponent.KEY.get(level);
         if (!gameWorldComponent.isRole(victim, SERoles.INITIATE) && killer != null && gameWorldComponent.isRole(killer, SERoles.INITIATE)) {
