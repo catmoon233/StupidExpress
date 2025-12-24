@@ -40,5 +40,9 @@
   "death_reason.stupid_express.allergies": "mysterious allergies.",
   "hud.allergic.doctor_heads_up": "Someone on the train may have allergic reactions- stay close!",
 
+  "announcement.goals.initiate": "Eliminate the other initiate in order to become a killer!",
+  "announcement.role.initiate" : "Initiate!",
+  "death_reason.stupid_express.failed_initiation": "had failed initiation.",
+
   "commands.stupid_express.set_config_value": "%s has been set to %s!"
 }

@@ -1,8 +1,8 @@
 package pro.fazeclan.river.stupid_express.role.arsonist;
 
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
-import pro.fazeclan.river.stupid_express.SEItems;
-import pro.fazeclan.river.stupid_express.SERoles;
+import pro.fazeclan.river.stupid_express.constants.SEItems;
+import pro.fazeclan.river.stupid_express.constants.SERoles;
 
 public class ArsonistItemGivingHandler {
 

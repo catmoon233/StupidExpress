@@ -4,15 +4,17 @@
   "package": "pro.fazeclan.river.stupid_express.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "modifier.allergic.InstinctMixin",
     "modifier.lovers.LoversHudMixin",
+    "role.CustomWinnerAnnouncementMixin",
+    "role.CustomWinnerTextRendering",
     "role.amnesiac.AmnesiacHudMixin",
     "role.arsonist.ArsonistHudMixin",
+    "role.arsonist.ArsonistInstinctMixin",
+    "role.initiate.InitiateCoinMixin",
+    "role.initiate.InitiateShopMixin",
     "role.necromancer.NecromancerHudMixin",
     "role.necromancer.NecromancerNoShopMixin",
-    "role.neutral.CustomWinnerAnnouncementMixin",
-    "role.neutral.CustomWinnerTextRendering",
-    "role.arsonist.ArsonistInstinctMixin"
+    "role.initiate.InitiateInstinctMixin"
   ],
   "injectors": {
     "defaultRequire": 1

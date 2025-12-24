@@ -6,7 +6,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
-import pro.fazeclan.river.stupid_express.SEItems;
+import pro.fazeclan.river.stupid_express.constants.SEItems;
 
 public class StupidExpressClient implements ClientModInitializer {
 

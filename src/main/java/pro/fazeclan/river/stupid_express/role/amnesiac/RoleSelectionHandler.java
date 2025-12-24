@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
-import pro.fazeclan.river.stupid_express.SERoles;
+import pro.fazeclan.river.stupid_express.constants.SERoles;
 public class RoleSelectionHandler {
 
     public static void init() {

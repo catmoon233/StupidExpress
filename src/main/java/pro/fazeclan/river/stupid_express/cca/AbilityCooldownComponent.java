@@ -1,4 +1,4 @@
-package pro.fazeclan.river.stupid_express.role.neutral.cca;
+package pro.fazeclan.river.stupid_express.cca;
 
 import lombok.Getter;
 import lombok.Setter;

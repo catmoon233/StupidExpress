@@ -1,16 +1,17 @@
-package pro.fazeclan.river.stupid_express;
+package pro.fazeclan.river.stupid_express.constants;
 
 import dev.doctor4t.wathe.api.Role;
 import dev.doctor4t.wathe.api.WatheRoles;
-import dev.doctor4t.wathe.api.event.AllowPlayerDeath;
-import dev.doctor4t.wathe.cca.PlayerPoisonComponent;
-import dev.doctor4t.wathe.index.WatheSounds;
+import dev.doctor4t.wathe.cca.GameWorldComponent;
+import dev.doctor4t.wathe.index.WatheItems;
+import dev.doctor4t.wathe.util.ShopEntry;
 import lombok.Getter;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.Util;
 import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.events.ResetPlayerEvent;
-import pro.fazeclan.river.stupid_express.modifier.allergic.cca.AllergicComponent;
+import pro.fazeclan.river.stupid_express.BuyableShopEntry;
+import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.role.amnesiac.RoleSelectionHandler;
 import pro.fazeclan.river.stupid_express.role.arsonist.ArsonistItemGivingHandler;
 import pro.fazeclan.river.stupid_express.role.arsonist.OilDousingHandler;
@@ -18,7 +19,9 @@ import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent
 import pro.fazeclan.river.stupid_express.role.avaricious.AvariciousGoldHandler;
 import pro.fazeclan.river.stupid_express.role.necromancer.RevivalSelectionHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class SERoles {
 
@@ -40,7 +43,7 @@ public class SERoles {
             0xfc9526,
             false,
             false,
-            Role.MoodType.REAL,
+            Role.MoodType.FAKE,
             -1,
             true
     ));
@@ -65,7 +68,22 @@ public class SERoles {
             true
     ));
 
+    public static Role INITIATE = registerRole(new Role(
+            StupidExpress.id("initiate"),
+            0xffd154,
+            false,
+            false,
+            Role.MoodType.REAL,
+            WatheRoles.CIVILIAN.getMaxSprintTime(),
+            true
+    ));
+
+    public static List<ShopEntry> INITIATE_SHOP = Util.make(new ArrayList<>(), entries -> {
+        entries.add(new BuyableShopEntry(WatheItems.KNIFE.getDefaultInstance(), 100, ShopEntry.Type.WEAPON));
+    });
+
     public static void init() {
+
         /// AMNESIAC
 
         Harpymodloader.setRoleMaximum(AMNESIAC, 1);
@@ -88,18 +106,30 @@ public class SERoles {
         RevivalSelectionHandler.init();
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
-            if (server.getPlayerCount() > 11) {
+            var playerList = server.getPlayerList().getPlayers();
+            if (playerList.isEmpty()) {
+                return;
+            }
+            var level = playerList.getFirst().level();
+            var gameWorldComponent = GameWorldComponent.KEY.get(level);
+            var killerRoleCount = (int) Math.floor((float) playerList.size() / (float) gameWorldComponent.getKillerDividend());
+
+            if (killerRoleCount > 1) {
                 Harpymodloader.setRoleMaximum(NECROMANCER, 1);
                 Harpymodloader.setRoleMaximum(AVARICIOUS, 1);
+                Harpymodloader.setRoleMaximum(INITIATE, 1); // setting the other initiate will be my job
             } else {
                 Harpymodloader.setRoleMaximum(NECROMANCER, 0);
                 Harpymodloader.setRoleMaximum(AVARICIOUS, 0);
+                Harpymodloader.setRoleMaximum(INITIATE, 0);
             }
         });
 
         /// AVARICIOUS
 
         AvariciousGoldHandler.onGameStart();
+
+        /// INITIATE
 
     }
 

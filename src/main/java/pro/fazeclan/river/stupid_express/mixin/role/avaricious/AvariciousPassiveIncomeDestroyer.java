@@ -6,7 +6,7 @@ import dev.doctor4t.wathe.cca.GameWorldComponent;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import pro.fazeclan.river.stupid_express.SERoles;
+import pro.fazeclan.river.stupid_express.constants.SERoles;
 
 @Mixin(dev.doctor4t.wathe.game.gamemode.MurderGameMode.class)
 public class AvariciousPassiveIncomeDestroyer {

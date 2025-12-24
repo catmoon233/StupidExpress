@@ -5,7 +5,7 @@ import dev.doctor4t.wathe.cca.PlayerShopComponent;
 import dev.doctor4t.wathe.game.GameConstants;
 import net.minecraft.world.entity.player.Player;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
-import pro.fazeclan.river.stupid_express.SERoles;
+import pro.fazeclan.river.stupid_express.constants.SERoles;
 
 public class AvariciousGoldHandler {
 

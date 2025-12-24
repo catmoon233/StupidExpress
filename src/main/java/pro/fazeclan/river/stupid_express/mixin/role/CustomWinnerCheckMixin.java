@@ -1,4 +1,4 @@
-package pro.fazeclan.river.stupid_express.mixin.role.neutral;
+package pro.fazeclan.river.stupid_express.mixin.role;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.doctor4t.wathe.cca.GameRoundEndComponent;

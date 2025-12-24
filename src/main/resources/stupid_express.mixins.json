@@ -4,17 +4,18 @@
   "package": "pro.fazeclan.river.stupid_express.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "modifier.allergic.AllergicEatMixin",
-    "modifier.allergic.AllergicGameFunctionsMixin",
     "modifier.lovers.LoversDeathMixin",
     "modifier.lovers.LoversWinConditionMixin",
+    "role.CustomWinnerCheckMixin",
+    "role.CustomWinnerResetMixin",
     "role.arsonist.ArsonistKeepAliveMixin",
     "role.avaricious.AvariciousGoldPayout",
     "role.avaricious.AvariciousPassiveIncomeDestroyer",
     "role.avaricious.AvariciousTimer",
-    "role.necromancer.NecromancerStatsMixin",
-    "role.neutral.CustomWinnerResetMixin",
-    "role.neutral.CustomWinnerCheckMixin"
+    "role.initiate.InitiateAssignMixin",
+    "role.initiate.InitiateBuyMixin",
+    "role.initiate.InitiateKillMixin",
+    "role.necromancer.NecromancerStatsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

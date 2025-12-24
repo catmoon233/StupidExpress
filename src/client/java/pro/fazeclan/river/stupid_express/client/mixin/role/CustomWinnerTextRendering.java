@@ -1,4 +1,4 @@
-package pro.fazeclan.river.stupid_express.client.mixin.role.neutral;
+package pro.fazeclan.river.stupid_express.client.mixin.role;
 
 import dev.doctor4t.wathe.client.gui.RoundTextRenderer;
 import net.minecraft.client.Minecraft;

@@ -1,4 +1,4 @@
-package pro.fazeclan.river.stupid_express;
+package pro.fazeclan.river.stupid_express.constants;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import pro.fazeclan.river.stupid_express.command.ConfigCommand;

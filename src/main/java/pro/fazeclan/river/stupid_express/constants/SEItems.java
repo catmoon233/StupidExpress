@@ -1,4 +1,4 @@
-package pro.fazeclan.river.stupid_express;
+package pro.fazeclan.river.stupid_express.constants;
 
 import dev.doctor4t.ratatouille.util.registrar.ItemRegistrar;
 import dev.doctor4t.wathe.Wathe;
@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.role.arsonist.item.LighterItem;
 
 public class SEItems {

@@ -1,6 +1,5 @@
 package pro.fazeclan.river.stupid_express.modifier.lovers.cca;
 
-import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.game.GameFunctions;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +12,6 @@ import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import pro.fazeclan.river.stupid_express.StupidExpress;
-import pro.fazeclan.river.stupid_express.cca.SEConfig;
 
 import java.util.UUID;
 
