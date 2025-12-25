@@ -1,17 +1,13 @@
 package pro.fazeclan.river.stupid_express;
 
-import dev.doctor4t.wathe.api.Role;
-import lombok.Getter;
+import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pro.fazeclan.river.stupid_express.constants.SECommands;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
-
-import java.util.HashMap;
 
 public class StupidExpress implements ModInitializer {
 
@@ -19,8 +15,7 @@ public class StupidExpress implements ModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    @Getter
-    private static final HashMap<String, Role> ROLES = new HashMap<>();
+    public static final StupidExpressConfig CONFIG = ConfigApiJava.registerAndLoadConfig(StupidExpressConfig::new);
 
     @Override
     public void onInitialize() {
@@ -30,8 +25,6 @@ public class StupidExpress implements ModInitializer {
 
         // mod stuff
         SEItems.init();
-
-        SECommands.registerCommands();
 
     }
 

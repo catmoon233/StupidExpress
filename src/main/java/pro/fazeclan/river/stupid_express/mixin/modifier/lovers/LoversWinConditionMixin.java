@@ -13,9 +13,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
-import pro.fazeclan.river.stupid_express.cca.SEConfig;
 import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class LoversWinConditionMixin {
             @Local(name = "winStatus") GameFunctions.WinStatus winStatus
     ) {
 
-        var config = SEConfig.KEY.get(serverWorld);
+        var config = StupidExpress.CONFIG;
         var loversAlive = false;
         var remainingPlayers = serverWorld.getPlayers(GameFunctions::isPlayerAliveAndSurvival);
         for (ServerPlayer player : remainingPlayers) {
@@ -71,7 +71,7 @@ public class LoversWinConditionMixin {
             }
 
             // check for lovers with killers win condition
-            if (config.isLoversWinWithKillers()) {
+            if (config.loversWinWithKillers) {
                 var lover = loversComponent.getLoverAsPlayer();
                 if (lover == null) {
                     continue;
@@ -93,7 +93,7 @@ public class LoversWinConditionMixin {
 
         // check if lovers can't win with civilians, and keep the game going
         if (loversAlive
-                && !config.isLoversWinWithCivilians()
+                && !config.loversWinWithCivilians
                 && (winStatus == GameFunctions.WinStatus.KILLERS || winStatus == GameFunctions.WinStatus.PASSENGERS)) {
             ci.cancel();
         }

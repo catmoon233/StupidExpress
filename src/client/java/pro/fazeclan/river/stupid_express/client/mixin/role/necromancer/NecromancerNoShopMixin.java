@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
-import pro.fazeclan.river.stupid_express.cca.SEConfig;
 
 @Mixin(value = LimitedInventoryScreen.class)
 public class NecromancerNoShopMixin {
@@ -33,9 +33,9 @@ public class NecromancerNoShopMixin {
     )
     private void necromancerNoShop(CallbackInfo ci) {
         var level = this.player.level();
-        GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(level);
-        SEConfig config = SEConfig.KEY.get(level);
-        if (gameWorldComponent.isRole(this.player, SERoles.NECROMANCER) && !config.isNecromancerHasShop()) {
+        var gameWorldComponent = GameWorldComponent.KEY.get(level);
+        var config = StupidExpress.CONFIG;
+        if (gameWorldComponent.isRole(this.player, SERoles.NECROMANCER) && !config.necromancerHasShop) {
             ci.cancel();
         }
     }

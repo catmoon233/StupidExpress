@@ -12,7 +12,6 @@
 
 #### Modifiers
 - **Lovers**: A pair that are life-linked, they may be a Civilian-Civilian or Killer-Civilian pair. Their goal is to be the last two standing, but they can win alongside the Civilians if they are both Civilians.
-- **Allergic**: A player that has severe allergies related to either food or drink. Upon consuming the affected consumeable, they may recieve side-effects. Currently this modifier contains three different effects.
 
 yea that's it
 

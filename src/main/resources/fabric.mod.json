@@ -26,8 +26,7 @@
       "stupid_express:custom_winner",
       "stupid_express:cooldown",
       "stupid_express:lovers",
-      "stupid_express:necromancer",
-      "stupid_express:config"
+      "stupid_express:necromancer"
     ]
   },
   "mixins": [

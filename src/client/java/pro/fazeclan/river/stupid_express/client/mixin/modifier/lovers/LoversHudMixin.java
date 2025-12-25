@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
-import pro.fazeclan.river.stupid_express.cca.SEConfig;
 import pro.fazeclan.river.stupid_express.client.StupidExpressClient;
 import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
 
@@ -35,7 +35,7 @@ public abstract class LoversHudMixin {
         var clientWorld = clientPlayer.level();
 
         var component = LoversComponent.KEY.get(clientPlayer);
-        var config = SEConfig.KEY.get(clientWorld);
+        var config = StupidExpress.CONFIG;
         if (component.isLover()
                 && !WatheClient.isPlayerSpectatingOrCreative()) {
             context.pose().pushPose();
@@ -47,7 +47,7 @@ public abstract class LoversHudMixin {
             var textXPos = 18;
 
             Component name;
-            if (!config.isLoversKnowImmediately()) {
+            if (!config.loversKnowImmediately) {
                 name = Component.translatable("hud.stupid_express.lovers.notification");
                 textXPos -= 14;
             } else {
@@ -60,7 +60,7 @@ public abstract class LoversHudMixin {
                     textYPos -= 15;
                 }
             }
-            if (config.isLoversKnowImmediately()) {
+            if (config.loversKnowImmediately) {
                 PlayerFaceRenderer.draw(context,loverInfo.getSkin().texture(), 2, textYPos - 2,12);
             }
             context.drawString(renderer, name, textXPos, textYPos, SEModifiers.LOVERS.color());
@@ -87,9 +87,9 @@ public abstract class LoversHudMixin {
         if (lover == null) {
             return;
         }
-        var config = SEConfig.KEY.get(level);
+        var config = StupidExpress.CONFIG;
         if (WatheClient.isPlayerAliveAndInSurvival()
-                && !config.isLoversKnowImmediately()
+                && !config.loversKnowImmediately
                 && loversComponent.isLover()) {
             stupidexpress$renderLoversHud(renderer, context, Component.translatable("hud.stupid_express.lovers.partner"));
         }
