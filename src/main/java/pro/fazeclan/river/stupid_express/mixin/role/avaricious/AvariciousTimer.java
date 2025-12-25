@@ -3,6 +3,7 @@ package pro.fazeclan.river.stupid_express.mixin.role.avaricious;
 import dev.doctor4t.wathe.cca.GameTimeComponent;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.game.gamemode.MurderGameMode;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,6 +13,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.role.avaricious.AvariciousGoldHandler;
+
+import java.awt.*;
 
 @Mixin(MurderGameMode.class)
 public class AvariciousTimer {
@@ -41,11 +44,11 @@ public class AvariciousTimer {
 
             if (!gameWorldComponent.isRole(player, SERoles.AVARICIOUS)) continue;
 
-            String text = "§6§lPayout in: " + (60 - (ticksRemaining / 20)) + "s";
             player.sendSystemMessage(
                     Component.translatable(
-                            text
-                    ),
+                            "hud.stupid_express.avaricious.payout_timer",
+                            (60 - (ticksRemaining / 20))
+                    ).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD),
                     true
             );
         }

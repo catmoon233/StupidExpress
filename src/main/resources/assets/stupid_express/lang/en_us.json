@@ -24,6 +24,7 @@
 
   "announcement.goals.stupid_express.avaricious": "Be near victims and get rich!",
   "announcement.role.stupid_express.avaricious" : "Avaricious!",
+  "hud.stupid_express.avaricious.payout_timer": "Payout in: %ss",
 
   "announcement.modifier.stupid_express.lovers": "Lover!",
   "announcement.win.stupid_express.lovers": "The Lovers Win!",
