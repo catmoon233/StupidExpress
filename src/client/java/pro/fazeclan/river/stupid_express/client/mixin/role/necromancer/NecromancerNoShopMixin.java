@@ -35,7 +35,7 @@ public class NecromancerNoShopMixin {
         var level = this.player.level();
         var gameWorldComponent = GameWorldComponent.KEY.get(level);
         var config = StupidExpress.CONFIG;
-        if (gameWorldComponent.isRole(this.player, SERoles.NECROMANCER) && !config.necromancerHasShop) {
+        if (gameWorldComponent.isRole(this.player, SERoles.NECROMANCER) && !config.rolesSection.necromancerSection.necromancerHasShop) {
             ci.cancel();
         }
     }

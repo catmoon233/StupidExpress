@@ -71,7 +71,7 @@ public class LoversWinConditionMixin {
             }
 
             // check for lovers with killers win condition
-            if (config.loversWinWithKillers) {
+            if (config.modifiersSection.loversSection.loversWinWithKillers) {
                 var lover = loversComponent.getLoverAsPlayer();
                 if (lover == null) {
                     continue;
@@ -93,7 +93,7 @@ public class LoversWinConditionMixin {
 
         // check if lovers can't win with civilians, and keep the game going
         if (loversAlive
-                && !config.loversWinWithCivilians
+                && !config.modifiersSection.loversSection.loversWinWithCivilians
                 && (winStatus == GameFunctions.WinStatus.KILLERS || winStatus == GameFunctions.WinStatus.PASSENGERS)) {
             ci.cancel();
         }

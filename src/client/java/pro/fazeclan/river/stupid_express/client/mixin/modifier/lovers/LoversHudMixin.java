@@ -47,7 +47,7 @@ public abstract class LoversHudMixin {
             var textXPos = 18;
 
             Component name;
-            if (!config.loversKnowImmediately) {
+            if (!config.modifiersSection.loversSection.loversKnowImmediately) {
                 name = Component.translatable("hud.stupid_express.lovers.notification");
                 textXPos -= 14;
             } else {
@@ -60,7 +60,7 @@ public abstract class LoversHudMixin {
                     textYPos -= 15;
                 }
             }
-            if (config.loversKnowImmediately) {
+            if (config.modifiersSection.loversSection.loversKnowImmediately) {
                 PlayerFaceRenderer.draw(context,loverInfo.getSkin().texture(), 2, textYPos - 2,12);
             }
             context.drawString(renderer, name, textXPos, textYPos, SEModifiers.LOVERS.color());
@@ -89,7 +89,7 @@ public abstract class LoversHudMixin {
         }
         var config = StupidExpress.CONFIG;
         if (WatheClient.isPlayerAliveAndInSurvival()
-                && !config.loversKnowImmediately
+                && !config.modifiersSection.loversSection.loversKnowImmediately
                 && loversComponent.isLover()) {
             stupidexpress$renderLoversHud(renderer, context, Component.translatable("hud.stupid_express.lovers.partner"));
         }

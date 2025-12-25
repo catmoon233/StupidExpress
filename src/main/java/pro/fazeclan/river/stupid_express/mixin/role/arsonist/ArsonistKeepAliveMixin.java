@@ -1,6 +1,7 @@
 package pro.fazeclan.river.stupid_express.mixin.role.arsonist;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import dev.doctor4t.wathe.cca.GameRoundEndComponent;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.game.GameFunctions;
 import dev.doctor4t.wathe.game.gamemode.MurderGameMode;
@@ -12,7 +13,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+
+import java.util.List;
 
 @Mixin(MurderGameMode.class)
 public class ArsonistKeepAliveMixin {
@@ -31,12 +35,24 @@ public class ArsonistKeepAliveMixin {
             ServerLevel serverWorld, GameWorldComponent gameWorldComponent, CallbackInfo ci, @Local(name = "winStatus") GameFunctions.WinStatus winStatus
     ) {
         var config = StupidExpress.CONFIG;
-        if (config.arsonistKeepsGameGoing) {
+        if (config.rolesSection.arsonistSection.arsonistKeepsGameGoing) {
+            var players = serverWorld.getPlayers(GameFunctions::isPlayerAliveAndSurvival);
             boolean arsonistAlive = false;
-            for (ServerPlayer player : serverWorld.getPlayers(GameFunctions::isPlayerAliveAndSurvival)) {
+            for (ServerPlayer player : players) {
                 if (gameWorldComponent.isRole(player, SERoles.ARSONIST)) {
                     arsonistAlive = true;
                 }
+            }
+
+            if (players.size() == 1 && arsonistAlive) {
+                var nrwc = CustomWinnerComponent.KEY.get(serverWorld);
+                nrwc.setWinningTextId(SERoles.ARSONIST.identifier().getPath());
+                nrwc.setWinners(List.of(players.getFirst()));
+                nrwc.setColor(SERoles.ARSONIST.color());
+                nrwc.sync();
+                GameRoundEndComponent.KEY.get(serverWorld).setRoundEndData(serverWorld.players(), GameFunctions.WinStatus.KILLERS);
+
+                GameFunctions.stopGame(serverWorld);
             }
 
             if (arsonistAlive && (winStatus == GameFunctions.WinStatus.KILLERS || winStatus == GameFunctions.WinStatus.PASSENGERS)) {
