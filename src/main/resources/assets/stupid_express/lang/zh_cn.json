@@ -12,22 +12,23 @@
   "item.stupid_express.jerry_can": "汽油桶",
   "item.stupid_express.jerry_can.tooltip": "与玩家互动，将其浇上油",
   "item.stupid_express.lighter": "打火机",
-  "item.stupid_express.lighter.tooltip": "当此技能进入冷却时，表示是点燃的时机\n与其互动即可点燃所有已被浇油的玩家",
+  "item.stupid_express.lighter.tooltip": "当此技能进入冷却时，表示是点燃的时机\n交互即可点燃所有已被浇湿的玩家",
   "death_reason.stupid_express.failed_ignite": "点火失败",
-  "death_reason.stupid_express.ignited": "汽油燃烧而死",
+  "death_reason.stupid_express.ignited": "欲火焚身",
 
   "announcement.goals.stupid_express.necromancer": "复活死者，让他们为你效力",
   "announcement.role.stupid_express.necromancer": "死灵法师",
   "hud.stupid_express.necromancer.possible_revive": "与其互动可将此玩家复活为杀手",
-  "hud.stupid_express.necromancer.no_possible_revive": "在使用能力之前，你的同伴必须死亡",
-  "hud.stupid_express.necromancer.cooldown": "你必须等待 %ss 后才能尝试",
+  "hud.stupid_express.necromancer.no_possible_revive": "在使用能力之前，你的一名同伴必须先死亡",
+  "hud.stupid_express.necromancer.cooldown": "你必须等待 %s 秒后才能尝试",
 
   "announcement.goals.stupid_express.avaricious": "接近受害者以获取财富",
   "announcement.role.stupid_express.avaricious": "扒手",
+  "hud.stupid_express.avaricious.payout_timer": "偷取倒计时 %s 秒",
 
   "announcement.modifier.stupid_express.lovers": "恋人",
   "announcement.win.stupid_express.lovers": "恋人胜利",
-  "game.win.stupid_express.lovers": "这对恋人一直活到最后",
+  "game.win.stupid_express.lovers": "这对伴侣一直存活到最后",
   "tip.stupid_express.lovers.partner": "你的伴侣是 %s",
   "hud.stupid_express.lovers.partner": "伴侣",
   "hud.stupid_express.lovers.in_love": "爱上了 %s",
@@ -38,9 +39,26 @@
   "announcement.role.stupid_express.initiate": "初学者",
   "death_reason.stupid_express.failed_initiation": "考核失败",
 
-  "commands.stupid_express.set_config_value": "%s 已成功设置为 %s"
+  "stupid_express.config.rolesSection": "角色身份",
+  "stupid_express.config.rolesSection.necromancerSection": "死灵法师",
+  "stupid_express.config.rolesSection.necromancerSection.necromancerHasShop": "死灵法师杀手商店",
+  "stupid_express.config.rolesSection.necromancerSection.necromancerHasShop.desc": "如果此选项为开启状态，死灵法师除了拥有能力以外还拥有一个杀手商店",
+  "stupid_express.config.rolesSection.arsonistSection": "纵火犯",
+  "stupid_express.config.rolesSection.arsonistSection.arsonistKeepsGameGoing": "让这熊熊烈火烧毁一切",
+  "stupid_express.config.rolesSection.arsonistSection.arsonistKeepsGameGoing.desc": "如果此选项为开启状态，纵火犯不仅会作为中立角色存在，还会让游戏持续进行，直到成为最后一个幸存者或死亡为止",
+  "stupid_express.config.rolesSection.initiateSection": "初学者",
+  "stupid_express.config.rolesSection.initiateSection.initiateFallbackRole": "初学者备用角色",
+  "stupid_express.config.rolesSection.initiateSection.initiateFallbackRole.desc": "此选项指定了当同门死于非命，初学者将退而求其次成为什么角色",
+  "stupid_express.config.initiate_fallback_options.AMNESIAC": "失忆患者",
+  "stupid_express.config.initiate_fallback_options.KILLER": "随机杀手角色",
+  "stupid_express.config.initiate_fallback_options.NEUTRAL": "其他中立角色",
+
+  "stupid_express.config.modifiersSection": "附加词条",
+  "stupid_express.config.modifiersSection.loversSection": "恋人",
+  "stupid_express.config.modifiersSection.loversSection.loversKnowImmediately": "恋人之间能一眼认出对方",
+  "stupid_express.config.modifiersSection.loversSection.loversKnowImmediately.desc": "如果此选项为开启状态，将在界面上显示恋人各自的伴侣信息",
+  "stupid_express.config.modifiersSection.loversSection.loversWinWithKillers": "恋人与杀手共同获胜",
+  "stupid_express.config.modifiersSection.loversSection.loversWinWithKillers.desc": "如果此选项为开启状态，其中一位恋人为杀手身份时，那么恋人与杀手会共同获胜",
+  "stupid_express.config.modifiersSection.loversSection.loversWinWithCivilians": "恋人与平民共同获胜",
+  "stupid_express.config.modifiersSection.loversSection.loversWinWithCivilians.desc": "如果此选项为开启状态，且两位恋人的身份都为平民时，那么恋人与平民会共同获胜，否则他们必须被淘汰游戏才会结束"
 }
-
-
-
-
