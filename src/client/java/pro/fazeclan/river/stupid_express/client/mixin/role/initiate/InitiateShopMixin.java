@@ -1,8 +1,8 @@
 package pro.fazeclan.river.stupid_express.client.mixin.role.initiate;
 
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.client.gui.screen.ingame.LimitedHandledScreen;
-import dev.doctor4t.wathe.client.gui.screen.ingame.LimitedInventoryScreen;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.client.gui.screen.ingame.LimitedHandledScreen;
+import dev.doctor4t.trainmurdermystery.client.gui.screen.ingame.LimitedInventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;

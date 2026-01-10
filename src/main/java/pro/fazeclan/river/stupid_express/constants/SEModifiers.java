@@ -1,7 +1,7 @@
 package pro.fazeclan.river.stupid_express.constants;
 
-import dev.doctor4t.wathe.api.WatheRoles;
-import dev.doctor4t.wathe.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.api.TMMRoles;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.agmas.harpymodloader.Harpymodloader;
@@ -53,7 +53,7 @@ public class SEModifiers {
             do {
                 loverTwo = level.getRandomPlayer();
             } while (loverTwo == null || gameWorldComponent.getRole(loverTwo) == null || !gameWorldComponent.isInnocent(loverTwo)
-                    || gameWorldComponent.isRole(loverTwo, WatheRoles.VIGILANTE) || lover.equals(loverTwo));
+                    || gameWorldComponent.isRole(loverTwo, TMMRoles.VIGILANTE) || lover.equals(loverTwo));
 
             // assign both lovers
             var loverComponentOne = LoversComponent.KEY.get(lover);

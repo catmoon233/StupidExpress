@@ -1,8 +1,8 @@
 package pro.fazeclan.river.stupid_express.mixin.role.avaricious;
 
-import dev.doctor4t.wathe.cca.GameTimeComponent;
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.game.gamemode.MurderGameMode;
+import dev.doctor4t.trainmurdermystery.cca.GameTimeComponent;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.game.MurderGameMode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;

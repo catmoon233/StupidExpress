@@ -1,6 +1,6 @@
 package pro.fazeclan.river.stupid_express.mixin.role.initiate;
 
-import dev.doctor4t.wathe.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import net.fabricmc.loader.impl.util.log.Log;
 import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.server.level.ServerLevel;

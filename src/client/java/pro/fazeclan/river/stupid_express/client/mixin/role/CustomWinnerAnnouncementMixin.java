@@ -1,7 +1,7 @@
 package pro.fazeclan.river.stupid_express.client.mixin.role;
 
-import dev.doctor4t.wathe.client.gui.RoleAnnouncementTexts;
-import dev.doctor4t.wathe.game.GameFunctions;
+import dev.doctor4t.trainmurdermystery.client.gui.RoleAnnouncementTexts;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;

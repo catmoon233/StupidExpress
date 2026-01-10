@@ -1,15 +1,17 @@
 package pro.fazeclan.river.stupid_express.role.necromancer;
 
-import dev.doctor4t.wathe.api.WatheRoles;
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.cca.PlayerShopComponent;
-import dev.doctor4t.wathe.client.gui.RoleAnnouncementTexts;
-import dev.doctor4t.wathe.entity.PlayerBodyEntity;
-import dev.doctor4t.wathe.util.AnnounceWelcomePayload;
+import dev.doctor4t.trainmurdermystery.api.TMMRoles;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
+import dev.doctor4t.trainmurdermystery.client.gui.RoleAnnouncementTexts;
+import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
+import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.GameType;
@@ -62,17 +64,25 @@ public class RevivalSelectionHandler {
             nc.sync();
 
             // get random killer role
-            var roles = new ArrayList<>(WatheRoles.ROLES);
+            var roles = new ArrayList<>(TMMRoles.ROLES);
             roles.remove(SERoles.NECROMANCER);
             roles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role)
                     || !role.canUseKiller()
                     || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
-            if (roles.isEmpty()) roles.add(WatheRoles.KILLER);
+            if (roles.isEmpty()) {
+                roles.add(TMMRoles.KILLER);
+            }
             Collections.shuffle(roles);
 
             // revive player and give them the role
             var selectedRole = roles.getFirst();
 
+            serverLevel.players().forEach(
+                    a->{
+                        a.playNotifySound( SoundEvents.TOTEM_USE,revived.getSoundSource(), 1.2f, 1.5f);
+                        a.sendSystemMessage(Component.translatable("hud.stupid_express.necromancer.revived_player").append(Harpymodloader.getRoleName(selectedRole)),true);
+                    }
+            );
             revived.teleportTo(body.getX(), body.getY(), body.getZ());
             revived.setGameMode(GameType.ADVENTURE);
             body.remove(Entity.RemovalReason.DISCARDED); // like it never existed

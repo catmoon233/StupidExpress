@@ -1,10 +1,10 @@
 package pro.fazeclan.river.stupid_express.constants;
 
-import dev.doctor4t.wathe.api.Role;
-import dev.doctor4t.wathe.api.WatheRoles;
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.index.WatheItems;
-import dev.doctor4t.wathe.util.ShopEntry;
+import dev.doctor4t.trainmurdermystery.api.Role;
+import dev.doctor4t.trainmurdermystery.api.TMMRoles;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.index.TMMItems;
+import dev.doctor4t.trainmurdermystery.util.ShopEntry;
 import lombok.Getter;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.Util;
@@ -34,7 +34,7 @@ public class SERoles {
             false,
             false,
             Role.MoodType.REAL,
-            WatheRoles.CIVILIAN.getMaxSprintTime(),
+            TMMRoles.CIVILIAN.getMaxSprintTime(),
             false
     ));
 
@@ -74,24 +74,24 @@ public class SERoles {
             false,
             false,
             Role.MoodType.REAL,
-            WatheRoles.CIVILIAN.getMaxSprintTime(),
+            TMMRoles.CIVILIAN.getMaxSprintTime(),
             true
     ));
 
     public static List<ShopEntry> INITIATE_SHOP = Util.make(new ArrayList<>(), entries -> {
-        entries.add(new BuyableShopEntry(WatheItems.KNIFE.getDefaultInstance(), 200, ShopEntry.Type.WEAPON));
+        entries.add(new BuyableShopEntry(TMMItems.KNIFE.getDefaultInstance(), 200, ShopEntry.Type.WEAPON));
     });
 
     public static void init() {
 
         /// AMNESIAC
 
-        Harpymodloader.setRoleMaximum(AMNESIAC, 1);
+        Harpymodloader.setRoleMaximum(AMNESIAC.getIdentifier(), 1);
         RoleSelectionHandler.init();
 
         /// ARSONIST
 
-        Harpymodloader.setRoleMaximum(ARSONIST, 1);
+        Harpymodloader.setRoleMaximum(ARSONIST.getIdentifier(), 1);
         OilDousingHandler.init();
         ArsonistItemGivingHandler.init();
 
@@ -112,16 +112,16 @@ public class SERoles {
             }
             var level = playerList.getFirst().level();
             var gameWorldComponent = GameWorldComponent.KEY.get(level);
-            var killerRoleCount = (int) Math.floor((float) playerList.size() / (float) gameWorldComponent.getKillerDividend());
+            var killerRoleCount = (int) Math.floor((float) playerList.size() / (float) 6);
 
             if (killerRoleCount > 1) {
-                Harpymodloader.setRoleMaximum(NECROMANCER, 1);
-                Harpymodloader.setRoleMaximum(AVARICIOUS, 1);
-                Harpymodloader.setRoleMaximum(INITIATE, 1); // setting the other initiate will be my job
+                Harpymodloader.setRoleMaximum(NECROMANCER.getIdentifier(), 1);
+                Harpymodloader.setRoleMaximum(AVARICIOUS.getIdentifier(), 1);
+                Harpymodloader.setRoleMaximum(INITIATE.getIdentifier(), 1); // setting the other initiate will be my job
             } else {
-                Harpymodloader.setRoleMaximum(NECROMANCER, 0);
-                Harpymodloader.setRoleMaximum(AVARICIOUS, 0);
-                Harpymodloader.setRoleMaximum(INITIATE, 0);
+                Harpymodloader.setRoleMaximum(NECROMANCER.getIdentifier(), 0);
+                Harpymodloader.setRoleMaximum(AVARICIOUS.getIdentifier(), 0);
+                Harpymodloader.setRoleMaximum(INITIATE.getIdentifier(), 0);
             }
         });
 
@@ -132,7 +132,7 @@ public class SERoles {
     }
 
     public static Role registerRole(Role role) {
-        WatheRoles.registerRole(role);
+        TMMRoles.registerRole(role);
         ROLES.put(role.identifier().getPath(), role);
         return role;
     }

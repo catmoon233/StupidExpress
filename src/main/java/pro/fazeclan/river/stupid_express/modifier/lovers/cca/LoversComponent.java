@@ -1,6 +1,6 @@
 package pro.fazeclan.river.stupid_express.modifier.lovers.cca;
 
-import dev.doctor4t.wathe.game.GameFunctions;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.HolderLookup;

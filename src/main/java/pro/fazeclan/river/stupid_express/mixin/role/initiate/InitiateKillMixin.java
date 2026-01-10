@@ -1,12 +1,12 @@
 package pro.fazeclan.river.stupid_express.mixin.role.initiate;
 
-import dev.doctor4t.wathe.api.Role;
-import dev.doctor4t.wathe.api.WatheRoles;
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.cca.PlayerShopComponent;
-import dev.doctor4t.wathe.client.gui.RoleAnnouncementTexts;
-import dev.doctor4t.wathe.game.GameFunctions;
-import dev.doctor4t.wathe.util.AnnounceWelcomePayload;
+import dev.doctor4t.trainmurdermystery.api.Role;
+import dev.doctor4t.trainmurdermystery.api.TMMRoles;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
+import dev.doctor4t.trainmurdermystery.client.gui.RoleAnnouncementTexts;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
+import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -45,9 +45,9 @@ public abstract class InitiateKillMixin {
             return;
         }
         if (killer != null && gameWorldComponent.isRole(killer, SERoles.INITIATE)) {
-            var shuffledKillerRoles = new ArrayList<>(WatheRoles.ROLES);
+            var shuffledKillerRoles = new ArrayList<>(TMMRoles.ROLES);
             shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || !role.canUseKiller() || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
-            if (shuffledKillerRoles.isEmpty()) shuffledKillerRoles.add(WatheRoles.KILLER);
+            if (shuffledKillerRoles.isEmpty()) shuffledKillerRoles.add(TMMRoles.KILLER);
             Collections.shuffle(shuffledKillerRoles);
 
             var role = shuffledKillerRoles.getFirst();
@@ -83,15 +83,15 @@ public abstract class InitiateKillMixin {
             Role newInitiateRole;
             switch (StupidExpress.CONFIG.rolesSection.initiateSection.initiateFallbackRole) {
                 case KILLER -> {
-                    var shuffledKillerRoles = new ArrayList<>(WatheRoles.ROLES);
+                    var shuffledKillerRoles = new ArrayList<>(TMMRoles.ROLES);
                     shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || !role.canUseKiller() || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
-                    if (shuffledKillerRoles.isEmpty()) shuffledKillerRoles.add(WatheRoles.KILLER);
+                    if (shuffledKillerRoles.isEmpty()) shuffledKillerRoles.add(TMMRoles.KILLER);
                     Collections.shuffle(shuffledKillerRoles);
 
                     newInitiateRole = shuffledKillerRoles.getFirst();
                 }
                 case NEUTRAL -> {
-                    var shuffledNeutralRoles = new ArrayList<>(WatheRoles.ROLES);
+                    var shuffledNeutralRoles = new ArrayList<>(TMMRoles.ROLES);
                     shuffledNeutralRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || role.canUseKiller() || role.isInnocent() || role.equals(SERoles.AMNESIAC) || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
                     if (shuffledNeutralRoles.isEmpty()) shuffledNeutralRoles.add(SERoles.AMNESIAC);
                     Collections.shuffle(shuffledNeutralRoles);
@@ -119,15 +119,15 @@ public abstract class InitiateKillMixin {
             Role newInitiateRole;
             switch (StupidExpress.CONFIG.rolesSection.initiateSection.initiateFallbackRole) {
                 case KILLER -> {
-                    var shuffledKillerRoles = new ArrayList<>(WatheRoles.ROLES);
+                    var shuffledKillerRoles = new ArrayList<>(TMMRoles.ROLES);
                     shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || !role.canUseKiller() || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
-                    if (shuffledKillerRoles.isEmpty()) shuffledKillerRoles.add(WatheRoles.KILLER);
+                    if (shuffledKillerRoles.isEmpty()) shuffledKillerRoles.add(TMMRoles.KILLER);
                     Collections.shuffle(shuffledKillerRoles);
 
                     newInitiateRole = shuffledKillerRoles.getFirst();
                 }
                 case NEUTRAL -> {
-                    var shuffledNeutralRoles = new ArrayList<>(WatheRoles.ROLES);
+                    var shuffledNeutralRoles = new ArrayList<>(TMMRoles.ROLES);
                     shuffledNeutralRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || role.canUseKiller() || role.isInnocent() || role.equals(SERoles.AMNESIAC) || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
                     if (shuffledNeutralRoles.isEmpty()) shuffledNeutralRoles.add(SERoles.AMNESIAC);
                     Collections.shuffle(shuffledNeutralRoles);

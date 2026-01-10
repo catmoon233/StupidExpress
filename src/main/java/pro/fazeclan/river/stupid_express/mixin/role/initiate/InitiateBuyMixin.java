@@ -1,8 +1,8 @@
 package pro.fazeclan.river.stupid_express.mixin.role.initiate;
 
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.cca.PlayerShopComponent;
-import dev.doctor4t.wathe.index.WatheSounds;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
+import dev.doctor4t.trainmurdermystery.index.TMMSounds;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -45,13 +45,13 @@ public abstract class InitiateBuyMixin {
                 entry.onBuy(player);
 
                 if (player instanceof ServerPlayer) {
-                    player.playNotifySound(WatheSounds.UI_SHOP_BUY, SoundSource.PLAYERS, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
+                    player.playNotifySound(TMMSounds.UI_SHOP_BUY, SoundSource.PLAYERS, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
                 }
             } else {
                 player.displayClientMessage(Component.literal("Purchase Failed").withStyle(ChatFormatting.DARK_RED), true);
 
                 if (player instanceof ServerPlayer) {
-                    player.playNotifySound(WatheSounds.UI_SHOP_BUY_FAIL, SoundSource.PLAYERS, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
+                    player.playNotifySound(TMMSounds.UI_SHOP_BUY_FAIL, SoundSource.PLAYERS, 1.0F, 0.9F + player.getRandom().nextFloat() * 0.2F);
                 }
             }
             ci.cancel();

@@ -1,7 +1,7 @@
 package pro.fazeclan.river.stupid_express.mixin.role;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.doctor4t.wathe.cca.GameRoundEndComponent;
+import dev.doctor4t.trainmurdermystery.cca.GameRoundEndComponent;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

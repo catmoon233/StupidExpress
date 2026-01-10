@@ -1,6 +1,6 @@
 package pro.fazeclan.river.stupid_express.mixin.role;
 
-import dev.doctor4t.wathe.game.GameFunctions;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

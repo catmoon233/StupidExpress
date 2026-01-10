@@ -1,8 +1,8 @@
 package pro.fazeclan.river.stupid_express.client.mixin.role.amnesiac;
 
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.client.WatheClient;
-import dev.doctor4t.wathe.entity.PlayerBodyEntity;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.client.TMMClient;
+import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 
-@Mixin(value = WatheClient.class, priority = 500)
+@Mixin(value = TMMClient.class, priority = 500)
 public class AmnesiacInstinctGlowMixin {
 
     // i'm thinking the amnesiac could potentially be useful for killers if they can coerce them to pick up a killer's body
@@ -30,10 +30,10 @@ public class AmnesiacInstinctGlowMixin {
         if (!gameWorldComponent.isRole(targettedPlayer, SERoles.AMNESIAC)) {
             return;
         }
-        if (WatheClient.isPlayerSpectatingOrCreative()) {
+        if (TMMClient.isPlayerSpectatingOrCreative()) {
             return;
         }
-        if (!WatheClient.isInstinctEnabled()) {
+        if (!TMMClient.isInstinctEnabled()) {
             return;
         }
         cir.setReturnValue(SERoles.AMNESIAC.color());
@@ -52,7 +52,7 @@ public class AmnesiacInstinctGlowMixin {
         if (!gameWorldComponent.isRole(player, SERoles.AMNESIAC)) {
             return;
         }
-        if (WatheClient.isPlayerSpectatingOrCreative()) {
+        if (TMMClient.isPlayerSpectatingOrCreative()) {
             return;
         }
         cir.setReturnValue(SERoles.AMNESIAC.color());

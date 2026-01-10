@@ -1,6 +1,6 @@
 package pro.fazeclan.river.stupid_express.mixin.modifier.lovers;
 
-import dev.doctor4t.wathe.game.GameFunctions;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;

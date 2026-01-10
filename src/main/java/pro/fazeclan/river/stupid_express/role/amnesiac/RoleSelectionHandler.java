@@ -1,13 +1,13 @@
 package pro.fazeclan.river.stupid_express.role.amnesiac;
 
-import dev.doctor4t.wathe.api.Role;
-import dev.doctor4t.wathe.api.WatheRoles;
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.cca.PlayerShopComponent;
-import dev.doctor4t.wathe.client.gui.RoleAnnouncementTexts;
-import dev.doctor4t.wathe.entity.PlayerBodyEntity;
-import dev.doctor4t.wathe.index.WatheItems;
-import dev.doctor4t.wathe.util.AnnounceWelcomePayload;
+import dev.doctor4t.trainmurdermystery.api.Role;
+import dev.doctor4t.trainmurdermystery.api.TMMRoles;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
+import dev.doctor4t.trainmurdermystery.client.gui.RoleAnnouncementTexts;
+import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
+import dev.doctor4t.trainmurdermystery.index.TMMItems;
+import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,15 +40,15 @@ public class RoleSelectionHandler {
             ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, role);
             playerShopComponent.setBalance(200);
             if (Harpymodloader.VANNILA_ROLES.contains(role)) {
-                if (role.equals(WatheRoles.VIGILANTE)) {
-                    player.addItem(WatheItems.REVOLVER.getDefaultInstance());
+                if (role.equals(TMMRoles.VIGILANTE)) {
+                    player.addItem(TMMItems.REVOLVER.getDefaultInstance());
                 }
                 ServerPlayNetworking.send(
                         interacting,
                         new AnnounceWelcomePayload(
                                 RoleAnnouncementTexts.ROLE_ANNOUNCEMENT_TEXTS.indexOf(
-                                        role.equals(WatheRoles.VIGILANTE) ? RoleAnnouncementTexts.VIGILANTE :
-                                                role.equals(WatheRoles.KILLER) ? RoleAnnouncementTexts.KILLER :
+                                        role.equals(TMMRoles.VIGILANTE) ? RoleAnnouncementTexts.VIGILANTE :
+                                                role.equals(TMMRoles.KILLER) ? RoleAnnouncementTexts.KILLER :
                                         RoleAnnouncementTexts.CIVILIAN),
                                 gameWorldComponent.getAllKillerTeamPlayers().size(),
                                 0

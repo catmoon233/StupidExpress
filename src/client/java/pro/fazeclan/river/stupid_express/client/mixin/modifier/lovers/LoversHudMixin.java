@@ -1,8 +1,8 @@
 package pro.fazeclan.river.stupid_express.client.mixin.modifier.lovers;
 
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.client.WatheClient;
-import dev.doctor4t.wathe.client.gui.RoleNameRenderer;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.client.TMMClient;
+import dev.doctor4t.trainmurdermystery.client.gui.RoleNameRenderer;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -37,7 +37,7 @@ public abstract class LoversHudMixin {
         var component = LoversComponent.KEY.get(clientPlayer);
         var config = StupidExpress.CONFIG;
         if (component.isLover()
-                && !WatheClient.isPlayerSpectatingOrCreative()) {
+                && !TMMClient.isPlayerSpectatingOrCreative()) {
             context.pose().pushPose();
 
             var loverInfo = clientPlayer.connection.getPlayerInfo(component.getLover());
@@ -88,12 +88,12 @@ public abstract class LoversHudMixin {
             return;
         }
         var config = StupidExpress.CONFIG;
-        if (WatheClient.isPlayerAliveAndInSurvival()
+        if (TMMClient.isPlayerAliveAndInSurvival()
                 && !config.modifiersSection.loversSection.loversKnowImmediately
                 && loversComponent.isLover()) {
             stupidexpress$renderLoversHud(renderer, context, Component.translatable("hud.stupid_express.lovers.partner"));
         }
-        if (WatheClient.isPlayerSpectatingOrCreative()) {
+        if (TMMClient.isPlayerSpectatingOrCreative()) {
             stupidexpress$renderLoversHud(renderer, context, Component.translatable(
                     "hud.stupid_express.lovers.in_love",
                     lover.getName()

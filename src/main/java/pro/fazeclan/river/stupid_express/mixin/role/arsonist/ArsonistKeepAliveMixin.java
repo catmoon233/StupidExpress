@@ -1,10 +1,10 @@
 package pro.fazeclan.river.stupid_express.mixin.role.arsonist;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.doctor4t.wathe.cca.GameRoundEndComponent;
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.game.GameFunctions;
-import dev.doctor4t.wathe.game.gamemode.MurderGameMode;
+import dev.doctor4t.trainmurdermystery.cca.GameRoundEndComponent;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
+import dev.doctor4t.trainmurdermystery.game.MurderGameMode;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.objectweb.asm.Opcodes;
@@ -25,7 +25,7 @@ public class ArsonistKeepAliveMixin {
             method = "tickServerGameLoop",
             at = @At(
                     value = "FIELD",
-                    target = "Ldev/doctor4t/wathe/game/GameFunctions$WinStatus;NONE:Ldev/doctor4t/wathe/game/GameFunctions$WinStatus;",
+                    target = "Ldev/doctor4t/trainmurdermystery/game/GameFunctions$WinStatus;NONE:Ldev/doctor4t/trainmurdermystery/game/GameFunctions$WinStatus;",
                     ordinal = 3,
                     opcode = Opcodes.GETSTATIC
             ),

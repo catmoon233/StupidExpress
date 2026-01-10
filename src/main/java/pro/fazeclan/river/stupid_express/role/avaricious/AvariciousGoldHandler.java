@@ -1,8 +1,8 @@
 package pro.fazeclan.river.stupid_express.role.avaricious;
 
-import dev.doctor4t.wathe.cca.GameTimeComponent;
-import dev.doctor4t.wathe.cca.PlayerShopComponent;
-import dev.doctor4t.wathe.game.GameConstants;
+import dev.doctor4t.trainmurdermystery.cca.GameTimeComponent;
+import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
+import dev.doctor4t.trainmurdermystery.game.GameConstants;
 import net.minecraft.world.entity.player.Player;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import pro.fazeclan.river.stupid_express.constants.SERoles;

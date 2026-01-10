@@ -1,9 +1,9 @@
 package pro.fazeclan.river.stupid_express.mixin.role.initiate;
 
-import dev.doctor4t.wathe.api.WatheRoles;
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.cca.PlayerMoodComponent;
-import dev.doctor4t.wathe.cca.PlayerShopComponent;
+import dev.doctor4t.trainmurdermystery.api.TMMRoles;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.cca.PlayerMoodComponent;
+import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,7 +32,7 @@ public abstract class InitiateCoinsOnMoodMixin {
         if (!gameWorldComponent.isRole(player, SERoles.INITIATE)) {
             return;
         }
-        if (WatheRoles.ROLES.stream().anyMatch(role -> role.identifier().getNamespace().equals("noellesroles"))) {
+        if (TMMRoles.ROLES.stream().anyMatch(role -> role.identifier().getNamespace().equals("noellesroles"))) {
             return;
         }
         var shopComponent = PlayerShopComponent.KEY.get(player);

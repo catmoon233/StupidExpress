@@ -1,7 +1,7 @@
 package pro.fazeclan.river.stupid_express.client.mixin.role.arsonist;
 
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.client.WatheClient;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.client.TMMClient;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
@@ -16,7 +16,7 @@ import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent
 
 import java.awt.*;
 
-@Mixin(WatheClient.class)
+@Mixin(TMMClient.class)
 public class ArsonistInstinctMixin {
 
     @Shadow
@@ -44,10 +44,10 @@ public class ArsonistInstinctMixin {
         if (!gameWorldComponent.isRole(player, SERoles.ARSONIST)) {
             return;
         }
-        if (WatheClient.isPlayerSpectatingOrCreative()) {
+        if (TMMClient.isPlayerSpectatingOrCreative()) {
             return;
         }
-        if (!WatheClient.isInstinctEnabled()) {
+        if (!TMMClient.isInstinctEnabled()) {
             return;
         }
         var douse = DousedPlayerComponent.KEY.get(targettedPlayer);
@@ -70,10 +70,10 @@ public class ArsonistInstinctMixin {
         if (!gameWorldComponent.isRole(targettedPlayer, SERoles.ARSONIST)) {
             return;
         }
-        if (WatheClient.isPlayerSpectatingOrCreative()) {
+        if (TMMClient.isPlayerSpectatingOrCreative()) {
             return;
         }
-        if (!WatheClient.isInstinctEnabled()) {
+        if (!TMMClient.isInstinctEnabled()) {
             return;
         }
         cir.setReturnValue(Color.GREEN.getRGB());

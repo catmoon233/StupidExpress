@@ -1,7 +1,7 @@
 package pro.fazeclan.river.stupid_express.client.mixin.role.initiate;
 
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.client.WatheClient;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.client.TMMClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +13,7 @@ import pro.fazeclan.river.stupid_express.constants.SERoles;
 
 import java.awt.*;
 
-@Mixin(value = WatheClient.class, priority = 500)
+@Mixin(value = TMMClient.class, priority = 500)
 public class InitiateInstinctMixin {
 
     @Inject(
@@ -44,10 +44,10 @@ public class InitiateInstinctMixin {
         if (!gameWorldComponent.isRole(targettedPlayer, SERoles.INITIATE)) {
             return;
         }
-        if (WatheClient.isPlayerSpectatingOrCreative()) {
+        if (TMMClient.isPlayerSpectatingOrCreative()) {
             return;
         }
-        if (!WatheClient.isInstinctEnabled()) {
+        if (!TMMClient.isInstinctEnabled()) {
             return;
         }
         cir.setReturnValue(SERoles.INITIATE.color());

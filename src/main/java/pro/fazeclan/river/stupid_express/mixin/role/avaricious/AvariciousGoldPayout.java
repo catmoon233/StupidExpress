@@ -1,11 +1,11 @@
 package pro.fazeclan.river.stupid_express.mixin.role.avaricious;
 
-import dev.doctor4t.wathe.cca.GameTimeComponent;
-import dev.doctor4t.wathe.cca.GameWorldComponent;
-import dev.doctor4t.wathe.cca.PlayerShopComponent;
-import dev.doctor4t.wathe.game.GameFunctions;
-import dev.doctor4t.wathe.game.gamemode.MurderGameMode;
-import dev.doctor4t.wathe.index.WatheSounds;
+import dev.doctor4t.trainmurdermystery.cca.GameTimeComponent;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
+import dev.doctor4t.trainmurdermystery.game.MurderGameMode;
+import dev.doctor4t.trainmurdermystery.index.TMMSounds;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -51,7 +51,7 @@ public class AvariciousGoldPayout {
 
             if (nearbyPlayers > 0) {
                 PlayerShopComponent.KEY.get(player).addToBalance(nearbyPlayers * AvariciousGoldHandler.PAYOUT_PER_PLAYER);
-                player.playNotifySound(WatheSounds.UI_SHOP_BUY, SoundSource.PLAYERS, 10.0f, 0.5f);
+                player.playNotifySound(TMMSounds.UI_SHOP_BUY, SoundSource.PLAYERS, 10.0f, 0.5f);
             }
         }
     }
