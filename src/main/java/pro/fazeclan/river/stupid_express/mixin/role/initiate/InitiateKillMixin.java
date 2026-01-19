@@ -29,6 +29,14 @@ import java.util.Collections;
 @Mixin(GameFunctions.class)
 public abstract class InitiateKillMixin {
 
+    private static void clearAllKnives(Player player) {
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            if (player.getInventory().getItem(i).is(TMMItems.KNIFE)) {
+                player.getInventory().setItem(i, net.minecraft.world.item.ItemStack.EMPTY);
+            }
+        }
+    }
+
     @Inject(
             method = "killPlayer(Lnet/minecraft/world/entity/player/Player;ZLnet/minecraft/world/entity/player/Player;Lnet/minecraft/resources/ResourceLocation;)V",
             at = @At("HEAD")
@@ -52,6 +60,10 @@ public abstract class InitiateKillMixin {
 
             var role = shuffledKillerRoles.getFirst();
             gameWorldComponent.addRole(killer, role);
+
+            // 清除物品栏中的所有刀
+            clearAllKnives(killer);
+
             ModdedRoleAssigned.EVENT.invoker().assignModdedRole(killer, role);
             if (Harpymodloader.VANNILA_ROLES.contains(role)) {
                 ServerPlayNetworking.send((ServerPlayer) killer, new AnnounceWelcomePayload(RoleAnnouncementTexts.ROLE_ANNOUNCEMENT_TEXTS.indexOf(RoleAnnouncementTexts.KILLER), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
@@ -101,6 +113,9 @@ public abstract class InitiateKillMixin {
                 case null, default -> newInitiateRole = SERoles.AMNESIAC;
             }
             for (ServerPlayer player : level.getPlayers(p -> gameWorldComponent.isRole(p, SERoles.INITIATE))) {
+                // 清除物品栏中的所有刀
+                clearAllKnives(player);
+
                 gameWorldComponent.addRole(player, newInitiateRole);
                 ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
                 if (Harpymodloader.VANNILA_ROLES.contains(newInitiateRole)) {
@@ -137,6 +152,9 @@ public abstract class InitiateKillMixin {
                 case null, default -> newInitiateRole = SERoles.AMNESIAC;
             }
             for (ServerPlayer player : level.getPlayers(p -> gameWorldComponent.isRole(p, SERoles.INITIATE))) {
+                // 清除物品栏中的所有刀
+                clearAllKnives(player);
+
                 gameWorldComponent.addRole(player, newInitiateRole);
                 ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
                 if (Harpymodloader.VANNILA_ROLES.contains(newInitiateRole)) {

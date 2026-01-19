@@ -15,7 +15,16 @@ import net.minecraft.world.InteractionResult;
 import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+
 public class RoleSelectionHandler {
+
+    private static void clearAllKnives(ServerPlayer player) {
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            if (player.getInventory().getItem(i).is(TMMItems.KNIFE)) {
+                player.getInventory().setItem(i, net.minecraft.world.item.ItemStack.EMPTY);
+            }
+        }
+    }
 
     public static void init() {
         UseEntityCallback.EVENT.register(((player, level, interactionHand, entity, entityHitResult) -> {
@@ -33,6 +42,9 @@ public class RoleSelectionHandler {
                 return InteractionResult.PASS;
             }
             Role role = gameWorldComponent.getRole(victim.getPlayerUuid());
+
+            // 清除物品栏中的所有刀
+            clearAllKnives(player);
 
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(player);
 
