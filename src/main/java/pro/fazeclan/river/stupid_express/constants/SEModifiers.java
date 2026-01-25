@@ -24,12 +24,28 @@ public class SEModifiers {
             false
     ));
 
+    public static Modifier REFUGEE = HMLModifiers.registerModifier(new Modifier(
+            StupidExpress.id("refugee"),
+            0x55ff55,
+            null,
+            null,
+            false,
+            false
+    ));
+
     public static void init() {
 
         assignModifierComponents();
 
         /// LOVERS
         Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 1);
+
+        /// REFUGEE
+        if (Math.random() < 0.3) {
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("refugee"), 1);
+        } else {
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("refugee"), 0);
+        }
 
     }
 
