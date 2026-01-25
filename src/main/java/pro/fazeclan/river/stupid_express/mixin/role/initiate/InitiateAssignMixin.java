@@ -1,13 +1,17 @@
 package pro.fazeclan.river.stupid_express.mixin.role.initiate;
 
-import dev.doctor4t.trainmurdermystery.api.TMMItems;
+
+
+
 import dev.doctor4t.trainmurdermystery.cca.GameTimeComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameConstants;
+import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.impl.util.log.Log;
 import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.server.MinecraftServer;
+
 import net.minecraft.server.level.ServerPlayer;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import org.agmas.harpymodloader.modded_murder.ModdedMurderGameMode;
@@ -108,7 +112,7 @@ public class InitiateAssignMixin {
                 if (elapsedTicks >= TEN_SECONDS_TICKS) {
                     ServerPlayer initiate = initiates.get(0);
                     clearModItems(initiate);
-                    gameWorldComponent.removeRole(initiate, SERoles.INITIATE);
+                    //gameWorldComponent.removeRole(initiate, SERoles.INITIATE);
                     gameWorldComponent.addRole(initiate, SERoles.AMNESIAC);
                     gameStarted = false;
                 }
