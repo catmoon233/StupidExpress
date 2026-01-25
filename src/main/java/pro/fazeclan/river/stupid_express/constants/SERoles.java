@@ -117,7 +117,7 @@ public class SERoles {
             if (killerRoleCount > 1) {
                 Harpymodloader.setRoleMaximum(NECROMANCER.getIdentifier(), 1);
                 Harpymodloader.setRoleMaximum(AVARICIOUS.getIdentifier(), 1);
-                Harpymodloader.setRoleMaximum(INITIATE.getIdentifier(), 1); // setting the other initiate will be my job
+                Harpymodloader.setRoleMaximum(INITIATE.getIdentifier(), 2); // setting the other initiate will be my job
             } else {
                 Harpymodloader.setRoleMaximum(NECROMANCER.getIdentifier(), 0);
                 Harpymodloader.setRoleMaximum(AVARICIOUS.getIdentifier(), 0);
