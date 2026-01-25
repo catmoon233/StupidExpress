@@ -22,7 +22,7 @@ public class RefugeeDeathMixin {
         var level = victim.level();
         var worldModifierComponent = WorldModifierComponent.KEY.get(level);
 
-        if (worldModifierComponent.hasModifier(victim.getUUID(), SEModifiers.REFUGEE)) {
+        if (worldModifierComponent.isModifier(victim.getUUID(), SEModifiers.REFUGEE)) {
             var refugeeComponent = RefugeeComponent.KEY.get(level);
             refugeeComponent.addPendingRevival(victim.getUUID(), victim.getX(), victim.getY(), victim.getZ());
         }

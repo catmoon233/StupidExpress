@@ -9,9 +9,9 @@ name: Gradle Build
 
 on: #[push, pull_request, workflow_dispatch]
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
   #workflow_dispatch:
 
 jobs:

@@ -1,5 +1,6 @@
 package pro.fazeclan.river.stupid_express.constants;
 
+import dev.doctor4t.trainmurdermystery.api.NoramlRole;
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
@@ -28,7 +29,7 @@ public class SERoles {
     @Getter
     private static final HashMap<String, Role> ROLES = new HashMap<>();
 
-    public static Role AMNESIAC = registerRole(new Role(
+    public static Role AMNESIAC = registerRole(new NoramlRole(
             StupidExpress.id("amnesiac"),
             0x9baae8,
             false,
@@ -38,7 +39,7 @@ public class SERoles {
             false
     ));
 
-    public static Role ARSONIST = registerRole(new Role(
+    public static Role ARSONIST = registerRole(new NoramlRole(
             StupidExpress.id("arsonist"),
             0xfc9526,
             false,
@@ -48,7 +49,7 @@ public class SERoles {
             true
     ));
 
-    public static Role AVARICIOUS = registerRole(new Role(
+    public static Role AVARICIOUS = registerRole(new NoramlRole(
             StupidExpress.id("avaricious"),
             0x8f00ff,
             false,
@@ -58,7 +59,7 @@ public class SERoles {
             true
     ));
 
-    public static Role NECROMANCER = registerRole(new Role(
+    public static Role NECROMANCER = registerRole(new NoramlRole(
             StupidExpress.id("necromancer"),
             0x9457ff,
             false,
@@ -68,7 +69,7 @@ public class SERoles {
             true
     ));
 
-    public static Role INITIATE = registerRole(new Role(
+    public static Role INITIATE = registerRole(new NoramlRole(
             StupidExpress.id("initiate"),
             0xffd154,
             false,
