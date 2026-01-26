@@ -45,13 +45,14 @@ public class RoleSelectionHandler {
             Role role = gameWorldComponent.getRole(victim.getPlayerUuid());
 
             // 清除物品栏中的所有刀
-            clearAllKnives(player);
+            clearAllKnives(interacting);
 
-            PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(player);
+            PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(interacting);
 
-            gameWorldComponent.addRole(player, role);
-            ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, role);
+            gameWorldComponent.addRole(interacting, role);
+            ModdedRoleAssigned.EVENT.invoker().assignModdedRole(interacting, role);
             playerShopComponent.setBalance(200);
+<<<<<<< HEAD
             if (Harpymodloader.VANNILA_ROLES.contains(role)) {
                 if (role.equals(TMMRoles.VIGILANTE)) {
                     player.addItem(TMMItems.REVOLVER.getDefaultInstance());
@@ -70,6 +71,10 @@ public class RoleSelectionHandler {
                                 gameWorldComponent.getAllKillerTeamPlayers().size(),
                                 0));
             }
+=======
+            ServerPlayNetworking.send(interacting, new AnnounceWelcomePayload(gameWorldComponent.getRole(interacting).getIdentifier().toString(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
+
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
 
             return InteractionResult.CONSUME;
         }));

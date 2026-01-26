@@ -30,6 +30,7 @@
   "announcement.role.stupid_express.avaricious": "扒手",
   "hud.stupid_express.avaricious.payout_timer": "偷取倒计时 %s 秒",
 
+  "announcement.modifier.stupid_express.refugee": "难民",
   "announcement.modifier.stupid_express.lovers": "恋人",
   "announcement.win.stupid_express.lovers": "恋人胜利",
   "game.win.stupid_express.lovers": "这对伴侣一直存活到最后",
@@ -67,5 +68,6 @@
   "stupid_express.config.modifiersSection.loversSection.loversWinWithCivilians": "恋人与平民共同获胜",
   "stupid_express.config.modifiersSection.loversSection.loversWinWithCivilians.desc": "如果此选项为开启状态，且两位恋人的身份都为平民时，那么恋人与平民会共同获胜，否则他们必须被淘汰游戏才会结束",
 
-  "hud.stupid_express.necromancer.revived_player": "\u00a74死灵法师复活了一名杀手"
+  "hud.stupid_express.necromancer.revived_player": "\u00a74死灵法师复活了一名杀手",
+  "hud.stupid_express.refugee.revived": "\u00a74亡命徒已复活"
 }

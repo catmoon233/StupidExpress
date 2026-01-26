@@ -51,7 +51,11 @@ public abstract class InitiateKillMixin {
             return;
         }
         if (killer != null && gameWorldComponent.isRole(killer, SERoles.INITIATE)) {
+<<<<<<< HEAD
             var shuffledKillerRoles = new ArrayList<>(TMMRoles.ROLES.values());
+=======
+            var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || !role.canUseKiller() || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
             if (shuffledKillerRoles.isEmpty()) shuffledKillerRoles.add(TMMRoles.KILLER);
             Collections.shuffle(shuffledKillerRoles);
@@ -63,11 +67,16 @@ public abstract class InitiateKillMixin {
             clearAllKnives(killer);
 
             ModdedRoleAssigned.EVENT.invoker().assignModdedRole(killer, role);
+<<<<<<< HEAD
             if (Harpymodloader.VANNILA_ROLES.contains(role)) {
                 ServerPlayNetworking.send((ServerPlayer) killer, new AnnounceWelcomePayload(TMMRoles.KILLER.identifier().getPath(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
             } else {
                 ServerPlayNetworking.send((ServerPlayer) killer, new AnnounceWelcomePayload(role.identifier().getPath(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
             }
+=======
+            ServerPlayNetworking.send((ServerPlayer) killer, new AnnounceWelcomePayload(gameWorldComponent.getRole(killer).getIdentifier().toString(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
+
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
         }
     }
 
@@ -93,7 +102,11 @@ public abstract class InitiateKillMixin {
             Role newInitiateRole;
             switch (StupidExpress.CONFIG.rolesSection.initiateSection.initiateFallbackRole) {
                 case KILLER -> {
+<<<<<<< HEAD
                     var shuffledKillerRoles = new ArrayList<>(TMMRoles.ROLES.values());
+=======
+                    var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
                     shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || !role.canUseKiller() || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
                     if (shuffledKillerRoles.isEmpty()) shuffledKillerRoles.add(TMMRoles.KILLER);
                     Collections.shuffle(shuffledKillerRoles);
@@ -101,7 +114,11 @@ public abstract class InitiateKillMixin {
                     newInitiateRole = shuffledKillerRoles.getFirst();
                 }
                 case NEUTRAL -> {
+<<<<<<< HEAD
                     var shuffledNeutralRoles = new ArrayList<>(TMMRoles.ROLES.values());
+=======
+                    var shuffledNeutralRoles = new ArrayList<>(StupidExpress.getEnableRoles());
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
                     shuffledNeutralRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || role.canUseKiller() || role.isInnocent() || role.equals(SERoles.AMNESIAC) || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
                     if (shuffledNeutralRoles.isEmpty()) shuffledNeutralRoles.add(SERoles.AMNESIAC);
                     Collections.shuffle(shuffledNeutralRoles);
@@ -116,11 +133,16 @@ public abstract class InitiateKillMixin {
 
                 gameWorldComponent.addRole(player, newInitiateRole);
                 ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
+<<<<<<< HEAD
                 if (Harpymodloader.VANNILA_ROLES.contains(newInitiateRole)) {
                     ServerPlayNetworking.send(player, new AnnounceWelcomePayload(TMMRoles.KILLER.identifier().getPath(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
                 } else {
                     ServerPlayNetworking.send(player, new AnnounceWelcomePayload(newInitiateRole.identifier().getPath(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
                 }
+=======
+                ServerPlayNetworking.send(player, new AnnounceWelcomePayload(gameWorldComponent.getRole(player).getIdentifier().toString(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
+
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             }
             if (!spawnBody) {
                 victim.teleportTo(killer.getX(), killer.getY(), killer.getZ());
@@ -132,7 +154,11 @@ public abstract class InitiateKillMixin {
             Role newInitiateRole;
             switch (StupidExpress.CONFIG.rolesSection.initiateSection.initiateFallbackRole) {
                 case KILLER -> {
+<<<<<<< HEAD
                     var shuffledKillerRoles = new ArrayList<>(TMMRoles.ROLES.values());
+=======
+                    var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
                     shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || !role.canUseKiller() || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
                     if (shuffledKillerRoles.isEmpty()) shuffledKillerRoles.add(TMMRoles.KILLER);
                     Collections.shuffle(shuffledKillerRoles);
@@ -140,7 +166,11 @@ public abstract class InitiateKillMixin {
                     newInitiateRole = shuffledKillerRoles.getFirst();
                 }
                 case NEUTRAL -> {
+<<<<<<< HEAD
                     var shuffledNeutralRoles = new ArrayList<>(TMMRoles.ROLES.values());
+=======
+                    var shuffledNeutralRoles = new ArrayList<>(StupidExpress.getEnableRoles());
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
                     shuffledNeutralRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || role.canUseKiller() || role.isInnocent() || role.equals(SERoles.AMNESIAC) || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
                     if (shuffledNeutralRoles.isEmpty()) shuffledNeutralRoles.add(SERoles.AMNESIAC);
                     Collections.shuffle(shuffledNeutralRoles);
@@ -155,11 +185,17 @@ public abstract class InitiateKillMixin {
 
                 gameWorldComponent.addRole(player, newInitiateRole);
                 ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
+<<<<<<< HEAD
                 if (Harpymodloader.VANNILA_ROLES.contains(newInitiateRole)) {
                     ServerPlayNetworking.send(player, new AnnounceWelcomePayload(TMMRoles.KILLER.identifier().getPath(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
                 } else {
                     ServerPlayNetworking.send(player, new AnnounceWelcomePayload(newInitiateRole.identifier().getPath(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
                 }
+=======
+                ServerPlayNetworking.send(player, new AnnounceWelcomePayload(gameWorldComponent.getRole(player).getIdentifier().toString(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
+
+
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             }
         }
     }

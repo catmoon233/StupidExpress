@@ -1,6 +1,10 @@
 package pro.fazeclan.river.stupid_express.constants;
 
+<<<<<<< HEAD
 import dev.doctor4t.trainmurdermystery.api.NormalRole;
+=======
+import dev.doctor4t.trainmurdermystery.api.NoramlRole;
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
@@ -29,7 +33,11 @@ public class SERoles {
     @Getter
     private static final HashMap<String, Role> ROLES = new HashMap<>();
 
+<<<<<<< HEAD
     public static Role AMNESIAC = registerRole(new NormalRole(
+=======
+    public static Role AMNESIAC = registerRole(new NoramlRole(
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             StupidExpress.id("amnesiac"),
             0x9baae8,
             false,
@@ -39,7 +47,11 @@ public class SERoles {
             false
     ));
 
+<<<<<<< HEAD
     public static Role ARSONIST = registerRole(new NormalRole(
+=======
+    public static Role ARSONIST = registerRole(new NoramlRole(
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             StupidExpress.id("arsonist"),
             0xfc9526,
             false,
@@ -49,7 +61,11 @@ public class SERoles {
             true
     ));
 
+<<<<<<< HEAD
     public static Role AVARICIOUS = registerRole(new NormalRole(
+=======
+    public static Role AVARICIOUS = registerRole(new NoramlRole(
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             StupidExpress.id("avaricious"),
             0x8f00ff,
             false,
@@ -59,7 +75,11 @@ public class SERoles {
             true
     ));
 
+<<<<<<< HEAD
     public static Role NECROMANCER = registerRole(new NormalRole(
+=======
+    public static Role NECROMANCER = registerRole(new NoramlRole(
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             StupidExpress.id("necromancer"),
             0x9457ff,
             false,
@@ -69,7 +89,11 @@ public class SERoles {
             true
     ));
 
+<<<<<<< HEAD
     public static Role INITIATE = registerRole(new NormalRole(
+=======
+    public static Role INITIATE = registerRole(new NoramlRole(
+>>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             StupidExpress.id("initiate"),
             0xffd154,
             false,
@@ -118,7 +142,7 @@ public class SERoles {
             if (killerRoleCount > 1) {
                 Harpymodloader.setRoleMaximum(NECROMANCER.getIdentifier(), 1);
                 Harpymodloader.setRoleMaximum(AVARICIOUS.getIdentifier(), 1);
-                Harpymodloader.setRoleMaximum(INITIATE.getIdentifier(), 1); // setting the other initiate will be my job
+                Harpymodloader.setRoleMaximum(INITIATE.getIdentifier(), 2); // setting the other initiate will be my job
             } else {
                 Harpymodloader.setRoleMaximum(NECROMANCER.getIdentifier(), 0);
                 Harpymodloader.setRoleMaximum(AVARICIOUS.getIdentifier(), 0);
