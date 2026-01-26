@@ -1,7 +1,6 @@
 package pro.fazeclan.river.stupid_express.role.amnesiac;
 
 import dev.doctor4t.trainmurdermystery.api.Role;
-import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
@@ -11,9 +10,6 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-
-import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 
@@ -52,38 +48,11 @@ public class RoleSelectionHandler {
             gameWorldComponent.addRole(interacting, role);
             ModdedRoleAssigned.EVENT.invoker().assignModdedRole(interacting, role);
             playerShopComponent.setBalance(200);
-<<<<<<< HEAD
-            if (Harpymodloader.VANNILA_ROLES.contains(role)) {
-                if (role.equals(TMMRoles.VIGILANTE)) {
-                    player.addItem(TMMItems.REVOLVER.getDefaultInstance());
-                }
-                ServerPlayNetworking.send(
-                        interacting,
-                        new AnnounceWelcomePayload(
-                                role.identifier().getPath(),
-                                gameWorldComponent.getAllKillerTeamPlayers().size(),
-                                0));
-            } else {
-                ServerPlayNetworking.send(
-                        interacting,
-                        new AnnounceWelcomePayload(
-                                role.identifier().getPath(),
-                                gameWorldComponent.getAllKillerTeamPlayers().size(),
-                                0));
-            }
-=======
             ServerPlayNetworking.send(interacting, new AnnounceWelcomePayload(gameWorldComponent.getRole(interacting).getIdentifier().toString(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
 
->>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
 
             return InteractionResult.CONSUME;
         }));
-    }
-
-    private static void clearAllKnives(Player player) {
-        if (player instanceof ServerPlayer serverplayer) {
-            clearAllKnives(serverplayer);
-        }
     }
 
 }

@@ -17,7 +17,9 @@ public class SEItems {
 
     private static final ResourceKey<CreativeModeTab> EQUIPMENT_GROUP = ResourceKey.create(Registries.CREATIVE_MODE_TAB, TMM.id("equipment"));
 
+    @SuppressWarnings("unchecked")
     public static final Item JERRY_CAN = registrar.create("jerry_can", new Item(new Item.Properties().stacksTo(1)), EQUIPMENT_GROUP);
+    @SuppressWarnings("unchecked")
     public static final Item LIGHTER = registrar.create("lighter", new LighterItem(new Item.Properties().stacksTo(1)), EQUIPMENT_GROUP);
 
     public static final TagKey<Item> DRINKS = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(StupidExpress.MOD_ID, "drinks"));

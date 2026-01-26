@@ -16,9 +16,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.Harpymodloader;
+import org.agmas.harpymodloader.config.HarpyModLoaderConfig;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class RevivalSelectionHandler {
 
@@ -59,7 +63,6 @@ public class RevivalSelectionHandler {
             nc.decreaseAvailableRevives();
             nc.sync();
 
-<<<<<<< HEAD
             // get random killer role
             var roles = new ArrayList<>(TMMRoles.ROLES.values());
             roles.remove(SERoles.NECROMANCER);
@@ -71,10 +74,8 @@ public class RevivalSelectionHandler {
             }
             Collections.shuffle(roles);
 
-=======
->>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             // revive player and give them the role
-            var selectedRole = TMMRoles.KILLER;
+            var selectedRole = roles.getFirst();
 
             serverLevel.players().forEach(
                     a->{
@@ -91,8 +92,25 @@ public class RevivalSelectionHandler {
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(revived);
             playerShopComponent.setBalance(200);
 
-            ServerPlayNetworking.send( interacting, new AnnounceWelcomePayload(gameWorldComponent.getRole(interacting).getIdentifier().toString(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
-
+            if (Harpymodloader.VANNILA_ROLES.contains(selectedRole)) {
+                ServerPlayNetworking.send(
+                        revived,
+                        new AnnounceWelcomePayload(
+                                TMMRoles.KILLER.identifier().getPath(),
+                                gameWorldComponent.getAllKillerTeamPlayers().size(),
+                                0
+                        )
+                );
+            } else {
+                ServerPlayNetworking.send(
+                        revived,
+                        new AnnounceWelcomePayload(
+                                selectedRole.identifier().getPath(),
+                                gameWorldComponent.getAllKillerTeamPlayers().size(),
+                                0
+                        )
+                );
+            }
 
             return InteractionResult.CONSUME;
         }));

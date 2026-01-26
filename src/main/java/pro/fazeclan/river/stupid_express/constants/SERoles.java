@@ -1,13 +1,10 @@
 package pro.fazeclan.river.stupid_express.constants;
 
-<<<<<<< HEAD
-import dev.doctor4t.trainmurdermystery.api.NormalRole;
-=======
 import dev.doctor4t.trainmurdermystery.api.NoramlRole;
->>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
+import dev.doctor4t.trainmurdermystery.api.NormalRole;
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
-import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+// import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import dev.doctor4t.trainmurdermystery.util.ShopEntry;
 import lombok.Getter;
@@ -29,15 +26,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SERoles {
-
     @Getter
     private static final HashMap<String, Role> ROLES = new HashMap<>();
 
-<<<<<<< HEAD
     public static Role AMNESIAC = registerRole(new NormalRole(
-=======
-    public static Role AMNESIAC = registerRole(new NoramlRole(
->>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             StupidExpress.id("amnesiac"),
             0x9baae8,
             false,
@@ -47,11 +39,7 @@ public class SERoles {
             false
     ));
 
-<<<<<<< HEAD
-    public static Role ARSONIST = registerRole(new NormalRole(
-=======
     public static Role ARSONIST = registerRole(new NoramlRole(
->>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             StupidExpress.id("arsonist"),
             0xfc9526,
             false,
@@ -61,11 +49,7 @@ public class SERoles {
             true
     ));
 
-<<<<<<< HEAD
-    public static Role AVARICIOUS = registerRole(new NormalRole(
-=======
     public static Role AVARICIOUS = registerRole(new NoramlRole(
->>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             StupidExpress.id("avaricious"),
             0x8f00ff,
             false,
@@ -75,11 +59,7 @@ public class SERoles {
             true
     ));
 
-<<<<<<< HEAD
-    public static Role NECROMANCER = registerRole(new NormalRole(
-=======
     public static Role NECROMANCER = registerRole(new NoramlRole(
->>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             StupidExpress.id("necromancer"),
             0x9457ff,
             false,
@@ -89,11 +69,7 @@ public class SERoles {
             true
     ));
 
-<<<<<<< HEAD
-    public static Role INITIATE = registerRole(new NormalRole(
-=======
     public static Role INITIATE = registerRole(new NoramlRole(
->>>>>>> a8aba49fde960fb10cde015e91937251af3bf30f
             StupidExpress.id("initiate"),
             0xffd154,
             false,
@@ -135,8 +111,8 @@ public class SERoles {
             if (playerList.isEmpty()) {
                 return;
             }
-            var level = playerList.getFirst().level();
-            var gameWorldComponent = GameWorldComponent.KEY.get(level);
+            // var level = playerList.getFirst().level();
+            // var gameWorldComponent = GameWorldComponent.KEY.get(level);
             var killerRoleCount = (int) Math.floor((float) playerList.size() / (float) 6);
 
             if (killerRoleCount > 1) {
