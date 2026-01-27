@@ -1,5 +1,6 @@
 package pro.fazeclan.river.stupid_express.role.amnesiac;
 
+import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
@@ -46,10 +47,14 @@ public class RoleSelectionHandler {
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(interacting);
 
             gameWorldComponent.addRole(interacting, role);
+
+            TMM.REPLAY_MANAGER.recordPlayerRoleChange(interacting.getUUID(), SERoles.AMNESIAC, role);
+            
             ModdedRoleAssigned.EVENT.invoker().assignModdedRole(interacting, role);
             playerShopComponent.setBalance(200);
-            ServerPlayNetworking.send(interacting, new AnnounceWelcomePayload(gameWorldComponent.getRole(interacting).getIdentifier().toString(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
-
+            ServerPlayNetworking.send(interacting,
+                    new AnnounceWelcomePayload(gameWorldComponent.getRole(interacting).getIdentifier().toString(),
+                            gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
 
             return InteractionResult.CONSUME;
         }));

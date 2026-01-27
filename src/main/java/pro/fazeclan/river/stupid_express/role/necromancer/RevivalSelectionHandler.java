@@ -1,5 +1,6 @@
 package pro.fazeclan.river.stupid_express.role.necromancer;
 
+import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
@@ -89,6 +90,9 @@ public class RevivalSelectionHandler {
 
             gameWorldComponent.addRole(revived, selectedRole);
 
+            
+            TMM.REPLAY_MANAGER.recordPlayerRoleChange(revived.getUUID(), SERoles.AMNESIAC, selectedRole);
+            
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(revived);
             playerShopComponent.setBalance(200);
 

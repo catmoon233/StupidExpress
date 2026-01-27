@@ -1,5 +1,6 @@
 package pro.fazeclan.river.stupid_express.mixin.role.initiate;
 
+import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.cca.GameTimeComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameConstants;
@@ -101,6 +102,7 @@ public class InitiateAssignMixin {
                     clearModItems(initiate);
                     // gameWorldComponent.removeRole(initiate, SERoles.INITIATE);
                     gameWorldComponent.addRole(initiate, SERoles.AMNESIAC);
+                    TMM.REPLAY_MANAGER.recordPlayerRoleChange(initiate.getUUID(), SERoles.INITIATE, SERoles.AMNESIAC);
                     gameStarted = false;
                 }
             }

@@ -1,5 +1,6 @@
 package pro.fazeclan.river.stupid_express.mixin.role.initiate;
 
+import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
@@ -59,6 +60,8 @@ public abstract class InitiateKillMixin {
             var role = shuffledKillerRoles.getFirst();
             gameWorldComponent.addRole(killer, role);
 
+            TMM.REPLAY_MANAGER.recordPlayerRoleChange(killer.getUUID(), SERoles.INITIATE, role);
+
             // 清除物品栏中的所有刀
             clearAllKnives(killer);
 
@@ -117,6 +120,9 @@ public abstract class InitiateKillMixin {
 
                 gameWorldComponent.addRole(player, newInitiateRole);
                 ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
+
+                TMM.REPLAY_MANAGER.recordPlayerRoleChange(player.getUUID(), SERoles.INITIATE, newInitiateRole);
+
                 ServerPlayNetworking.send(player,
                         new AnnounceWelcomePayload(gameWorldComponent.getRole(player).getIdentifier().toString(),
                                 gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
@@ -162,6 +168,9 @@ public abstract class InitiateKillMixin {
 
                 gameWorldComponent.addRole(player, newInitiateRole);
                 ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
+
+                TMM.REPLAY_MANAGER.recordPlayerRoleChange(player.getUUID(), SERoles.INITIATE, newInitiateRole);
+
                 ServerPlayNetworking.send(player,
                         new AnnounceWelcomePayload(gameWorldComponent.getRole(player).getIdentifier().toString(),
                                 gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
