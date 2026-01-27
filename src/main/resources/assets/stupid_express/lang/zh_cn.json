@@ -1,14 +1,18 @@
 {
+  "announcement.goals.amnesiac": "从尸首上汲取回忆，穿戴其过往经历",
   "announcement.goals.stupid_express.amnesiac": "从尸首上汲取回忆，穿戴其过往经历",
   "announcement.role.stupid_express.amnesiac": "失忆患者",
   "announcement.role.amnesiac": "失忆患者",
   "hud.stupid_express.amnesiac.select_body": "与尸体交互，扮演其生前的角色",
 
+  "announcement.goals.arsonist": "将所有玩家浇湿后点燃以获胜",
   "announcement.goals.stupid_express.arsonist": "将所有玩家浇湿后点燃以获胜",
   "announcement.role.stupid_express.arsonist": "纵火犯",
   "announcement.role.arsonist": "纵火犯",
   "announcement.win.stupid_express.arsonist": "纵火犯胜利",
+  "announcement.win.arsonist": "纵火犯胜利",
   "game.win.stupid_express.arsonist": "纵火犯已将所有玩家浇湿并点燃了列车",
+  "game.win.arsonist": "纵火犯已将所有玩家浇湿并点燃了列车",
   "hud.stupid_express.arsonist.doused.true": "已浇湿",
   "hud.stupid_express.arsonist.doused.false": "未浇湿",
   "item.stupid_express.jerry_can": "汽油桶",
