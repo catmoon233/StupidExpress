@@ -32,7 +32,8 @@ public abstract class InitiateCoinsOnMoodMixin {
         if (!gameWorldComponent.isRole(player, SERoles.INITIATE)) {
             return;
         }
-        if (TMMRoles.ROLES.values().stream().anyMatch(role -> role.identifier().getNamespace().equals("noellesroles"))) {
+        if (TMMRoles.ROLES.values().stream()
+                .anyMatch(role -> role.identifier().getNamespace().equals("noellesroles"))) {
             return;
         }
         var shopComponent = PlayerShopComponent.KEY.get(player);

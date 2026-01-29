@@ -1,5 +1,6 @@
 package pro.fazeclan.river.stupid_express.modifier.refugee.cca;
 
+import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
@@ -28,6 +29,7 @@ import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
+import pro.fazeclan.river.stupid_express.constants.SERoles;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -95,7 +97,7 @@ public class RefugeeComponent implements ServerTickingComponent {
         // Change role to LOOSE_END and remove REFUGEE modifier
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(serverLevel);
         gameWorldComponent.addRole(player, TMMRoles.LOOSE_END);
-        
+
         WorldModifierComponent worldModifierComponent = WorldModifierComponent.KEY.get(serverLevel);
         worldModifierComponent.removeModifier(player.getUUID(), SEModifiers.REFUGEE);
 

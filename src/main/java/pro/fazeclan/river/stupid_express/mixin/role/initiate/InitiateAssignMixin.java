@@ -1,15 +1,11 @@
 package pro.fazeclan.river.stupid_express.mixin.role.initiate;
 
-
-
-
+import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.cca.GameTimeComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameConstants;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.server.MinecraftServer;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -37,28 +33,20 @@ public class InitiateAssignMixin {
             var item = player.getInventory().getItem(i);
             // 清除模组物品：刀、汽油桶、打火机
             if (item.is(TMMItems.KNIFE) ||
-                item.is(SEItems.JERRY_CAN) ||
-                item.is(SEItems.LIGHTER)) {
+                    item.is(SEItems.JERRY_CAN) ||
+                    item.is(SEItems.LIGHTER)) {
                 player.getInventory().setItem(i, net.minecraft.world.item.ItemStack.EMPTY);
             }
         }
     }
 
-    @Inject(
-            method = "assignCivilianReplacingRoles",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/ArrayList;removeIf(Ljava/util/function/Predicate;)Z",
-                    ordinal = 4
-            )
-    )
+    @Inject(method = "assignCivilianReplacingRoles", at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;removeIf(Ljava/util/function/Predicate;)Z", ordinal = 4))
     private void assignSecondInitiate(
             int desiredRoleCount,
             net.minecraft.server.level.ServerLevel serverWorld,
             GameWorldComponent gameWorldComponent,
             List<ServerPlayer> players,
-            CallbackInfo ci
-    ) {
+            CallbackInfo ci) {
         // 删除原来的分配逻辑，现在不做任何修改
         // 游戏开始后的转换逻辑在 ServerTickEvents 中处理
     }
@@ -112,8 +100,9 @@ public class InitiateAssignMixin {
                 if (elapsedTicks >= TEN_SECONDS_TICKS) {
                     ServerPlayer initiate = initiates.get(0);
                     clearModItems(initiate);
-                    //gameWorldComponent.removeRole(initiate, SERoles.INITIATE);
+                    // gameWorldComponent.removeRole(initiate, SERoles.INITIATE);
                     gameWorldComponent.addRole(initiate, SERoles.AMNESIAC);
+                    TMM.REPLAY_MANAGER.recordPlayerRoleChange(initiate.getUUID(), SERoles.INITIATE, SERoles.AMNESIAC);
                     gameStarted = false;
                 }
             }

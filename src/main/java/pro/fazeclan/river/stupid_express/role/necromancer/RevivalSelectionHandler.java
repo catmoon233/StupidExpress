@@ -1,5 +1,6 @@
 package pro.fazeclan.river.stupid_express.role.necromancer;
 
+import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
@@ -16,9 +17,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.Harpymodloader;
+import org.agmas.harpymodloader.config.HarpyModLoaderConfig;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class RevivalSelectionHandler {
 
@@ -59,8 +64,19 @@ public class RevivalSelectionHandler {
             nc.decreaseAvailableRevives();
             nc.sync();
 
+            // get random killer role
+            var roles = new ArrayList<>(TMMRoles.ROLES.values());
+            roles.remove(SERoles.NECROMANCER);
+            roles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role)
+                    || !role.canUseKiller()
+                    || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
+            if (roles.isEmpty()) {
+                roles.add(TMMRoles.KILLER);
+            }
+            Collections.shuffle(roles);
+
             // revive player and give them the role
-            var selectedRole = TMMRoles.KILLER;
+            var selectedRole = roles.getFirst();
 
             serverLevel.players().forEach(
                     a->{
@@ -74,11 +90,31 @@ public class RevivalSelectionHandler {
 
             gameWorldComponent.addRole(revived, selectedRole);
 
+            
+            TMM.REPLAY_MANAGER.recordPlayerRoleChange(revived.getUUID(), SERoles.AMNESIAC, selectedRole);
+            
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(revived);
             playerShopComponent.setBalance(200);
 
-            ServerPlayNetworking.send( interacting, new AnnounceWelcomePayload(gameWorldComponent.getRole(interacting).getIdentifier().toString(), gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
-
+            if (Harpymodloader.VANNILA_ROLES.contains(selectedRole)) {
+                ServerPlayNetworking.send(
+                        revived,
+                        new AnnounceWelcomePayload(
+                                TMMRoles.KILLER.identifier().getPath(),
+                                gameWorldComponent.getAllKillerTeamPlayers().size(),
+                                0
+                        )
+                );
+            } else {
+                ServerPlayNetworking.send(
+                        revived,
+                        new AnnounceWelcomePayload(
+                                selectedRole.identifier().getPath(),
+                                gameWorldComponent.getAllKillerTeamPlayers().size(),
+                                0
+                        )
+                );
+            }
 
             return InteractionResult.CONSUME;
         }));

@@ -1,9 +1,10 @@
 package pro.fazeclan.river.stupid_express.constants;
 
 import dev.doctor4t.trainmurdermystery.api.NoramlRole;
+import dev.doctor4t.trainmurdermystery.api.NormalRole;
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
-import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+// import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import dev.doctor4t.trainmurdermystery.util.ShopEntry;
 import lombok.Getter;
@@ -25,11 +26,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SERoles {
-
     @Getter
     private static final HashMap<String, Role> ROLES = new HashMap<>();
 
-    public static Role AMNESIAC = registerRole(new NoramlRole(
+    public static Role AMNESIAC = registerRole(new NormalRole(
             StupidExpress.id("amnesiac"),
             0x9baae8,
             false,
@@ -111,8 +111,8 @@ public class SERoles {
             if (playerList.isEmpty()) {
                 return;
             }
-            var level = playerList.getFirst().level();
-            var gameWorldComponent = GameWorldComponent.KEY.get(level);
+            // var level = playerList.getFirst().level();
+            // var gameWorldComponent = GameWorldComponent.KEY.get(level);
             var killerRoleCount = (int) Math.floor((float) playerList.size() / (float) 6);
 
             if (killerRoleCount > 1) {
