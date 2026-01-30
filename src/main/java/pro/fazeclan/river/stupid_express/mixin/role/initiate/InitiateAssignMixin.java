@@ -40,16 +40,6 @@ public class InitiateAssignMixin {
         }
     }
 
-    @Inject(method = "assignCivilianReplacingRoles", at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;removeIf(Ljava/util/function/Predicate;)Z", ordinal = 4))
-    private void assignSecondInitiate(
-            int desiredRoleCount,
-            net.minecraft.server.level.ServerLevel serverWorld,
-            GameWorldComponent gameWorldComponent,
-            List<ServerPlayer> players,
-            CallbackInfo ci) {
-        // 删除原来的分配逻辑，现在不做任何修改
-        // 游戏开始后的转换逻辑在 ServerTickEvents 中处理
-    }
 
     static {
         ModdedRoleAssigned.EVENT.register((player, role) -> {
