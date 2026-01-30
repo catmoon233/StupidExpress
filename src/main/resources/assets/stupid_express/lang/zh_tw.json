@@ -5,8 +5,8 @@
   "announcement.role.amnesiac": "失憶患者",
   "hud.stupid_express.amnesiac.select_body": "與屍體交互，扮演其生前的角色",
 
-  "announcement.goals.arsonist": "將所有玩家澆濕後點燃以獲勝",
-  "announcement.goals.stupid_express.arsonist": "將所有玩家澆濕後點燃以獲勝",
+  "announcement.goals.arsonist": "將所有玩家澆濕後點燃，燒死所有玩家後獲勝",
+  "announcement.goals.stupid_express.arsonist": "將所有玩家澆濕後點燃，燒死所有玩家後獲勝",
   "announcement.role.stupid_express.arsonist": "縱火犯",
   "announcement.role.arsonist": "縱火犯",
   "announcement.win.stupid_express.arsonist": "縱火犯勝利",
@@ -25,6 +25,7 @@
   "death_reason.trainmurdermystery.ignited": "慾火焚身",
 
   "announcement.goals.stupid_express.necromancer": "復活死者，讓他們為你效力",
+  "announcement.goals.necromancer": "復活死者，讓他們為你效力",
   "announcement.role.necromancer": "死靈法師",
   "announcement.role.stupid_express.necromancer": "死靈法師",
   "hud.stupid_express.necromancer.possible_revive": "與其互動可將此玩家復活為殺手",
@@ -32,6 +33,7 @@
   "hud.stupid_express.necromancer.cooldown": "你必須等待 %s 秒後才能嘗試",
 
   "announcement.goals.stupid_express.avaricious": "接近受害者以獲取財富",
+  "announcement.goals.avaricious": "接近受害者以獲取財富",
   "announcement.role.avaricious": "扒手",
   "announcement.role.stupid_express.avaricious": "扒手",
   "hud.stupid_express.avaricious.payout_timer": "偷取倒計時 %s 秒",
@@ -48,6 +50,7 @@
   "death_reason.trainmurdermystery.broken_heart": "殉情而亡",
 
   "announcement.goals.stupid_express.initiate": "除掉同門即可晉升為殺手",
+  "announcement.goals.initiate": "除掉同門即可晉升為殺手",
   "announcement.role.stupid_express.initiate": "初學者",
   "announcement.role.initiate": "初學者",
   "death_reason.stupid_express.failed_initiation": "考核失敗",

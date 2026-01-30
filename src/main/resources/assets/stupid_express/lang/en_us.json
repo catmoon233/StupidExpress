@@ -5,8 +5,8 @@
   "announcement.role.amnesiac": "Amnesiac",
   "hud.stupid_express.amnesiac.select_body": "Interact with a corpse to take on their role",
 
-  "announcement.goals.arsonist": "Douse all players and ignite them to win",
-  "announcement.goals.stupid_express.arsonist": "Douse all players and ignite them to win",
+  "announcement.goals.arsonist": "Douse all players and ignite them, burn everyone to win",
+  "announcement.goals.stupid_express.arsonist": "Douse all players and ignite them, burn everyone to win",
   "announcement.role.stupid_express.arsonist": "Arsonist",
   "announcement.role.arsonist": "Arsonist",
   "announcement.win.stupid_express.arsonist": "Arsonist Wins",
@@ -25,6 +25,7 @@
   "death_reason.trainmurdermystery.ignited": "Incinerated",
 
   "announcement.goals.stupid_express.necromancer": "Revive the dead to serve you",
+  "announcement.goals.necromancer": "Revive the dead to serve you",
   "announcement.role.necromancer": "Necromancer",
   "announcement.role.stupid_express.necromancer": "Necromancer",
   "hud.stupid_express.necromancer.possible_revive": "Interact to revive this player as a killer",
@@ -32,6 +33,7 @@
   "hud.stupid_express.necromancer.cooldown": "You must wait %s seconds before trying again",
 
   "announcement.goals.stupid_express.avaricious": "Get close to victims to steal wealth",
+  "announcement.goals.avaricious": "Get close to victims to steal wealth",
   "announcement.role.avaricious": "Avaricious",
   "announcement.role.stupid_express.avaricious": "Avaricious",
   "hud.stupid_express.avaricious.payout_timer": "Steal timer %s seconds",
@@ -48,6 +50,7 @@
   "death_reason.trainmurdermystery.broken_heart": "Died of a broken heart",
 
   "announcement.goals.stupid_express.initiate": "Eliminate your peer to become a killer",
+  "announcement.goals.initiate": "Eliminate your peer to become a killer",
   "announcement.role.stupid_express.initiate": "Initiate",
   "announcement.role.initiate": "Initiate",
   "death_reason.stupid_express.failed_initiation": "Failed Initiation",
