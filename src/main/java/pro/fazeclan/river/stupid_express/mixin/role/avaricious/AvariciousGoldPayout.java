@@ -50,7 +50,9 @@ public class AvariciousGoldPayout {
             }
 
             if (nearbyPlayers > 0) {
-                PlayerShopComponent.KEY.get(player).addToBalance(nearbyPlayers * AvariciousGoldHandler.PAYOUT_PER_PLAYER);
+                int totalPlayers = serverWorld.players().size();
+                int payoutPerPlayer = AvariciousGoldHandler.calculatePayout(totalPlayers);
+                PlayerShopComponent.KEY.get(player).addToBalance(nearbyPlayers * payoutPerPlayer);
                 player.playNotifySound(TMMSounds.UI_SHOP_BUY, SoundSource.PLAYERS, 10.0f, 0.5f);
             }
         }

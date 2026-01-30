@@ -18,6 +18,17 @@ public class AvariciousGoldHandler {
 
     public static long gameStartTime = -1;
 
+    public static int calculatePayout(int totalPlayerCount) {
+        if (totalPlayerCount <= 6) {
+            return 40;
+        } else if (totalPlayerCount >= 20) {
+            return 10;
+        } else {
+            // P(N) = 80.5 * e^(-0.139 * N) + 5
+            return (int) Math.round(80.5 * Math.exp(-0.139 * totalPlayerCount) + 5);
+        }
+    }
+
     public static void onGameStart() {
         ModdedRoleAssigned.EVENT.register(((player, role) -> {
 
