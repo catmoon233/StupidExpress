@@ -42,6 +42,7 @@
   "announcement.modifier.stupid_express.lovers": "戀人",
   "announcement.win.stupid_express.lovers": "戀人勝利",
   "game.win.stupid_express.lovers": "這對伴侶一直存活到最後",
+  "game.win.lovers": "這對伴侶一直存活到最後",
   "tip.stupid_express.lovers.partner": "你的伴侶是 %s",
   "hud.stupid_express.lovers.partner": "伴侶",
   "hud.stupid_express.lovers.in_love": "愛上了 %s",
