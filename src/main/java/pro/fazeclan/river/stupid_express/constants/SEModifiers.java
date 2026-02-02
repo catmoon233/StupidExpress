@@ -38,7 +38,11 @@ public class SEModifiers {
         assignModifierComponents();
 
         /// LOVERS
-        Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 1);
+        if (Math.random() < 0.1) {
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 1);
+        } else {
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 0);
+        }
 
         /// REFUGEE
         if (Math.random() < 0.1) {

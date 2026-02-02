@@ -42,6 +42,7 @@
   "announcement.modifier.stupid_express.lovers": "Lovers",
   "announcement.win.stupid_express.lovers": "Lovers Win",
   "game.win.stupid_express.lovers": "The couple survived until the end",
+  "game.win.lovers": "The couple survived until the end",
   "tip.stupid_express.lovers.partner": "Your partner is %s",
   "hud.stupid_express.lovers.partner": "Partner",
   "hud.stupid_express.lovers.in_love": "In love with %s",
