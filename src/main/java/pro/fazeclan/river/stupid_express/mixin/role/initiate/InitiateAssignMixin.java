@@ -76,7 +76,6 @@ public class InitiateAssignMixin {
                     ServerPlayer initiate = initiates.get(0);
                     clearModItems(initiate);
                     gameWorldComponent.addRole(initiate, SERoles.AMNESIAC);
-                    gameWorldComponent.removeRole(initiate, SERoles.INITIATE);
                     TMM.REPLAY_MANAGER.recordPlayerRoleChange(initiate.getUUID(), SERoles.INITIATE, SERoles.AMNESIAC);
                 }
             }
