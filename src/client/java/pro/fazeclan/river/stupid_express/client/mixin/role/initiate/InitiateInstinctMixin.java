@@ -54,4 +54,23 @@ public class InitiateInstinctMixin {
         cir.cancel();
     }
 
+    @Inject(method = "getInstinctHighlight", at = @At("HEAD"), cancellable = true)
+    private static void fakeInitiateGreenGlow(Entity target, CallbackInfoReturnable<Integer> cir) {
+        var player = Minecraft.getInstance().player;
+        GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
+        if (!(target instanceof Player targettedPlayer)) {
+            return;
+        }
+        if (!gameWorldComponent.isRole(targettedPlayer, SERoles.INITIATE)) {
+            return;
+        }
+        if (TMMClient.isPlayerSpectatingOrCreative()) {
+            return;
+        }
+        if (!TMMClient.isInstinctEnabled()) {
+            return;
+        }
+        cir.setReturnValue(Color.GREEN.getRGB());
+    }
+
 }

@@ -13,6 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 
+import java.awt.Color;
+
 @Mixin(value = TMMClient.class, priority = 500)
 public class AmnesiacInstinctGlowMixin {
 
@@ -56,6 +58,25 @@ public class AmnesiacInstinctGlowMixin {
             return;
         }
         cir.setReturnValue(SERoles.AMNESIAC.color());
+    }
+
+    @Inject(method = "getInstinctHighlight", at = @At("HEAD"), cancellable = true)
+    private static void fakeAmnesiacGreenGlow(Entity target, CallbackInfoReturnable<Integer> cir) {
+        var player = Minecraft.getInstance().player;
+        GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
+        if (!(target instanceof Player targettedPlayer)) {
+            return;
+        }
+        if (!gameWorldComponent.isRole(targettedPlayer, SERoles.AMNESIAC)) {
+            return;
+        }
+        if (TMMClient.isPlayerSpectatingOrCreative()) {
+            return;
+        }
+        if (!TMMClient.isInstinctEnabled()) {
+            return;
+        }
+        cir.setReturnValue(Color.GREEN.getRGB());
     }
 
 }
