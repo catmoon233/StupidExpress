@@ -24,9 +24,7 @@ import java.util.stream.Collectors;
 @Mixin(ModdedMurderGameMode.class)
 public class InitiateAssignMixin {
 
-    private static long gameStartTime = -1;
-    private static boolean gameStarted = false;
-    private static final int TEN_SECONDS_TICKS = GameConstants.getInTicks(0, 10);
+    private static final int THIRTY_SECONDS_TICKS = GameConstants.getInTicks(0, 30);
 
     private static void clearModItems(ServerPlayer player) {
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
@@ -40,15 +38,6 @@ public class InitiateAssignMixin {
         }
     }
 
-
-    static {
-        ModdedRoleAssigned.EVENT.register((player, role) -> {
-            if (role.equals(SERoles.INITIATE)) {
-                gameStartTime = -1;
-                gameStarted = false;
-            }
-        });
-    }
 
     static {
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
@@ -78,22 +67,16 @@ public class InitiateAssignMixin {
                 return;
             }
 
-            // 如果只有1个初学者，检查游戏开始10秒后是否需要转换
+            // 如果只有1个初学者，每隔30秒检查一次
             if (initiateCount == 1) {
-                if (!gameStarted) {
-                    gameStartTime = gameTimeComponent.time;
-                    gameStarted = true;
-                }
+                long gameTime = gameTimeComponent.time;
 
-                long elapsedTicks = gameTimeComponent.time - gameStartTime;
-
-                if (elapsedTicks >= TEN_SECONDS_TICKS) {
+                // 检查是否是30秒的整倍数时刻
+                if (gameTime % THIRTY_SECONDS_TICKS == 0) {
                     ServerPlayer initiate = initiates.get(0);
                     clearModItems(initiate);
-                    // gameWorldComponent.removeRole(initiate, SERoles.INITIATE);
                     gameWorldComponent.addRole(initiate, SERoles.AMNESIAC);
                     TMM.REPLAY_MANAGER.recordPlayerRoleChange(initiate.getUUID(), SERoles.INITIATE, SERoles.AMNESIAC);
-                    gameStarted = false;
                 }
             }
         });
