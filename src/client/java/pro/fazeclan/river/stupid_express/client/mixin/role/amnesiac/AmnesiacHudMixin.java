@@ -4,7 +4,6 @@ import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.client.TMMClient;
 import dev.doctor4t.trainmurdermystery.client.gui.RoleNameRenderer;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
-import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -25,12 +24,14 @@ import pro.fazeclan.river.stupid_express.client.StupidExpressClient;
 public class AmnesiacHudMixin {
 
     @Inject(method = "renderHud", at = @At("TAIL"))
-    private static void replaceRoleHud(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+    private static void replaceRoleHud(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter,
+            CallbackInfo ci) {
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
         if (StupidExpressClient.targetBody == null) {
             return;
         }
-        if (gameWorldComponent.isRole(Minecraft.getInstance().player, SERoles.AMNESIAC) && !TMMClient.isPlayerSpectatingOrCreative()) {
+        if (gameWorldComponent.isRole(Minecraft.getInstance().player, SERoles.AMNESIAC)
+                && !TMMClient.isPlayerSpectatingOrCreative()) {
             context.pose().pushPose();
             context.pose().translate(context.guiWidth() / 2.0f, context.guiHeight() / 2.0f + 6.0f, 0.0f);
             context.pose().scale(0.6f, 0.6f, 1.0f);
@@ -43,9 +44,11 @@ public class AmnesiacHudMixin {
     }
 
     @Inject(method = "renderHud", at = @At(value = "INVOKE", target = "Ldev/doctor4t/trainmurdermystery/game/GameFunctions;isPlayerSpectatingOrCreative(Lnet/minecraft/world/entity/player/Player;)Z"))
-    private static void playerBodyRaycast(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
-        float range = GameFunctions.isPlayerSpectatingOrCreative(player) ? 8.0F : 2.0F;
-        HitResult line = ProjectileUtil.getHitResultOnViewVector(player, entity -> entity instanceof PlayerBodyEntity, range);
+    private static void playerBodyRaycast(Font renderer, LocalPlayer player, GuiGraphics context,
+            DeltaTracker tickCounter, CallbackInfo ci) {
+        float range = RoleNameRenderer.getPlayerRange(player);
+        HitResult line = ProjectileUtil.getHitResultOnViewVector(player, entity -> entity instanceof PlayerBodyEntity,
+                range);
         StupidExpressClient.targetBody = null;
         if (!(line instanceof EntityHitResult ehr)) {
             return;

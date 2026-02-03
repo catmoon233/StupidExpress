@@ -3,7 +3,6 @@ package pro.fazeclan.river.stupid_express.client.mixin.role.arsonist;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.client.TMMClient;
 import dev.doctor4t.trainmurdermystery.client.gui.RoleNameRenderer;
-import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -48,7 +47,7 @@ public class ArsonistHudMixin {
 
     @Inject(method = "renderHud", at = @At(value = "INVOKE", target = "Ldev/doctor4t/trainmurdermystery/game/GameFunctions;isPlayerSpectatingOrCreative(Lnet/minecraft/world/entity/player/Player;)Z"))
     private static void playerRaycast(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
-        float range = GameFunctions.isPlayerSpectatingOrCreative(player) ? 8.0F : 2.0F;
+        float range = RoleNameRenderer.getPlayerRange(player);
         HitResult line = ProjectileUtil.getHitResultOnViewVector(player, entity -> entity instanceof Player, range);
         StupidExpressClient.target = null;
         if (!(line instanceof EntityHitResult ehr)) {
