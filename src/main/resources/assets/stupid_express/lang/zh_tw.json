@@ -81,5 +81,7 @@
   "stupid_express.config.modifiersSection.loversSection.loversWinWithCivilians.desc": "如果此選項為開啟狀態，且兩位戀人的身分都為平民時，那麼戀人與平民會共同獲勝，否則他們必須被淘汰遊戲才會結束",
 
   "hud.stupid_express.necromancer.revived_player": "\u00a74死靈法師復活了一名殺手",
-  "hud.stupid_express.refugee.revived": "\u00a74亡命徒已復活"
+  "hud.stupid_express.refugee.revived": "\u00a74亡命徒已復活",
+  "hud.stupid_express.refugee.countdown": "還有 %s 秒後復活",
+  "gui.stupid_express.refugee.revival": "復活倒計時: %s 秒"
 }

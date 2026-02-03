@@ -81,5 +81,7 @@
   "stupid_express.config.modifiersSection.loversSection.loversWinWithCivilians.desc": "If enabled, and both lovers are civilians, the lovers and civilians win together, otherwise they must be eliminated for the game to end",
 
   "hud.stupid_express.necromancer.revived_player": "\u00a74The Necromancer has revived a killer",
-  "hud.stupid_express.refugee.revived": "\u00a74Refugee has been revived"
+  "hud.stupid_express.refugee.revived": "\u00a74Refugee has been revived",
+  "hud.stupid_express.refugee.countdown": "Revive in %s seconds",
+  "gui.stupid_express.refugee.revival": "Revival: %s seconds"
 }

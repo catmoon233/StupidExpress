@@ -67,6 +67,38 @@ public class RefugeeComponent implements ServerTickingComponent {
                 iterator.remove();
             }
         }
+        
+        // 每20 tick（1秒）发送一次倒计时提示
+        if (currentTime % 20 == 0) {
+            sendCountdownMessages();
+            sync();
+        }
+    }
+    
+    private void sendCountdownMessages() {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        
+        long currentTime = level.getGameTime();
+        for (RefugeeData data : pendingRevivals) {
+            ServerPlayer player = serverLevel.getServer().getPlayerList().getPlayer(data.uuid);
+            if (player == null) {
+                continue;
+            }
+            
+            long ticksRemaining = data.revivalTime - currentTime;
+            int secondsRemaining = (int) ((ticksRemaining + 19) / 20);
+            
+            // 只在特定时间点发送消息（60秒、30秒、10秒）
+            if (secondsRemaining == 60 || secondsRemaining == 30 || secondsRemaining == 10) {
+                player.sendSystemMessage(Component.translatable("hud.stupid_express.refugee.countdown", secondsRemaining), true);
+            }
+        }
+    }
+    
+    public void sync() {
+        KEY.sync(level);
     }
 
     private void revivePlayer(RefugeeData data) {
@@ -114,6 +146,15 @@ public class RefugeeComponent implements ServerTickingComponent {
         // 2 minutes = 120 seconds = 2400 ticks
         long revivalTime = level.getGameTime() + 2400;
         pendingRevivals.add(new RefugeeData(uuid, revivalTime, x, y, z));
+    }
+    
+    public long getRevivalTime(UUID uuid) {
+        for (RefugeeData data : pendingRevivals) {
+            if (data.uuid.equals(uuid)) {
+                return data.revivalTime;
+            }
+        }
+        return -1;
     }
 
     @Override
