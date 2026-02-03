@@ -118,7 +118,8 @@ public class SERoles {
             if (killerRoleCount > 1) {
                 Harpymodloader.setRoleMaximum(NECROMANCER.getIdentifier(), 1);
                 Harpymodloader.setRoleMaximum(AVARICIOUS.getIdentifier(), 1);
-                Harpymodloader.setRoleMaximum(INITIATE.getIdentifier(), playerList.size() >= 12 ? 2 : 0); 
+                Harpymodloader.setRoleMaximum(INITIATE.getIdentifier(), playerList.size() >= 12 ? 1 : 0); 
+                Harpymodloader.Occupations_Roles.put(SERoles.INITIATE, SERoles.INITIATE);
             } else {
                 Harpymodloader.setRoleMaximum(NECROMANCER.getIdentifier(), 0);
                 Harpymodloader.setRoleMaximum(AVARICIOUS.getIdentifier(), 0);
