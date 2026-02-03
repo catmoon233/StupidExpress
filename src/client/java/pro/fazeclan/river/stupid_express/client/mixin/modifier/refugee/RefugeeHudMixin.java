@@ -1,6 +1,5 @@
 package pro.fazeclan.river.stupid_express.client.mixin.modifier.refugee;
 
-import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

@@ -16,7 +16,8 @@
     "role.initiate.InitiateBuyMixin",
     "role.initiate.InitiateCoinsOnMoodMixin",
     "role.initiate.InitiateKillMixin",
-    "role.necromancer.NecromancerStatsMixin"
+    "role.necromancer.NecromancerStatsMixin",
+    "modifier.refugee.RefugeeDeathMixin"
   ],
   "injectors": {
     "defaultRequire": 1
