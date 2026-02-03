@@ -1,9 +1,15 @@
 package pro.fazeclan.river.stupid_express.constants;
 
+import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.agmas.harpymodloader.events.ModifierAssigned;
@@ -21,8 +27,7 @@ public class SEModifiers {
             null,
             null,
             false,
-            false
-    ));
+            false));
 
     public static Modifier REFUGEE = HMLModifiers.registerModifier(new Modifier(
             StupidExpress.id("refugee"),
@@ -30,8 +35,7 @@ public class SEModifiers {
             null,
             null,
             false,
-            false
-    ));
+            false));
 
     public static void init() {
 
@@ -68,13 +72,28 @@ public class SEModifiers {
             var gameWorldComponent = GameWorldComponent.KEY.get(level);
 
             // choose second lover
-            ServerPlayer loverTwo;
+            ServerPlayer loverTwo = null;
+            var arrs = new ArrayList<>(level.players());
+            Collections.shuffle(arrs);
+            for (var can_i_love : arrs) {
+                if (GameFunctions.isPlayerAliveAndSurvival(can_i_love)) {
+                    Role role = gameWorldComponent.getRole(can_i_love);
+                    if (role != null) {
+                        if (role.isInnocent()) {
+                            if (!role.getIdentifier().getPath().equals(TMMRoles.VIGILANTE.getIdentifier().getPath())) {
+                                if (!lover.equals(can_i_love)) {
+                                    loverTwo = can_i_love;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
 
-            do {
-                loverTwo = level.getRandomPlayer();
-            } while (loverTwo == null || gameWorldComponent.getRole(loverTwo) == null || !gameWorldComponent.isInnocent(loverTwo)
-                    || gameWorldComponent.isRole(loverTwo, TMMRoles.VIGILANTE) || lover.equals(loverTwo));
-
+            }
+            if (loverTwo == null) {
+                loverTwo = lover;
+            }
             // assign both lovers
             var loverComponentOne = LoversComponent.KEY.get(lover);
 
