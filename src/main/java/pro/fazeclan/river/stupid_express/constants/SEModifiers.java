@@ -77,17 +77,17 @@ public class SEModifiers {
             Collections.shuffle(arrs);
             for (var can_i_love : arrs) {
                 if (GameFunctions.isPlayerAliveAndSurvival(can_i_love)) {
-                    Role role = gameWorldComponent.getRole(can_i_love);
-                    if (role != null) {
-                        if (role.isInnocent()) {
-                            if (!role.getIdentifier().getPath().equals(TMMRoles.VIGILANTE.getIdentifier().getPath())) {
+                    // Role role = gameWorldComponent.getRole(can_i_love);
+                    // if (role != null) {
+                    //     if (role.isInnocent()) {
+                    //         if (!role.getIdentifier().getPath().equals(TMMRoles.VIGILANTE.getIdentifier().getPath())) {
                                 if (!lover.equals(can_i_love)) {
                                     loverTwo = can_i_love;
                                     break;
                                 }
-                            }
-                        }
-                    }
+                        //     }
+                        // }
+                    // }
                 }
 
             }
