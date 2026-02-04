@@ -7,7 +7,6 @@
     "accessor.PlayerPoisonComponentAccessor",
     "modifier.lovers.LoversDeathMixin",
     "modifier.lovers.LoversWinConditionMixin",
-    "modifier.feather.DoNotCollideWithFeatherMixin",
     "modifier.taskmaster.TaskmasterGiveCoinsMixin",
     "modifier.allergist.AllergistEatMixin",
     "modifier.cursed.CursedDeathMixin",

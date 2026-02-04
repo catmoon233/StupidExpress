@@ -1,7 +1,10 @@
 package pro.fazeclan.river.stupid_express.constants;
 
+import dev.doctor4t.trainmurdermystery.TMM;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
@@ -123,6 +126,14 @@ public class SEModifiers {
         pro.fazeclan.river.stupid_express.modifier.secretive.SecretiveHandler.init();
         pro.fazeclan.river.stupid_express.modifier.knight.KnightHandler.init();
         pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler.init();
+
+        TMM.canCollide.add(p -> {
+            var modifiers = WorldModifierComponent.KEY.get(p.level());
+            if(modifiers.isModifier(p.getUUID(), FEATHER)){
+                return true;
+            }
+            return false;
+        });
     }
 
     public static void assignModifierComponents() {
