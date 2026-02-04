@@ -41,7 +41,6 @@ public class StupidExpress implements ModInitializer {
     public void onInitialize() {
 
         SERoles.init();
-        SEModifiers.init();
 
         // mod stuff
         SEItems.init();
