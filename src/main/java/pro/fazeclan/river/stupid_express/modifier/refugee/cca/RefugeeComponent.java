@@ -1,7 +1,6 @@
 package pro.fazeclan.river.stupid_express.modifier.refugee.cca;
 
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
-import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -21,6 +20,7 @@ import net.minecraft.world.phys.AABB;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
+import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-public class RefugeeComponent implements ServerTickingComponent {
+public class RefugeeComponent implements AutoSyncedComponent, ServerTickingComponent {
 
     public static final ComponentKey<RefugeeComponent> KEY = ComponentRegistry.getOrCreate(
             StupidExpress.id("refugee"),
@@ -82,7 +82,7 @@ public class RefugeeComponent implements ServerTickingComponent {
 
             long ticksRemaining = data.revivalTime - currentTime;
             int secondsRemaining = (int) ((ticksRemaining + 19) / 20);
-
+            
             // 只在特定时间点发送消息（60秒、30秒、10秒）
             if (secondsRemaining == 60 || secondsRemaining == 30 || secondsRemaining == 10) {
                 player.sendSystemMessage(
@@ -92,7 +92,7 @@ public class RefugeeComponent implements ServerTickingComponent {
     }
 
     public void sync() {
-        KEY.sync(level);
+        KEY.sync(this.level);
     }
 
     private void revivePlayer(RefugeeData data) {

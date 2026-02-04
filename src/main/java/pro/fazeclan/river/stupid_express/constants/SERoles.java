@@ -97,9 +97,9 @@ public class SERoles {
         ArsonistItemGivingHandler.init();
 
         ResetPlayerEvent.EVENT.register(player -> {
-            var component = DousedPlayerComponent.KEY.get(player);
-            component.reset();
-            component.sync();
+            var dousedComponent = DousedPlayerComponent.KEY.get(player);
+            dousedComponent.reset();
+            dousedComponent.sync();
         });
 
         /// NECROMANCER
