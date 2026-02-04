@@ -32,7 +32,8 @@
       "stupid_express:secretive",
       "stupid_express:knight",
       "stupid_express:cursed",
-      "stupid_express:allergist"
+      "stupid_express:allergist",
+      "stupid_express:split_personality"
     ]
   },
   "mixins": [

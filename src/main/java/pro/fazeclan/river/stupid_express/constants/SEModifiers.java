@@ -107,6 +107,14 @@ public class SEModifiers {
             false,
             false));
 
+    public static Modifier SPLIT_PERSONALITY = HMLModifiers.registerModifier(new Modifier(
+            StupidExpress.id("split_personality"),
+            new Color(138, 43, 226).getRGB(),
+            null,
+            null,
+            false,
+            false));
+
     public static void init() {
         initModifiersCount();
         assignModifierComponents();
@@ -114,6 +122,7 @@ public class SEModifiers {
         pro.fazeclan.river.stupid_express.modifier.cursed.CursedHandler.init();
         pro.fazeclan.river.stupid_express.modifier.secretive.SecretiveHandler.init();
         pro.fazeclan.river.stupid_express.modifier.knight.KnightHandler.init();
+        pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler.init();
     }
 
     public static void assignModifierComponents() {
@@ -203,6 +212,10 @@ public class SEModifiers {
             var knightComponent = pro.fazeclan.river.stupid_express.modifier.knight.cca.KnightComponent.KEY.get(player);
             knightComponent.reset();
             knightComponent.sync();
+            // Reset split personality component
+            var splitPersonalityComponent = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY.get(player);
+            splitPersonalityComponent.reset();
+            splitPersonalityComponent.sync();
             // Reset refugee component
             var refugeeC = RefugeeComponent.KEY.get(player.level());
             if (refugeeC != null) {
@@ -284,6 +297,14 @@ public class SEModifiers {
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("knight"), 1);
         } else {
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("knight"), 0);
+        }
+
+        /// SPLIT_PERSONALITY
+        if (Math.random() < 0.1) {
+            StupidExpress.LOGGER.info("Modifier [Split Personality] enabled in this round!");
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("split_personality"), 1);
+        } else {
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("split_personality"), 0);
         }
     }
 

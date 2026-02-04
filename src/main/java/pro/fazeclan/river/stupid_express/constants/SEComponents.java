@@ -14,6 +14,7 @@ import pro.fazeclan.river.stupid_express.modifier.knight.cca.KnightComponent;
 import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
 import pro.fazeclan.river.stupid_express.modifier.secretive.cca.SecretiveComponent;
+import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
 
@@ -44,6 +45,9 @@ public class SEComponents implements EntityComponentInitializer, WorldComponentI
         registry.beginRegistration(Player.class, KnightComponent.KEY)
                 .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
                 .end(KnightComponent::new);
+        registry.beginRegistration(Player.class, SplitPersonalityComponent.KEY)
+                .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
+                .end(SplitPersonalityComponent::new);
     }
 
     @Override
