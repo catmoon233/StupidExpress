@@ -49,8 +49,7 @@ public class StupidExpress implements ModInitializer {
             SEModifiers.init();
 
         GameInitializeEvent.EVENT.register((ServerLevel, gameWorldComponent, serverPlayers) -> {
-            SEModifiers.setCount();
-
+            SEModifiers.initModifiersCount();
         });
     }
 

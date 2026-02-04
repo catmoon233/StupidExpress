@@ -102,7 +102,7 @@ public class SEModifiers {
 
     }
 
-    public static void setCount() {
+    public static void initModifiersCount() {
         /// LOVERS
         if (Math.random() < 0.1) {
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 1);
