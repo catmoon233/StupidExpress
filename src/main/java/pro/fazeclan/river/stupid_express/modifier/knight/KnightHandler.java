@@ -34,8 +34,8 @@ public class KnightHandler {
 
             Random random = new Random();
             for (ServerPlayer knight : knights) {
-                // 30% chance per second
-                if (random.nextDouble() < 0.3) {
+                // 10% chance per second
+                if (random.nextDouble() < 0.1) {
                     ServerPlayer target = targets.get(random.nextInt(targets.size()));
                     if (target == knight) continue;
 

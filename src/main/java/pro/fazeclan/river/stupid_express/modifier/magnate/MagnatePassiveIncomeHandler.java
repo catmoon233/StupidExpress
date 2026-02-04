@@ -43,29 +43,9 @@ public class MagnatePassiveIncomeHandler {
                 continue;
             }
 
-            // Check if role should receive passive income
-            if (shouldReceivePassiveIncome(role)) {
-                PlayerShopComponent shop = PlayerShopComponent.KEY.get(player);
-                shop.addToBalance(PASSIVE_INCOME_AMOUNT);
-                shop.sync();
-            }
+            PlayerShopComponent shop = PlayerShopComponent.KEY.get(player);
+            shop.addToBalance(PASSIVE_INCOME_AMOUNT);
+            shop.sync();
         }
-    }
-
-    private static boolean shouldReceivePassiveIncome(Role role) {
-        // Killers always receive passive income
-        if (role.canUseKiller()) {
-            return true;
-        }
-
-        // Custom neutral roles that receive passive income
-        if (role.equals(SERoles.AMNESIAC) ||
-            role.equals(SERoles.AVARICIOUS) ||
-            role.equals(SERoles.NECROMANCER) ||
-            role.equals(SERoles.INITIATE)) {
-            return true;
-        }
-
-        return false;
     }
 }

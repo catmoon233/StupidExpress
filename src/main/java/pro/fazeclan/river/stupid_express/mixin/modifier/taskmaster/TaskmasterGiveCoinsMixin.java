@@ -33,13 +33,7 @@ public abstract class TaskmasterGiveCoinsMixin {
             if (role != null) {
                 WorldModifierComponent modifier = WorldModifierComponent.KEY.get(player.level());
                 if (modifier.isModifier(player, SEModifiers.TASKMASTER)) {
-                    // Killers get 50, civilians get 25
-                    if (!gameWorld.isInnocent(player) &&
-                        !isNeutralRole(role)) {
-                        playerShop.addToBalance(50);
-                    } else {
-                        playerShop.addToBalance(25);
-                    }
+                    playerShop.addToBalance(25);
                 }
             }
         }

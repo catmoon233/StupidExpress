@@ -13,6 +13,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
+import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.modifier.allergist.cca.AllergistComponent;
 
@@ -41,19 +43,22 @@ public abstract class AllergistEatMixin extends LivingEntity {
 
         if (!allergist.isAllergist()) return;
 
-        // Random effect: 33% nothing, 33% poison immune, 33% speed 2 for 2s, 1% death
+        // Random effect: 33% nothing, 33% slowness 2 for 5s, 33% speed 2 for 2s, 1% death
         double random = ThreadLocalRandom.current().nextDouble() * 100;
 
         if (random < 33) {
             // Nothing happens
             return;
         } else if (random < 66) {
-            // Poison immune - clear any existing poison
-            PlayerPoisonComponent.KEY.get(player).setPoisonTicks(-1, player.getUUID());
+            // Slowness 2 for 5 seconds (100 ticks)
+            player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                    net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN,
+                    100,
+                    1, true, false));
             
             player.displayClientMessage(
                     Component.translatable(
-                            "hud.stupid_express.allergist.poison_immune"
+                            "hud.stupid_express.allergist.slowness"
                     ).withColor(SEModifiers.ALLERGIST.color()),
                     true
             );
@@ -72,7 +77,7 @@ public abstract class AllergistEatMixin extends LivingEntity {
             );
         } else {
             // Death
-            player.hurt(player.damageSources().magic(), Float.MAX_VALUE);
+            GameFunctions.killPlayer(player, true, null, StupidExpress.id("allergist"));
             
             player.displayClientMessage(
                     Component.translatable(
