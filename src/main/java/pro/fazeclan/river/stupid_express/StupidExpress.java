@@ -59,7 +59,7 @@ public class StupidExpress implements ModInitializer {
             SEModifiers.initModifiersCount();
         });
         OnPlayerDeath.EVENT.register((victim, deathReason) -> {
-            var gameWorldComponent = GameWorldComponent.KEY.get(victim);
+            var gameWorldComponent = GameWorldComponent.KEY.get(victim.level());
             if (gameWorldComponent != null) {
                 Role role = gameWorldComponent.getRole(victim);
                 if (role != null) {
