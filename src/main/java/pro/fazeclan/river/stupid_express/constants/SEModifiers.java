@@ -36,7 +36,7 @@ public class SEModifiers {
             false));
 
     public static void init() {
-        setCount();
+        initModifiersCount();
         assignModifierComponents();
     }
 
