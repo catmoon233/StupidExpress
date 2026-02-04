@@ -6,6 +6,7 @@ import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.ResourceLocation;
 import org.agmas.harpymodloader.config.HarpyModLoaderConfig;
+import org.agmas.harpymodloader.events.GameInitializeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
@@ -22,6 +23,7 @@ public class StupidExpress implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static final StupidExpressConfig CONFIG = ConfigApiJava.registerAndLoadConfig(StupidExpressConfig::new);
+
     public static List<Role> getEnableRoles() {
         ArrayList<Role> clone = new ArrayList<>(TMMRoles.ROLES.values());
         clone.removeIf(
@@ -44,7 +46,12 @@ public class StupidExpress implements ModInitializer {
 
         // mod stuff
         SEItems.init();
+            SEModifiers.init();
 
+        GameInitializeEvent.EVENT.register((ServerLevel, gameWorldComponent, serverPlayers) -> {
+            SEModifiers.setCount();
+
+        });
     }
 
     public static ResourceLocation id(String key) {

@@ -1,7 +1,5 @@
 package pro.fazeclan.river.stupid_express.constants;
 
-import dev.doctor4t.trainmurdermystery.api.Role;
-import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.server.level.ServerLevel;
@@ -38,23 +36,8 @@ public class SEModifiers {
             false));
 
     public static void init() {
-
+        setCount();
         assignModifierComponents();
-
-        /// LOVERS
-        if (Math.random() < 0.1) {
-            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 1);
-        } else {
-            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 0);
-        }
-
-        /// REFUGEE
-        if (Math.random() < 0.1) {
-            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("refugee"), 1);
-        } else {
-            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("refugee"), 0);
-        }
-
     }
 
     public static void assignModifierComponents() {
@@ -79,14 +62,16 @@ public class SEModifiers {
                 if (GameFunctions.isPlayerAliveAndSurvival(can_i_love)) {
                     // Role role = gameWorldComponent.getRole(can_i_love);
                     // if (role != null) {
-                    //     if (role.isInnocent()) {
-                    //         if (!role.getIdentifier().getPath().equals(TMMRoles.VIGILANTE.getIdentifier().getPath())) {
-                                if (!lover.equals(can_i_love)) {
-                                    loverTwo = can_i_love;
-                                    break;
-                                }
-                        //     }
-                        // }
+                    // if (role.isInnocent()) {
+                    // if
+                    // (!role.getIdentifier().getPath().equals(TMMRoles.VIGILANTE.getIdentifier().getPath()))
+                    // {
+                    if (!lover.equals(can_i_love)) {
+                        loverTwo = can_i_love;
+                        break;
+                    }
+                    // }
+                    // }
                     // }
                 }
 
@@ -115,6 +100,22 @@ public class SEModifiers {
             component.sync();
         });
 
+    }
+
+    public static void setCount() {
+        /// LOVERS
+        if (Math.random() < 0.1) {
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 1);
+        } else {
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 0);
+        }
+
+        /// REFUGEE
+        if (Math.random() < 0.1) {
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("refugee"), 1);
+        } else {
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("refugee"), 0);
+        }
     }
 
 }
