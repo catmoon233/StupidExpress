@@ -1,7 +1,10 @@
 package pro.fazeclan.river.stupid_express.modifier.refugee.cca;
 
+import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -14,6 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -27,6 +31,7 @@ import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.utils.RoleUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -37,8 +42,11 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             StupidExpress.id("refugee"),
             RefugeeComponent.class);
 
+    public HashMap<UUID, PlayerStatsBeforeRefugee> players_stats = new HashMap<>();
+
     private final Level level;
     private final List<RefugeeData> pendingRevivals = new ArrayList<>();
+    public boolean isAnyRevivals = false;
 
     public RefugeeComponent(Level level) {
         this.level = level;
@@ -82,7 +90,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
 
             long ticksRemaining = data.revivalTime - currentTime;
             int secondsRemaining = (int) ((ticksRemaining + 19) / 20);
-            
+
             // 只在特定时间点发送消息（60秒、30秒、10秒）
             if (secondsRemaining == 60 || secondsRemaining == 30 || secondsRemaining == 10) {
                 player.sendSystemMessage(
@@ -121,7 +129,8 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         }
 
         // Change role to LOOSE_END and remove REFUGEE modifier
-        RoleUtils.changeRole(player, TMMRoles.LOOSE_END);
+        RoleUtils.changeRole(player, TMMRoles.LOOSE_END, false);
+        TMM.REPLAY_MANAGER.recordPlayerRevival(player.getUUID(), TMMRoles.LOOSE_END);
 
         WorldModifierComponent worldModifierComponent = WorldModifierComponent.KEY.get(serverLevel);
         worldModifierComponent.removeModifier(player.getUUID(), SEModifiers.REFUGEE);
@@ -133,6 +142,61 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             p.playNotifySound(SoundEvents.WITHER_DEATH, SoundSource.PLAYERS, 1.0f, 1.0f);
             p.sendSystemMessage(Component.translatable("hud.stupid_express.refugee.revived", player.getDisplayName()),
                     true);
+        });
+        if (!isAnyRevivals) {
+            SavePlayersStats();
+        }
+        isAnyRevivals = true;
+    }
+
+    public void SavePlayersStats() {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        List<ServerPlayer> players = serverLevel.getServer().getPlayerList().getPlayers();
+        players_stats.clear();
+        for (var player : players) {
+            if (GameFunctions.isPlayerAliveAndSurvival(player))
+                players_stats.put(player.getUUID(), PlayerStatsBeforeRefugee.SaveFromPlayer(player));
+        }
+    }
+
+    public void LoadPlayersStats() {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        List<ServerPlayer> players = serverLevel.getServer().getPlayerList().getPlayers();
+        for (var player : players) {
+            var data = players_stats.get(player.getUUID());
+            if (data != null) {
+                PlayerStatsBeforeRefugee.LoadToPlayer(player, data);
+            }
+        }
+
+    }
+
+    public void onLooseEndDeath(Player who) {
+        if (!(who instanceof ServerPlayer sp)) {
+            return;
+        }
+        var gameWorldComponent = GameWorldComponent.KEY.get(sp.level());
+        var a = sp.getServer().getPlayerList().getPlayers().stream().anyMatch((p) -> {
+            var r = gameWorldComponent.getRole(p);
+            if (r != null) {
+                if (r.identifier().getPath().equals(TMMRoles.LOOSE_END.identifier().getPath())) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        if (a) {
+            return;
+        }
+        isAnyRevivals = false;
+        LoadPlayersStats();
+        players_stats.clear(); // 清空玩家位置信息，避免浪费资源
+        sp.getServer().getPlayerList().getPlayers().forEach((p) -> {
+            p.displayClientMessage(Component.translatable("gui.stupid_express.refugee.all_death"), true);
         });
     }
 
@@ -196,5 +260,12 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             this.y = y;
             this.z = z;
         }
+    }
+
+    public void reset() {
+        this.players_stats.clear();
+        this.isAnyRevivals = false;
+        this.pendingRevivals.clear();
+        this.sync();
     }
 }

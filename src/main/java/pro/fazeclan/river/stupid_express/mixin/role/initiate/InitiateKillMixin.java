@@ -59,9 +59,8 @@ public abstract class InitiateKillMixin {
             Collections.shuffle(shuffledKillerRoles);
 
             var role = shuffledKillerRoles.getFirst();
-            RoleUtils.changeRole(killer, role);
-
-            TMM.REPLAY_MANAGER.recordPlayerRoleChange(killer.getUUID(), SERoles.INITIATE, role);
+            RoleUtils.changeRole(killer, role, false);
+            TMM.REPLAY_MANAGER.recordPlayerRevival(killer.getUUID(), role);
 
             // 清除物品栏中的所有刀
             clearAllKnives(killer);

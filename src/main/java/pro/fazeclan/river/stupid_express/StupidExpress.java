@@ -2,6 +2,8 @@ package pro.fazeclan.river.stupid_express;
 
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.event.OnPlayerDeath;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.ResourceLocation;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +49,28 @@ public class StupidExpress implements ModInitializer {
 
         // mod stuff
         SEItems.init();
-            SEModifiers.init();
+        SEModifiers.init();
 
         GameInitializeEvent.EVENT.register((ServerLevel, gameWorldComponent, serverPlayers) -> {
+            var refugeeC = RefugeeComponent.KEY.get(ServerLevel);
+            if (refugeeC != null) {
+                refugeeC.reset();
+            }
             SEModifiers.initModifiersCount();
         });
+        OnPlayerDeath.EVENT.register((victim, deathReason) -> {
+            var gameWorldComponent = GameWorldComponent.KEY.get(victim);
+            if (gameWorldComponent != null) {
+                Role role = gameWorldComponent.getRole(victim);
+                if (role != null) {
+                    if (role.identifier().getPath().equals(TMMRoles.LOOSE_END.identifier().getPath())) {
+                        var refugeeComponent = RefugeeComponent.KEY.get(victim.level());
+                        refugeeComponent.onLooseEndDeath(victim);
+                    }
+                }
+            }
+        });
+
     }
 
     public static ResourceLocation id(String key) {

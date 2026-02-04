@@ -14,8 +14,11 @@ import org.agmas.harpymodloader.events.ModifierAssigned;
 import org.agmas.harpymodloader.events.ResetPlayerEvent;
 import org.agmas.harpymodloader.modifiers.HMLModifiers;
 import org.agmas.harpymodloader.modifiers.Modifier;
+import org.slf4j.LoggerFactory;
+
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
+import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
 
 public class SEModifiers {
 
@@ -98,6 +101,10 @@ public class SEModifiers {
             var component = LoversComponent.KEY.get(player);
             component.reset();
             component.sync();
+            var refugeeC = RefugeeComponent.KEY.get(player.level());
+            if (refugeeC != null) {
+                refugeeC.reset();
+            }
         });
 
     }
@@ -105,6 +112,7 @@ public class SEModifiers {
     public static void initModifiersCount() {
         /// LOVERS
         if (Math.random() < 0.1) {
+            StupidExpress.LOGGER.info("Modifier [Lovers] enabled in this round!");
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 1);
         } else {
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 0);
@@ -112,6 +120,7 @@ public class SEModifiers {
 
         /// REFUGEE
         if (Math.random() < 0.1) {
+            StupidExpress.LOGGER.info("Modifier [Refugee] enabled in this round!");
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("refugee"), 1);
         } else {
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("refugee"), 0);

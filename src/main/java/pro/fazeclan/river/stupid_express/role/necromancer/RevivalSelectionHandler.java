@@ -1,10 +1,10 @@
 package pro.fazeclan.river.stupid_express.role.necromancer;
 
 import dev.doctor4t.trainmurdermystery.TMM;
+import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
-import dev.doctor4t.trainmurdermystery.client.gui.RoleAnnouncementTexts;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -17,7 +17,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.Harpymodloader;
-import org.agmas.harpymodloader.config.HarpyModLoaderConfig;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
@@ -66,14 +65,8 @@ public class RevivalSelectionHandler {
             nc.sync();
 
             // get random killer role
-            var roles = new ArrayList<>(TMMRoles.ROLES.values());
-            roles.remove(SERoles.NECROMANCER);
-            roles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role)
-                    || !role.canUseKiller()
-                    || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
-            if (roles.isEmpty()) {
-                roles.add(TMMRoles.KILLER);
-            }
+            var roles = new ArrayList<Role>();
+            roles.add(TMMRoles.KILLER);
             Collections.shuffle(roles);
 
             // revive player and give them the role

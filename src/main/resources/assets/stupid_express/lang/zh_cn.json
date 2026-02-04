@@ -83,5 +83,6 @@
   "hud.stupid_express.necromancer.revived_player": "\u00a74死灵法师复活了一名杀手",
   "hud.stupid_express.refugee.revived": "\u00a74亡命徒已复活",
   "hud.stupid_express.refugee.countdown": "还有 %s 秒后复活",
-  "gui.stupid_express.refugee.revival": "复活倒计时: %s 秒"
+  "gui.stupid_express.refugee.revival": "复活倒计时: %s 秒",
+  "gui.stupid_express.refugee.all_death": "所有亡命徒已死亡！时间回溯！"
 }
