@@ -1,0 +1,71 @@
+package pro.fazeclan.river.stupid_express.modifier.magnate;
+
+import dev.doctor4t.trainmurdermystery.api.Role;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import org.agmas.harpymodloader.component.WorldModifierComponent;
+
+import pro.fazeclan.river.stupid_express.constants.SEModifiers;
+import pro.fazeclan.river.stupid_express.constants.SERoles;
+
+public class MagnatePassiveIncomeHandler {
+
+    private static final int PASSIVE_INCOME_INTERVAL_TICKS = 1200; // 60 seconds = 1200 ticks
+    private static final int PASSIVE_INCOME_AMOUNT = 25; // 25 coins
+
+    public static void init() {
+        ServerTickEvents.END_SERVER_TICK.register(MagnatePassiveIncomeHandler::onServerTick);
+    }
+
+    private static void onServerTick(MinecraftServer server) {
+        long gameTime = server.overworld().getGameTime();
+
+        // Only process every 60 seconds
+        if (gameTime % PASSIVE_INCOME_INTERVAL_TICKS != 0) {
+            return;
+        }
+
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+            GameWorldComponent gameWorld = GameWorldComponent.KEY.get(player.serverLevel());
+            WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.serverLevel());
+
+            // Check if player has magnate modifier
+            if (!modifierComponent.isModifier(player, SEModifiers.MAGNATE)) {
+                continue;
+            }
+
+            // Get player's role
+            Role role = gameWorld.getRole(player);
+            if (role == null) {
+                continue;
+            }
+
+            // Check if role should receive passive income
+            if (shouldReceivePassiveIncome(role)) {
+                PlayerShopComponent shop = PlayerShopComponent.KEY.get(player);
+                shop.addToBalance(PASSIVE_INCOME_AMOUNT);
+                shop.sync();
+            }
+        }
+    }
+
+    private static boolean shouldReceivePassiveIncome(Role role) {
+        // Killers always receive passive income
+        if (role.canUseKiller()) {
+            return true;
+        }
+
+        // Custom neutral roles that receive passive income
+        if (role.equals(SERoles.AMNESIAC) ||
+            role.equals(SERoles.AVARICIOUS) ||
+            role.equals(SERoles.NECROMANCER) ||
+            role.equals(SERoles.INITIATE)) {
+            return true;
+        }
+
+        return false;
+    }
+}
