@@ -4,6 +4,7 @@
   "package": "pro.fazeclan.river.stupid_express.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "accessor.PlayerPoisonComponentAccessor",
     "modifier.lovers.LoversDeathMixin",
     "modifier.lovers.LoversWinConditionMixin",
     "modifier.feather.DoNotCollideWithFeatherMixin",

@@ -93,9 +93,9 @@
   "hud.stupid_express.refugee.countdown": "还有 %s 秒后复活",
   "gui.stupid_express.refugee.revival": "复活倒计时: %s 秒",
   "gui.stupid_express.refugee.all_death": "所有亡命徒已死亡！时间回溯！",
-  "hud.stupid_express.allergist.poison_immune": "你对这种食物产生了免疫反应，清除了体内的毒素！",
+  "hud.stupid_express.allergist.cure_poison": "你对这种食物产生了免疫反应，清除了体内的毒素！",
+  "hud.stupid_express.allergist.no_poison": "你感觉身体很好，没有中毒迹象",
   "hud.stupid_express.allergist.speed_boost": "过敏反应让你肾上腺素飙升！",
   "hud.stupid_express.allergist.death": "严重的过敏性休克夺走了你的生命...",
-  "hud.stupid_express.allergist.slowness": "过敏反应让你感到虚弱...",
   "death_reason.stupid_express.allergist": "过敏性休克"
 }
