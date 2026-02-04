@@ -84,8 +84,6 @@ public class RevivalSelectionHandler {
 
             RoleUtils.changeRole(revived, selectedRole);
 
-            TMM.REPLAY_MANAGER.recordPlayerRoleChange(revived.getUUID(), SERoles.AMNESIAC, selectedRole);
-
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(revived);
             playerShopComponent.setBalance(200);
 

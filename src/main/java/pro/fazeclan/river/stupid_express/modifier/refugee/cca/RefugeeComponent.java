@@ -127,10 +127,10 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
                 break;
             }
         }
+        player.getInventory().clearContent();
 
         // Change role to LOOSE_END and remove REFUGEE modifier
         RoleUtils.changeRole(player, TMMRoles.LOOSE_END, false);
-        player.getInventory().clearContent();
         TMM.REPLAY_MANAGER.recordPlayerRevival(player.getUUID(), TMMRoles.LOOSE_END);
 
         WorldModifierComponent worldModifierComponent = WorldModifierComponent.KEY.get(serverLevel);
@@ -167,13 +167,33 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             return;
         }
         List<ServerPlayer> players = serverLevel.getServer().getPlayerList().getPlayers();
-        for (var player : players) {
-            var data = players_stats.get(player.getUUID());
-            if (data != null) {
-                PlayerStatsBeforeRefugee.LoadToPlayer(player, data);
+        var gameWorldComponent = GameWorldComponent.KEY.get(level);
+        var entities = serverLevel.getAllEntities();
+        var bodies = new HashMap<UUID, PlayerBodyEntity>();
+        for (var entity : entities) {
+            if (entity instanceof PlayerBodyEntity body) {
+                bodies.put(body.getPlayerUuid(), body);
             }
         }
+        for (var player : players) {
+            var r = gameWorldComponent.getRole(player);
+            if (r != null) {
+                if (r.identifier().getPath().equals(TMMRoles.LOOSE_END.identifier().getPath())) {
+                    continue;
+                }
+            }
+            var data = players_stats.get(player.getUUID());
 
+            if (data != null) {
+                PlayerStatsBeforeRefugee.LoadToPlayer(player, data, r);
+                // 删除玩家尸体
+                // List<PlayerBodyEntity> bodies
+                var body = bodies.get(player.getUUID());
+                if (body != null)
+                    body.remove(Entity.RemovalReason.DISCARDED);
+            }
+        }
+        bodies.clear();
     }
 
     public void onLooseEndDeath(Player who) {
@@ -182,6 +202,9 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         }
         var gameWorldComponent = GameWorldComponent.KEY.get(sp.level());
         var a = sp.getServer().getPlayerList().getPlayers().stream().anyMatch((p) -> {
+            if (GameFunctions.isPlayerAliveAndSurvival(p) || p.getUUID().equals(who.getUUID())) {
+                return false;
+            }
             var r = gameWorldComponent.getRole(p);
             if (r != null) {
                 if (r.identifier().getPath().equals(TMMRoles.LOOSE_END.identifier().getPath())) {
@@ -193,6 +216,8 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         if (a) {
             return;
         }
+        StupidExpress.LOGGER.info("Try to restore player's stat");
+
         isAnyRevivals = false;
         LoadPlayersStats();
         players_stats.clear(); // 清空玩家位置信息，避免浪费资源
