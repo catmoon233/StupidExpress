@@ -5,7 +5,6 @@ import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.cca.PlayerMoodComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
-import net.minecraft.data.models.blockstates.VariantProperties.Rotation;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
@@ -20,7 +19,9 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
             return;
         if (!playerStats.isAlive())
             return;
+        player.getInventory().clearContent();
         player.getInventory().load(playerStats.inventory());
+
         player.teleportTo(playerStats.pos().x, playerStats.pos().y, playerStats.pos().z);
         player.setXRot(playerStats.rotation().x);
         player.setYRot(playerStats.rotation().y);
@@ -41,10 +42,11 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
         var inventory = player.getInventory();
         ListTag listTag = new ListTag();
         inventory.save(listTag);
+
         var shopComponent = PlayerShopComponent.KEY.get(player);
         var moodComponent = PlayerMoodComponent.KEY.get(player);
         var playerStats = new PlayerStatsBeforeRefugee(player.position(),
-                shopComponent.balance, listTag, player.getRotationVector(),
+                shopComponent.balance, listTag.copy(), player.getRotationVector(),
                 GameFunctions.isPlayerAliveAndSurvival(player), moodComponent.getMood());
         return playerStats;
     }
