@@ -48,6 +48,7 @@
   "announcement.modifier.stupid_express.cursed": "詛咒",
   "announcement.modifier.stupid_express.secretive": "隱秘",
   "announcement.modifier.stupid_express.knight": "俠客",
+  "announcement.modifier.stupid_express.split_personality": "雙重人格",
   "announcement.win.stupid_express.lovers": "戀人勝利",
   "game.win.stupid_express.lovers": "這對伴侶存活到了最後",
   "game.win.lovers": "這對伴侶存活到了最後",
@@ -93,7 +94,9 @@
   "hud.stupid_express.refugee.countdown": "還有 %s 秒後復活",
   "gui.stupid_express.refugee.revival": "復活倒計時: %s 秒",
   "gui.stupid_express.refugee.all_death": "所有亡命徒已死亡！時間回溯！",
-  "hud.stupid_express.allergist.slowness": "過敏反應讓你感到虛弱！",
+  "hud.stupid_express.allergist.cure_poison": "你對這種食物產生了免疫反應，清除了體內的毒素！",
+  "hud.stupid_express.allergist.no_poison": "你感覺身體很好，沒有中毒跡象",
   "hud.stupid_express.allergist.speed_boost": "過敏反應讓你腎上腺素飆升！",
-  "hud.stupid_express.allergist.death": "嚴重的過敏性休克奪走了你的生命..."
+  "hud.stupid_express.allergist.death": "嚴重的過敏性休克奪走了你的生命...",
+  "death_reason.stupid_express.allergist": "過敏性休克"
 }

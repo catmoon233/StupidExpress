@@ -17,6 +17,7 @@ import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.modifier.allergist.cca.AllergistComponent;
+import pro.fazeclan.river.stupid_express.mixin.accessor.PlayerPoisonComponentAccessor;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -50,18 +51,24 @@ public abstract class AllergistEatMixin extends LivingEntity {
             // Nothing happens
             return;
         } else if (random < 66) {
-            // Slowness 2 for 5 seconds (100 ticks)
-            player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
-                    net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN,
-                    100,
-                    1, true, false));
-            
-            player.displayClientMessage(
-                    Component.translatable(
-                            "hud.stupid_express.allergist.slowness"
-                    ).withColor(SEModifiers.ALLERGIST.color()),
-                    true
-            );
+            // Clear poison once
+            PlayerPoisonComponent poisonComponent = PlayerPoisonComponent.KEY.get(player);
+            if (((PlayerPoisonComponentAccessor) poisonComponent).getPoisonTicks() > 0) {
+                poisonComponent.setPoisonTicks(0, null);
+                player.displayClientMessage(
+                        Component.translatable(
+                                "hud.stupid_express.allergist.cure_poison"
+                        ).withColor(SEModifiers.ALLERGIST.color()),
+                        true
+                );
+            } else {
+                player.displayClientMessage(
+                        Component.translatable(
+                                "hud.stupid_express.allergist.no_poison"
+                        ).withColor(SEModifiers.ALLERGIST.color()),
+                        true
+                );
+            }
         } else if (random < 99) {
             // Speed 2 for 2 seconds (40 ticks)
             player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
