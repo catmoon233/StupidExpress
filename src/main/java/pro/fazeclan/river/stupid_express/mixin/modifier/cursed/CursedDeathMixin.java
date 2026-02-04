@@ -8,6 +8,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.agmas.harpymodloader.component.WorldModifierComponent;
+import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.modifier.cursed.cca.CursedComponent;
 
 @Mixin(ServerPlayer.class)
@@ -22,10 +24,13 @@ public class CursedDeathMixin {
             if (damageSource.getEntity() instanceof Player killer) {
                 // Transfer curse
                 cursedComponent.reset();
-                
+                WorldModifierComponent worldModifierComponent = WorldModifierComponent.KEY.get(player.level());
+                worldModifierComponent.removeModifier(player.getUUID(), SEModifiers.CURSED);
+
                 CursedComponent killerCursedComponent = CursedComponent.KEY.get(killer);
                 killerCursedComponent.setCursed(killer.getUUID());
                 killerCursedComponent.sync();
+                worldModifierComponent.addModifier(killer.getUUID(), SEModifiers.CURSED);
             }
         }
     }

@@ -93,7 +93,7 @@
   "hud.stupid_express.refugee.countdown": "Revive in %s seconds",
   "gui.stupid_express.refugee.revival": "Revival: %s seconds",
   "gui.stupid_express.refugee.all_death": "All refugees have died! Time rewind!",
-  "hud.stupid_express.allergist.poison_immune": "You had an immune reaction to the food, clearing toxins!",
+  "hud.stupid_express.allergist.slowness": "Allergic reactions make you feel weak!",
   "hud.stupid_express.allergist.speed_boost": "The allergic reaction gave you an adrenaline rush!",
   "hud.stupid_express.allergist.death": "Severe anaphylactic shock took your life..."
 }
