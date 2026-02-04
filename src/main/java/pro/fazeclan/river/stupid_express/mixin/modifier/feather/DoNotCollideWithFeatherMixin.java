@@ -12,7 +12,7 @@ import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 @Mixin(value = Entity.class, priority = 1005)
 public abstract class DoNotCollideWithFeatherMixin {
 
-    @WrapMethod(method = "collidesWith")
+    @WrapMethod(method = "canCollideWith")
     boolean doNotCollideWithPlayers(Entity other, Operation<Boolean> original) {
         Entity self = (Entity)(Object)this;
         if (other instanceof Player player && self instanceof Player player2) {
