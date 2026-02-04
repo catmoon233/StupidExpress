@@ -89,8 +89,7 @@ public class RoleUtils {
             ((ModdedRoleRemoved) ModdedRoleRemoved.EVENT.invoker()).removeModdedRole(player, oldRole);
         }
         // 给新职业
-        RoleUtils.changeRole(player, role);
-
+        gameWorldComponent.addRole(player, role);
         // 触发事件
         ((ModdedRoleAssigned) ModdedRoleAssigned.EVENT.invoker()).assignModdedRole(player, role);
     }
