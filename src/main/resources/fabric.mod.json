@@ -28,7 +28,11 @@
       "stupid_express:lovers",
       "stupid_express:necromancer",
       "stupid_express:refugee",
-      "stupid_express:custom_winner"
+      "stupid_express:custom_winner",
+      "stupid_express:secretive",
+      "stupid_express:knight",
+      "stupid_express:cursed",
+      "stupid_express:allergist"
     ]
   },
   "mixins": [
