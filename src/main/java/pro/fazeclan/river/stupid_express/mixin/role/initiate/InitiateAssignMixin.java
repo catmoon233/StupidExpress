@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.utils.RoleUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,8 +76,7 @@ public class InitiateAssignMixin {
                 if (gameTime % THIRTY_SECONDS_TICKS == 0) {
                     ServerPlayer initiate = initiates.get(0);
                     clearModItems(initiate);
-                    gameWorldComponent.addRole(initiate, SERoles.AMNESIAC);
-                    TMM.REPLAY_MANAGER.recordPlayerRoleChange(initiate.getUUID(), SERoles.INITIATE, SERoles.AMNESIAC);
+                    RoleUtils.changeRole(initiate, SERoles.AMNESIAC);
                 }
             }
         });

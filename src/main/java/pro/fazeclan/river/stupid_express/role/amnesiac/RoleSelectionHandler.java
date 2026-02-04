@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.utils.RoleUtils;
 
 public class RoleSelectionHandler {
 
@@ -46,10 +47,10 @@ public class RoleSelectionHandler {
 
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(interacting);
 
-            gameWorldComponent.addRole(interacting, role);
+            RoleUtils.changeRole(interacting, role);
 
             TMM.REPLAY_MANAGER.recordPlayerRoleChange(interacting.getUUID(), SERoles.AMNESIAC, role);
-            
+
             ModdedRoleAssigned.EVENT.invoker().assignModdedRole(interacting, role);
             playerShopComponent.setBalance(200);
             ServerPlayNetworking.send(interacting,

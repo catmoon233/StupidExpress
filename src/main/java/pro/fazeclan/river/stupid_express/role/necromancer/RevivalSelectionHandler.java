@@ -21,6 +21,7 @@ import org.agmas.harpymodloader.config.HarpyModLoaderConfig;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
+import pro.fazeclan.river.stupid_express.utils.RoleUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,20 +80,19 @@ public class RevivalSelectionHandler {
             var selectedRole = roles.getFirst();
 
             serverLevel.players().forEach(
-                    a->{
-                        a.playNotifySound( SoundEvents.TOTEM_USE,revived.getSoundSource(), 1.2f, 1.5f);
-                        a.sendSystemMessage(Component.translatable("hud.stupid_express.necromancer.revived_player").append(Harpymodloader.getRoleName(selectedRole)),true);
-                    }
-            );
+                    a -> {
+                        a.playNotifySound(SoundEvents.TOTEM_USE, revived.getSoundSource(), 1.2f, 1.5f);
+                        a.sendSystemMessage(Component.translatable("hud.stupid_express.necromancer.revived_player")
+                                .append(Harpymodloader.getRoleName(selectedRole)), true);
+                    });
             revived.teleportTo(body.getX(), body.getY(), body.getZ());
             revived.setGameMode(GameType.ADVENTURE);
             body.remove(Entity.RemovalReason.DISCARDED); // like it never existed
 
-            gameWorldComponent.addRole(revived, selectedRole);
+            RoleUtils.changeRole(revived, selectedRole);
 
-            
             TMM.REPLAY_MANAGER.recordPlayerRoleChange(revived.getUUID(), SERoles.AMNESIAC, selectedRole);
-            
+
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(revived);
             playerShopComponent.setBalance(200);
 
@@ -102,18 +102,14 @@ public class RevivalSelectionHandler {
                         new AnnounceWelcomePayload(
                                 TMMRoles.KILLER.identifier().getPath(),
                                 gameWorldComponent.getAllKillerTeamPlayers().size(),
-                                0
-                        )
-                );
+                                0));
             } else {
                 ServerPlayNetworking.send(
                         revived,
                         new AnnounceWelcomePayload(
                                 selectedRole.identifier().getPath(),
                                 gameWorldComponent.getAllKillerTeamPlayers().size(),
-                                0
-                        )
-                );
+                                0));
             }
 
             return InteractionResult.CONSUME;

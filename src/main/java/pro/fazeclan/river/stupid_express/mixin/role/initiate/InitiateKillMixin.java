@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.utils.RoleUtils;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public abstract class InitiateKillMixin {
             Collections.shuffle(shuffledKillerRoles);
 
             var role = shuffledKillerRoles.getFirst();
-            gameWorldComponent.addRole(killer, role);
+            RoleUtils.changeRole(killer, role);
 
             TMM.REPLAY_MANAGER.recordPlayerRoleChange(killer.getUUID(), SERoles.INITIATE, role);
 
@@ -117,8 +118,7 @@ public abstract class InitiateKillMixin {
             for (ServerPlayer player : level.getPlayers(p -> gameWorldComponent.isRole(p, SERoles.INITIATE))) {
                 // 清除物品栏中的所有刀
                 clearAllKnives(player);
-
-                gameWorldComponent.addRole(player, newInitiateRole);
+                RoleUtils.changeRole(player, newInitiateRole);
                 ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
 
                 TMM.REPLAY_MANAGER.recordPlayerRoleChange(player.getUUID(), SERoles.INITIATE, newInitiateRole);
@@ -166,7 +166,8 @@ public abstract class InitiateKillMixin {
                 // 清除物品栏中的所有刀
                 clearAllKnives(player);
 
-                gameWorldComponent.addRole(player, newInitiateRole);
+                RoleUtils.changeRole(player, newInitiateRole);
+
                 ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
 
                 TMM.REPLAY_MANAGER.recordPlayerRoleChange(player.getUUID(), SERoles.INITIATE, newInitiateRole);
