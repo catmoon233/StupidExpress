@@ -26,6 +26,8 @@ import pro.fazeclan.river.stupid_express.StupidExpress;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
+
 @Mixin(GameFunctions.class)
 public abstract class InitiateKillMixin {
 
@@ -53,7 +55,8 @@ public abstract class InitiateKillMixin {
         if (killer != null && gameWorldComponent.isRole(killer, SERoles.INITIATE)) {
             var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
             shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || !role.canUseKiller()
-                    || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
+                    || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath())
+                    || role.identifier().equals(fromNamespaceAndPath("noellesroles", "poisoner")));
             if (shuffledKillerRoles.isEmpty())
                 shuffledKillerRoles.add(TMMRoles.KILLER);
             Collections.shuffle(shuffledKillerRoles);
@@ -94,7 +97,8 @@ public abstract class InitiateKillMixin {
                     var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
                     shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role)
                             || !role.canUseKiller()
-                            || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
+                            || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath())
+                            || role.identifier().equals(fromNamespaceAndPath("noellesroles", "poisoner")));
                     if (shuffledKillerRoles.isEmpty())
                         shuffledKillerRoles.add(TMMRoles.KILLER);
                     Collections.shuffle(shuffledKillerRoles);
@@ -141,7 +145,8 @@ public abstract class InitiateKillMixin {
                     var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
                     shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role)
                             || !role.canUseKiller()
-                            || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
+                            || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath())
+                            || role.identifier().equals(fromNamespaceAndPath("noellesroles", "poisoner")));
                     if (shuffledKillerRoles.isEmpty())
                         shuffledKillerRoles.add(TMMRoles.KILLER);
                     Collections.shuffle(shuffledKillerRoles);
