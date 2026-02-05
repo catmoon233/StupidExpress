@@ -179,7 +179,7 @@ public class SEModifiers {
             worldModifierComponent.addModifier(loverTwo.getUUID(), LOVERS); // visually show lovers on the other player
         }));
 
-        /// TINY & FEATHER & ALLERGIST
+        /// TINY & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT & SPLIT_PERSONALITY
         ModifierAssigned.EVENT.register(((player, modifier) -> {
             if (modifier.equals(TINY)) {
                 player.getAttribute(Attributes.SCALE).removeModifier(tinyModifier);
@@ -195,6 +195,26 @@ public class SEModifiers {
                 var allergistComponent = AllergistComponent.KEY.get(player);
                 allergistComponent.setAllergist(player.getUUID());
                 allergistComponent.sync();
+            }
+            if (modifier.equals(CURSED)) {
+                var cursedComponent = pro.fazeclan.river.stupid_express.modifier.cursed.cca.CursedComponent.KEY.get(player);
+                cursedComponent.setCursed(player.getUUID());
+                cursedComponent.sync();
+            }
+            if (modifier.equals(SECRETIVE)) {
+                var secretiveComponent = pro.fazeclan.river.stupid_express.modifier.secretive.cca.SecretiveComponent.KEY.get(player);
+                secretiveComponent.setSecretive(player.getUUID());
+                secretiveComponent.sync();
+            }
+            if (modifier.equals(KNIGHT)) {
+                var knightComponent = pro.fazeclan.river.stupid_express.modifier.knight.cca.KnightComponent.KEY.get(player);
+                knightComponent.setKnight(player.getUUID());
+                knightComponent.sync();
+            }
+            if (modifier.equals(SPLIT_PERSONALITY)) {
+                var splitPersonalityComponent = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY.get(player);
+                splitPersonalityComponent.setSplitPersonality(player.getUUID());
+                splitPersonalityComponent.sync();
             }
         }));
 
