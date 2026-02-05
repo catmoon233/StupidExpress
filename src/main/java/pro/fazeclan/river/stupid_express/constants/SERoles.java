@@ -84,7 +84,7 @@ public class SERoles {
     });
 
     public static List<ShopEntry> NECROMANCER_SHOP = Util.make(new ArrayList<>(), entries -> {
-        entries.add(new BuyableShopEntry(TMMItems.LOCKPICK.getDefaultInstance(), 100, ShopEntry.Type.UTILITY));
+        entries.add(new BuyableShopEntry(TMMItems.LOCKPICK.getDefaultInstance(), 100, ShopEntry.Type.TOOL));
     });
 
     public static void init() {
