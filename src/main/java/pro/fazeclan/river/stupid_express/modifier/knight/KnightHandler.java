@@ -2,6 +2,7 @@ package pro.fazeclan.river.stupid_express.modifier.knight;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LightLayer;
 import pro.fazeclan.river.stupid_express.modifier.knight.cca.KnightComponent;
 import java.util.ArrayList;
@@ -18,14 +19,20 @@ public class KnightHandler {
 
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 if (!player.isAlive()) continue;
-                
-                targets.add(player);
-                
+
+                // 只有冒险模式的玩家才能作为交换目标
+                if (player.gameMode.getGameModeForPlayer() == GameType.ADVENTURE) {
+                    targets.add(player);
+                }
+
                 KnightComponent component = KnightComponent.KEY.get(player);
                 if (component.isKnight()) {
                     int light = player.level().getBrightness(LightLayer.BLOCK, player.blockPosition());
                     if (light < 2) {
-                        knights.add(player);
+                        // 侠客也必须是冒险模式才能使用交换能力
+                        if (player.gameMode.getGameModeForPlayer() == GameType.ADVENTURE) {
+                            knights.add(player);
+                        }
                     }
                 }
             }
