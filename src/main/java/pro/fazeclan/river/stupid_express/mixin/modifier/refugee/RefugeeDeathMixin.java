@@ -22,6 +22,11 @@ public class RefugeeDeathMixin {
         var level = victim.level();
         var worldModifierComponent = WorldModifierComponent.KEY.get(level);
 
+        // 检查玩家是否在旁观者模式，如果是则不触发侠客效果
+        if (victim.isSpectator()) {
+            return;
+        }
+
         if (worldModifierComponent.isModifier(victim.getUUID(), SEModifiers.REFUGEE)) {
             var refugeeComponent = RefugeeComponent.KEY.get(level);
             refugeeComponent.addPendingRevival(victim.getUUID(), victim.getX(), victim.getY(), victim.getZ());
