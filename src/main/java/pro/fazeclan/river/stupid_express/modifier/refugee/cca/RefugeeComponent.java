@@ -11,6 +11,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundStopSoundPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -146,6 +148,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             p.playNotifySound(SoundEvents.WITHER_DEATH, SoundSource.PLAYERS, 1.0f, 1.0f);
             p.sendSystemMessage(Component.translatable("hud.stupid_express.refugee.revived", player.getDisplayName()),
                     true);
+            p.playNotifySound(StupidExpress.SOUND_REGUGEE, SoundSource.AMBIENT, 0.5f, 1.0f);
         });
         if (!isAnyRevivals) {
             SavePlayersStats();
@@ -226,7 +229,15 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         players_stats.clear(); // 清空玩家位置信息，避免浪费资源
         sp.getServer().getPlayerList().getPlayers().forEach((p) -> {
             p.displayClientMessage(Component.translatable("gui.stupid_express.refugee.all_death"), true);
+            StopSound(p, StupidExpress.SOUND_REGUGEE.getLocation(), SoundSource.AMBIENT);
         });
+    }
+
+    public static void StopSound(ServerPlayer serverPlayer, ResourceLocation resourceLocation,
+            SoundSource soundSource) {
+        ClientboundStopSoundPacket clientboundStopSoundPacket = new ClientboundStopSoundPacket(resourceLocation,
+                soundSource);
+        serverPlayer.connection.send(clientboundStopSoundPacket);
     }
 
     public void addPendingRevival(UUID uuid, double x, double y, double z) {

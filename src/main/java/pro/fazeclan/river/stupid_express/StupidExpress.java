@@ -1,5 +1,6 @@
 package pro.fazeclan.river.stupid_express;
 
+import dev.doctor4t.ratatouille.util.registrar.SoundEventRegistrar;
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
@@ -7,6 +8,8 @@ import dev.doctor4t.trainmurdermystery.event.OnPlayerDeath;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+
 import org.agmas.harpymodloader.config.HarpyModLoaderConfig;
 import org.agmas.harpymodloader.events.GameInitializeEvent;
 import org.slf4j.Logger;
@@ -23,6 +26,8 @@ import java.util.List;
 public class StupidExpress implements ModInitializer {
 
     public static String MOD_ID = "stupid_express";
+    public static final SoundEventRegistrar SoundRegistrar = new SoundEventRegistrar(MOD_ID);
+    public static final SoundEvent SOUND_REGUGEE = SoundRegistrar.create("refugee.music");
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
