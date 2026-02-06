@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
-import pro.fazeclan.river.stupid_express.mixin.role.initiate.InitiateUtils;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
+import pro.fazeclan.river.stupid_express.role.initiate.InitiateUtils;
 
 import java.util.ArrayList;
 import java.util.List;

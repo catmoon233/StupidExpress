@@ -1,4 +1,4 @@
-package pro.fazeclan.river.stupid_express.mixin.role.initiate;
+package pro.fazeclan.river.stupid_express.role.initiate;
 
 import dev.doctor4t.trainmurdermystery.cca.GameTimeComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
