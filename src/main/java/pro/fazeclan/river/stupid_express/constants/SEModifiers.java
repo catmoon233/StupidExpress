@@ -30,6 +30,10 @@ public class SEModifiers {
     private static AttributeModifier tinyModifier = new AttributeModifier(
             StupidExpress.id("tiny_modifier"), -0.15, AttributeModifier.Operation.ADD_VALUE);
 
+    // Attribute modifier for tall players
+    private static AttributeModifier tallModifier = new AttributeModifier(
+            StupidExpress.id("tall_modifier"), 0.11, AttributeModifier.Operation.ADD_VALUE);
+
     public static Modifier LOVERS = HMLModifiers.registerModifier(new Modifier(
             StupidExpress.id("lovers"),
             0xf38aff,
@@ -49,6 +53,14 @@ public class SEModifiers {
     public static Modifier TINY = HMLModifiers.registerModifier(new Modifier(
             StupidExpress.id("tiny"),
             new Color(255, 166, 0).getRGB(),
+            null,
+            null,
+            false,
+            false));
+
+    public static Modifier TALL = HMLModifiers.registerModifier(new Modifier(
+            StupidExpress.id("tall"),
+            new Color(0, 255, 0).getRGB(),
             null,
             null,
             false,
@@ -179,11 +191,27 @@ public class SEModifiers {
             worldModifierComponent.addModifier(loverTwo.getUUID(), LOVERS); // visually show lovers on the other player
         }));
 
-        /// TINY & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT & SPLIT_PERSONALITY
+        /// TINY & TALL & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT & SPLIT_PERSONALITY
         ModifierAssigned.EVENT.register(((player, modifier) -> {
             if (modifier.equals(TINY)) {
+                var worldModifierComponent = WorldModifierComponent.KEY.get(player.level());
+                // Cannot assign TALL if player has TINY
+                if (worldModifierComponent.isModifier(player.getUUID(), TALL)) {
+                    worldModifierComponent.removeModifier(player.getUUID(), TALL);
+                    player.getAttribute(Attributes.SCALE).removeModifier(tallModifier);
+                }
                 player.getAttribute(Attributes.SCALE).removeModifier(tinyModifier);
                 player.getAttribute(Attributes.SCALE).addPermanentModifier(tinyModifier);
+            }
+            if (modifier.equals(TALL)) {
+                var worldModifierComponent = WorldModifierComponent.KEY.get(player.level());
+                // Cannot assign TINY if player has TALL
+                if (worldModifierComponent.isModifier(player.getUUID(), TINY)) {
+                    worldModifierComponent.removeModifier(player.getUUID(), TINY);
+                    player.getAttribute(Attributes.SCALE).removeModifier(tinyModifier);
+                }
+                player.getAttribute(Attributes.SCALE).removeModifier(tallModifier);
+                player.getAttribute(Attributes.SCALE).addPermanentModifier(tallModifier);
             }
             if (modifier.equals(FEATHER)) {
                 player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
@@ -221,6 +249,8 @@ public class SEModifiers {
         ResetPlayerEvent.EVENT.register(player -> {
             // Remove tiny modifier
             player.getAttribute(Attributes.SCALE).removeModifier(tinyModifier);
+            // Remove tall modifier
+            player.getAttribute(Attributes.SCALE).removeModifier(tallModifier);
             // Remove feather effect
             player.removeEffect(net.minecraft.world.effect.MobEffects.SLOW_FALLING);
             // Reset lovers component
@@ -276,6 +306,10 @@ public class SEModifiers {
         /// TINY
             StupidExpress.LOGGER.info("Modifier [Tiny] enabled in this round!");
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("tiny"), 5);
+
+        /// TALL
+            StupidExpress.LOGGER.info("Modifier [Tall] enabled in this round!");
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("tall"), 4);
 
         /// FEATHER
             StupidExpress.LOGGER.info("Modifier [Feather] enabled in this round!");
