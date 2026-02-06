@@ -6,7 +6,7 @@ import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.event.OnPlayerDeath;
 import dev.doctor4t.trainmurdermystery.game.GameReplayManager;
-import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
+
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -35,7 +35,7 @@ public class StupidExpress implements ModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public static final StupidExpressConfig CONFIG = ConfigApiJava.registerAndLoadConfig(StupidExpressConfig::new);
+    public static final StupidExpressConfig CONFIG = StupidExpressConfig.getInstance();
 
     public static List<Role> getEnableRoles() {
         ArrayList<Role> clone = new ArrayList<>(TMMRoles.ROLES.values());
