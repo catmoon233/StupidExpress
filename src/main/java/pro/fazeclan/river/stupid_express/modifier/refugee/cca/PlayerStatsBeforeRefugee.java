@@ -4,6 +4,7 @@ import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.cca.PlayerMoodComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
+import dev.doctor4t.trainmurdermystery.compat.TrainVoicePlugin;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,6 +31,8 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
             TMM.REPLAY_MANAGER.recordPlayerRevival(player.getUUID(), role);
             player.setGameMode(GameType.ADVENTURE);
         }
+        TrainVoicePlugin.resetPlayer(player.getUUID());
+
         var shopComponent = PlayerShopComponent.KEY.get(player);
         var moodComponent = PlayerMoodComponent.KEY.get(player);
         shopComponent.balance = playerStats.money();
