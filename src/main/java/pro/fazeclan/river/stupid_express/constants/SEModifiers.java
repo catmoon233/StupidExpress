@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.agmas.harpymodloader.events.ModifierAssigned;
@@ -217,7 +218,8 @@ public class SEModifiers {
             if (secondPersonality == null) {
                 secondPersonality = person;
             }
-
+            secondPersonality.setGameMode(GameType.SPECTATOR);
+            secondPersonality.setCamera(person);
             // 为两个人格都设置SplitPersonalityComponent
             var componentOne = SplitPersonalityComponent.KEY.get(person);
             componentOne.setMainPersonality(person.getUUID());

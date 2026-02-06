@@ -111,5 +111,20 @@
   "hud.stupid_express.allergist.no_poison": "You feel fine, no signs of poisoning",
   "hud.stupid_express.allergist.speed_boost": "The allergic reaction gave you an adrenaline rush!",
   "hud.stupid_express.allergist.death": "Severe anaphylactic shock took your life...",
-  "death_reason.stupid_express.allergist": "Anaphylactic Shock"
+  "death_reason.stupid_express.allergist": "Anaphylactic Shock",
+
+  "key.stupid_express.switch_personality": "Switch Split Personality",
+  "key.stupid_express.choice_sacrifice": "Choose Sacrifice (Split Personality)",
+  "key.stupid_express.choice_betray": "Choose Betray (Split Personality)",
+  "category.stupid_express": "StupidExpress",
+
+  "hud.stupid_express.split_personality.controlling": "Controlling Body",
+  "hud.stupid_express.split_personality.observing": "Observing",
+  "hud.stupid_express.split_personality.partner": "Partner",
+  "hud.stupid_express.split_personality.switch_cooldown": "Switch Cooldown: %ds (Press P)",
+  "hud.stupid_express.split_personality.death_countdown": "Death Countdown: %ds",
+  "hud.stupid_express.split_personality.choose": "[B]Sacrifice [V]Betray",
+  "hud.stupid_express.split_personality.your_choice": "Your Choice: %s",
+  "hud.stupid_express.split_personality.sacrifice": "Sacrifice",
+  "hud.stupid_express.split_personality.betray": "Betray"
 }

@@ -1,9 +1,12 @@
 package pro.fazeclan.river.stupid_express.modifier.split_personality.cca;
 
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
@@ -35,11 +38,45 @@ public class SplitPersonalityComponent implements AutoSyncedComponent , ServerTi
     // 最后一次切换时间
     private long lastSwitchTime;
 
+    public SplitPersonalityComponent setInDeathCountdown(boolean inDeathCountdown) {
+        isInDeathCountdown = inDeathCountdown;
+        return this;
+    }
+
+    public long getLastSwitchTime() {
+        return lastSwitchTime;
+    }
+
+    public SplitPersonalityComponent setLastSwitchTime(long lastSwitchTime) {
+        this.lastSwitchTime = lastSwitchTime;
+        return this;
+    }
+
+    public long getDeathCountdownStart() {
+        return deathCountdownStart;
+    }
+
+    public SplitPersonalityComponent setDeathCountdownStart(long deathCountdownStart) {
+        this.deathCountdownStart = deathCountdownStart;
+        return this;
+    }
+
     // 死亡倒计时相关
     private boolean isInDeathCountdown = false;
     private long deathCountdownStart = -1;
     private ChoiceType mainPersonalityChoice = ChoiceType.NONE;
     private ChoiceType secondPersonalityChoice = ChoiceType.NONE;
+
+    public boolean isDeath() {
+        return isDeath;
+    }
+
+    public SplitPersonalityComponent setDeath(boolean death) {
+        isDeath = death;
+        return this;
+    }
+
+    private boolean isDeath = false;
 
     public SplitPersonalityComponent(Player player) {
         this.player = player;
@@ -102,13 +139,51 @@ public class SplitPersonalityComponent implements AutoSyncedComponent , ServerTi
     }
 
     public void switchPersonality() {
+        if (isDeath) {
+            return;
+        }
         if (mainPersonality == null || secondPersonality == null) {
             return;
         }
-        if (currentActivePerson.equals(mainPersonality)) {
-            setCurrentActivePerson(secondPersonality);
-        } else {
-            setCurrentActivePerson(mainPersonality);
+
+        // 确保能进行切换
+        if (!canSwitch()) {
+            return;
+        }
+        
+        // 计算新的活跃人格（切换控制权）
+        UUID newActivePerson = currentActivePerson.equals(mainPersonality) ? 
+            secondPersonality : mainPersonality;
+        
+        // 更新切换时间
+        long currentTime = System.currentTimeMillis();
+        this.lastSwitchTime = currentTime;
+        this.currentActivePerson = newActivePerson;
+        this.sync();
+        
+        // 同步另一个人格的状态（确保两个人格的currentActivePerson完全一致）
+        Player otherPlayer = player.level().getPlayerByUUID(
+            currentActivePerson.equals(mainPersonality) ? secondPersonality : mainPersonality
+        );
+        if (mainPersonality != null && mainPersonality.equals(player.getUUID())){
+            if (player instanceof ServerPlayer serverPlayer){
+                serverPlayer.setGameMode(GameType.ADVENTURE);
+                serverPlayer.setCamera(serverPlayer);
+            }
+        }
+        if (mainPersonality != null && mainPersonality.equals(otherPlayer.getUUID())){
+            if (otherPlayer instanceof ServerPlayer serverPlayer){
+                serverPlayer.setGameMode(GameType.ADVENTURE);
+                serverPlayer.setCamera(serverPlayer);
+            }
+        }
+        if (otherPlayer != null) {
+            var otherComponent = SplitPersonalityComponent.KEY.get(otherPlayer);
+            if (otherComponent != null) {
+                otherComponent.lastSwitchTime = currentTime;
+                otherComponent.currentActivePerson = newActivePerson;
+                otherComponent.sync();
+            }
         }
     }
 
@@ -203,6 +278,9 @@ public class SplitPersonalityComponent implements AutoSyncedComponent , ServerTi
         if (tag.contains("second_choice")) {
             this.secondPersonalityChoice = ChoiceType.valueOf(tag.getString("second_choice"));
         }
+        if (tag.contains("is_death")){
+            this.isDeath = tag.getBoolean("is_death");
+        }
     }
 
     @Override
@@ -221,17 +299,30 @@ public class SplitPersonalityComponent implements AutoSyncedComponent , ServerTi
         tag.putLong("death_countdown_start", this.deathCountdownStart);
         tag.putString("main_choice", this.mainPersonalityChoice.name());
         tag.putString("second_choice", this.secondPersonalityChoice.name());
+        tag.putBoolean("is_death", this.isDeath);
     }
 
     @Override
     public void serverTick() {
+        if (isDeath) {
+            return;
+        }
         // 检查是否需要自动切换 (60秒)
         if (!isInDeathCountdown && mainPersonality != null && secondPersonality != null) {
             if (canSwitch()) {
                 switchPersonality();
             }
         }
-
+        if (!isInDeathCountdown && mainPersonality != null && isSecondPersonality()) {
+            if (player instanceof ServerPlayer serverPlayer){
+                serverPlayer.setGameMode(GameType.SPECTATOR);
+                serverPlayer.serverLevel().players().forEach(player -> {
+                    if (player.getGameProfile().getId().equals(mainPersonality)) {
+                        serverPlayer.setCamera( player);
+                    }
+                });
+            }
+        }
         // 检查死亡倒计时是否结束
         if (isInDeathCountdown && getDeathCountdownRemainingTicks() <= 0) {
             endDeathCountdown();

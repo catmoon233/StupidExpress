@@ -35,10 +35,11 @@ public class SplitPersonalityHandler {
             if (component.getMainPersonality() == null || component.getSecondPersonality() == null) {
                 return;
             }
+
             
             // 启动死亡倒计时
             component.startDeathCountdown();
-            
+
             // 保存当前库存
             if (serverVictim instanceof ServerPlayer person) {
                 ItemStack[] inventory = new ItemStack[36]; // 标准库存大小
@@ -55,6 +56,7 @@ public class SplitPersonalityHandler {
                 }
                 personalityEnderChests.put(serverVictim.getUUID(), enderChestItems);
             }
+            component.setDeath( true);
         });
 
         // 监听选择逻辑
@@ -94,6 +96,7 @@ public class SplitPersonalityHandler {
         if (mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY && 
             secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
             // 双双死亡，不需要做任何操作 (已经死了)
+
             component.endDeathCountdown();
             return;
         }
@@ -107,8 +110,13 @@ public class SplitPersonalityHandler {
             
             // 欺骗者复活，奉献者保持死亡
             revivePlayer(betrayerPlayer, component);
-            
+            if (GameFunctions.isPlayerAliveAndSurvival( sacrificePlayer)) {
+                GameFunctions.killPlayer(sacrificePlayer, true, null);
+            }
             component.endDeathCountdown();
+            if (component.getPlayer()==betrayerPlayer){
+                component.setDeath( false);
+            }
             return;
         }
         
@@ -118,11 +126,18 @@ public class SplitPersonalityHandler {
             
             revivePlayer(mainServerPlayer, component);
             revivePlayer(secondServerPlayer, component);
-            
+            if (component.getPlayer()==secondServerPlayer){
+                component.setDeath( false);
+            }
+            if (component.getPlayer()==mainServerPlayer){
+                component.setDeath( false);
+            }
+
             // 给予60秒的额外时间限制（可在UI中显示）
             component.endDeathCountdown();
             return;
         }
+
     }
 
     /**
@@ -132,11 +147,18 @@ public class SplitPersonalityHandler {
         // 复活玩家
         player.setHealth(player.getMaxHealth());
         
-        // 恢复库存
+        // 消除所有负面效果
+        player.removeAllEffects();
+        
+        // 清空并恢复库存
+        player.getInventory().clearContent();
         if (personalityInventories.containsKey(player.getUUID())) {
             ItemStack[] inventory = personalityInventories.get(player.getUUID());
-            for (int i = 0; i < 36; i++) {
-                player.getInventory().setItem(i, inventory[i].copy());
+            for (int i = 0; i < Math.min(36, inventory.length); i++) {
+                ItemStack item = inventory[i];
+                if (item != null) {
+                    player.getInventory().setItem(i, item.copy());
+                }
             }
         }
         
@@ -144,13 +166,16 @@ public class SplitPersonalityHandler {
         if (personalityEnderChests.containsKey(player.getUUID())) {
             ItemStack[] enderChestItems = personalityEnderChests.get(player.getUUID());
             PlayerEnderChestContainer enderChest = player.getEnderChestInventory();
-            for (int i = 0; i < 27; i++) {
-                enderChest.setItem(i, enderChestItems[i].copy());
+            for (int i = 0; i < Math.min(27, enderChestItems.length); i++) {
+                ItemStack item = enderChestItems[i];
+                if (item != null) {
+                    enderChest.setItem(i, item.copy());
+                }
             }
         }
         
-        // 将玩家状态改为活跃
-        // 注意：这里可能需要与TMM游戏系统集成来正确处理复活
+        // 发送重生包到客户端
+        player.setRespawnPosition(player.level().dimension(), player.blockPosition(), 0f, true, false);
     }
 
     /**

@@ -99,5 +99,20 @@
   "hud.stupid_express.allergist.no_poison": "你感覺身體很好，沒有中毒跡象",
   "hud.stupid_express.allergist.speed_boost": "過敏反應讓你腎上腺素飆升！",
   "hud.stupid_express.allergist.death": "嚴重的過敏性休克奪走了你的生命...",
-  "death_reason.stupid_express.allergist": "過敏性休克"
+  "death_reason.stupid_express.allergist": "過敏性休克",
+
+  "key.stupid_express.switch_personality": "切換雙重人格",
+  "key.stupid_express.choice_sacrifice": "選擇奉獻（雙重人格）",
+  "key.stupid_express.choice_betray": "選擇欺騙（雙重人格）",
+  "category.stupid_express": "StupidExpress mod",
+
+  "hud.stupid_express.split_personality.controlling": "控制身體",
+  "hud.stupid_express.split_personality.observing": "旁觀中",
+  "hud.stupid_express.split_personality.partner": "配對",
+  "hud.stupid_express.split_personality.switch_cooldown": "切換冷卻: %d秒 (按P鍵)",
+  "hud.stupid_express.split_personality.death_countdown": "死亡倒計時: %d秒",
+  "hud.stupid_express.split_personality.choose": "[B]奉獻 [V]欺騙",
+  "hud.stupid_express.split_personality.your_choice": "你的選擇: %s",
+  "hud.stupid_express.split_personality.sacrifice": "奉獻",
+  "hud.stupid_express.split_personality.betray": "欺騙"
 }

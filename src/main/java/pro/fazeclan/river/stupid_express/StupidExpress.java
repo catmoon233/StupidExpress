@@ -5,11 +5,13 @@ import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.event.OnPlayerDeath;
+import dev.doctor4t.trainmurdermystery.game.GameReplayManager;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
+import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.agmas.harpymodloader.config.HarpyModLoaderConfig;
 import org.agmas.harpymodloader.events.GameInitializeEvent;
 import org.slf4j.Logger;
@@ -62,6 +64,7 @@ public class StupidExpress implements ModInitializer {
 
         // 初始化网络包处理
         SplitPersonalityPackets.registerPackets();
+        pro.fazeclan.river.stupid_express.network.SplitPersonalitySwitchPacket.register();
 
         GameInitializeEvent.EVENT.register((ServerLevel, gameWorldComponent, serverPlayers) -> {
             var refugeeC = RefugeeComponent.KEY.get(ServerLevel);
@@ -83,6 +86,12 @@ public class StupidExpress implements ModInitializer {
             }
         });
 
+        GameReplayManager.cantSeeEvent.add(
+                (player -> {
+                    WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.level());
+                    return modifierComponent.isModifier(player, SEModifiers.SPLIT_PERSONALITY);
+                })
+        );
     }
 
     public static ResourceLocation id(String key) {

@@ -18,6 +18,9 @@
     ],
     "cardinal-components": [
       "pro.fazeclan.river.stupid_express.constants.SEComponents"
+    ],
+    "voicechat": [
+      "pro.fazeclan.river.stupid_express.StupidExpressVoiceChatPlugin"
     ]
   },
   "custom": {
