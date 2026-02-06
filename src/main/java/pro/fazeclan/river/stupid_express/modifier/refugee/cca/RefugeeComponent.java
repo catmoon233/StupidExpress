@@ -3,6 +3,7 @@ package pro.fazeclan.river.stupid_express.modifier.refugee.cca;
 import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.compat.TrainVoicePlugin;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.core.HolderLookup;
@@ -132,6 +133,8 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         // Change role to LOOSE_END and remove REFUGEE modifier
         RoleUtils.changeRole(player, TMMRoles.LOOSE_END, false);
         TMM.REPLAY_MANAGER.recordPlayerRevival(player.getUUID(), TMMRoles.LOOSE_END);
+
+        TrainVoicePlugin.resetPlayer(player.getUUID());
 
         WorldModifierComponent worldModifierComponent = WorldModifierComponent.KEY.get(serverLevel);
         worldModifierComponent.removeModifier(player.getUUID(), SEModifiers.REFUGEE);
