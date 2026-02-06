@@ -306,7 +306,7 @@ public class SEModifiers {
         }
 
         /// CURSED
-        if (Math.random() < 0.1) {
+        if (Math.random() < 0.3) {
             StupidExpress.LOGGER.info("Modifier [Cursed] enabled in this round!");
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("cursed"), 1);
         } else {

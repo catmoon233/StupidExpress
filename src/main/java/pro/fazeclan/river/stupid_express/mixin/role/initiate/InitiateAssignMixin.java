@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Mixin(ModdedMurderGameMode.class)
 public class InitiateAssignMixin {
 
-    private static final int THIRTY_SECONDS_TICKS = GameConstants.getInTicks(0, 30);
+    private static final int FIVE_SECONDS_TICKS = GameConstants.getInTicks(0, 5);
 
     private static void clearModItems(ServerPlayer player) {
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
@@ -68,12 +68,12 @@ public class InitiateAssignMixin {
                 return;
             }
 
-            // 如果只有1个初学者，每隔30秒检查一次
+            // 如果只有1个初学者，每隔5秒检查一次
             if (initiateCount == 1) {
                 long gameTime = gameTimeComponent.time;
 
-                // 检查是否是30秒的整倍数时刻
-                if (gameTime % THIRTY_SECONDS_TICKS == 0) {
+                // 检查是否是5秒的整倍数时刻
+                if (gameTime % FIVE_SECONDS_TICKS == 0) {
                     ServerPlayer initiate = initiates.get(0);
                     clearModItems(initiate);
                     RoleUtils.changeRole(initiate, SERoles.AMNESIAC);

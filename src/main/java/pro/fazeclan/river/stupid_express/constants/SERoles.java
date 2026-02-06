@@ -83,6 +83,10 @@ public class SERoles {
         entries.add(new BuyableShopEntry(TMMItems.KNIFE.getDefaultInstance(), 200, ShopEntry.Type.WEAPON));
     });
 
+    public static List<ShopEntry> NECROMANCER_SHOP = Util.make(new ArrayList<>(), entries -> {
+        entries.add(new BuyableShopEntry(TMMItems.LOCKPICK.getDefaultInstance(), 100, ShopEntry.Type.TOOL));
+    });
+
     public static void init() {
 
         /// AMNESIAC
