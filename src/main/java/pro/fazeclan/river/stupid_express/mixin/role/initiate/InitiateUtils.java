@@ -1,6 +1,5 @@
 package pro.fazeclan.river.stupid_express.mixin.role.initiate;
 
-import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.cca.GameTimeComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameConstants;
@@ -9,12 +8,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 
 import net.minecraft.server.level.ServerPlayer;
-import org.agmas.harpymodloader.events.ModdedRoleAssigned;
-import org.agmas.harpymodloader.modded_murder.ModdedMurderGameMode;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.utils.RoleUtils;
@@ -22,8 +15,7 @@ import pro.fazeclan.river.stupid_express.utils.RoleUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mixin(ModdedMurderGameMode.class)
-public class InitiateAssignMixin {
+public class InitiateUtils {
 
     private static final int FIVE_SECONDS_TICKS = GameConstants.getInTicks(0, 5);
 
@@ -39,9 +31,20 @@ public class InitiateAssignMixin {
         }
     }
 
-
-    static {
+    public static void InitiateChange() {
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
+            boolean isGameRuning = false;
+            for (var level : server.getAllLevels()) {
+                var gameWorldComponent = GameWorldComponent.KEY.get(level);
+                if (gameWorldComponent != null) {
+                    if (gameWorldComponent.isRunning()) {
+                        isGameRuning = true;
+                        break;
+                    }
+                }
+            }
+            if (!isGameRuning)
+                return;
             if (server.getPlayerList().getPlayers().isEmpty()) {
                 return;
             }

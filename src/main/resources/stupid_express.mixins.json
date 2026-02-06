@@ -16,7 +16,6 @@
     "role.avaricious.AvariciousGoldPayout",
     "role.avaricious.AvariciousPassiveIncomeDestroyer",
     "role.avaricious.AvariciousTimer",
-    "role.initiate.InitiateAssignMixin",
     "role.initiate.InitiateBuyMixin",
     "role.initiate.InitiateCoinsOnMoodMixin",
     "role.initiate.InitiateKillMixin",
