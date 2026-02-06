@@ -14,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
+import pro.fazeclan.river.stupid_express.network.SplitPersonalityPackets;
 import pro.fazeclan.river.stupid_express.role.initiate.InitiateUtils;
 
 import java.util.ArrayList;
@@ -52,6 +54,10 @@ public class StupidExpress implements ModInitializer {
         SEItems.init();
         SEModifiers.init();
         InitiateUtils.InitiateChange();
+
+        // 初始化网络包处理
+        SplitPersonalityPackets.registerPackets();
+
         GameInitializeEvent.EVENT.register((ServerLevel, gameWorldComponent, serverPlayers) -> {
             var refugeeC = RefugeeComponent.KEY.get(ServerLevel);
             if (refugeeC != null) {

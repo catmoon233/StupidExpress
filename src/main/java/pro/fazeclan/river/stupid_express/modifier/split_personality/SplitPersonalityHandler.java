@@ -1,7 +1,189 @@
 package pro.fazeclan.river.stupid_express.modifier.split_personality;
 
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.event.OnPlayerDeath;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.PlayerEnderChestContainer;
+import net.minecraft.world.item.ItemStack;
+import org.agmas.harpymodloader.component.WorldModifierComponent;
+import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.constants.SEModifiers;
+import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
+
+import java.util.*;
+
 public class SplitPersonalityHandler {
+
+    // 存储每对双重人格的库存和ender箱
+    private static final Map<UUID, ItemStack[]> personalityInventories = new HashMap<>();
+    private static final Map<UUID, ItemStack[]> personalityEnderChests = new HashMap<>();
+    
+    // 监听双重人格的替换者
+    private static final Set<UUID> switchingWatchers = new HashSet<>();
+
     public static void init() {
-        // TODO: Implement split personality functionality
+        // 注册死亡事件 - 处理双重人格死亡时的倒计时选择
+        OnPlayerDeath.EVENT.register((victim, deathReason) -> {
+            if (!(victim instanceof ServerPlayer serverVictim)) return;
+            
+            var component = SplitPersonalityComponent.KEY.get(serverVictim);
+            
+            // 检查是否是双重人格
+            if (component.getMainPersonality() == null || component.getSecondPersonality() == null) {
+                return;
+            }
+            
+            // 启动死亡倒计时
+            component.startDeathCountdown();
+            
+            // 保存当前库存
+            if (serverVictim instanceof ServerPlayer person) {
+                ItemStack[] inventory = new ItemStack[36]; // 标准库存大小
+                for (int i = 0; i < 36; i++) {
+                    inventory[i] = person.getInventory().getItem(i).copy();
+                }
+                personalityInventories.put(serverVictim.getUUID(), inventory);
+                
+                // 保存ender箱
+                PlayerEnderChestContainer enderChest = person.getEnderChestInventory();
+                ItemStack[] enderChestItems = new ItemStack[27];
+                for (int i = 0; i < 27; i++) {
+                    enderChestItems[i] = enderChest.getItem(i).copy();
+                }
+                personalityEnderChests.put(serverVictim.getUUID(), enderChestItems);
+            }
+        });
+
+        // 监听选择逻辑
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                var component = SplitPersonalityComponent.KEY.get(player);
+                
+                if (component == null || component.getMainPersonality() == null) continue;
+                
+                // 检查倒计时是否结束
+                if (component.isInDeathCountdown() && component.getDeathCountdownRemainingTicks() <= 0) {
+                    handleDeathChoices(player, component);
+                }
+            }
+        });
+    }
+
+    /**
+     * 处理死亡选择的结果
+     */
+    private static void handleDeathChoices(ServerPlayer player, SplitPersonalityComponent component) {
+        var mainChoice = component.getMainPersonalityChoice();
+        var secondChoice = component.getSecondPersonalityChoice();
+        
+        // 获取两个人格的玩家对象
+        Player mainPlayer = player.level().getPlayerByUUID(component.getMainPersonality());
+        Player secondPlayer = player.level().getPlayerByUUID(component.getSecondPersonality());
+        
+        if (mainPlayer == null || secondPlayer == null || !(mainPlayer instanceof ServerPlayer) || !(secondPlayer instanceof ServerPlayer)) {
+            return;
+        }
+        
+        ServerPlayer mainServerPlayer = (ServerPlayer) mainPlayer;
+        ServerPlayer secondServerPlayer = (ServerPlayer) secondPlayer;
+        
+        // 情况1：两个都选择欺骗 -> 直接死亡
+        if (mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY && 
+            secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
+            // 双双死亡，不需要做任何操作 (已经死了)
+            component.endDeathCountdown();
+            return;
+        }
+        
+        // 情况2：一个欺骗一个奉献
+        if ((mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY && secondChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE) ||
+            (mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE && secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY)) {
+            
+            ServerPlayer betrayerPlayer = mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY ? mainServerPlayer : secondServerPlayer;
+            ServerPlayer sacrificePlayer = mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE ? mainServerPlayer : secondServerPlayer;
+            
+            // 欺骗者复活，奉献者保持死亡
+            revivePlayer(betrayerPlayer, component);
+            
+            component.endDeathCountdown();
+            return;
+        }
+        
+        // 情况3：两个都选择奉献 -> 两个都复活，但时间只有60秒
+        if (mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE && 
+            secondChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE) {
+            
+            revivePlayer(mainServerPlayer, component);
+            revivePlayer(secondServerPlayer, component);
+            
+            // 给予60秒的额外时间限制（可在UI中显示）
+            component.endDeathCountdown();
+            return;
+        }
+    }
+
+    /**
+     * 复活玩家并恢复库存
+     */
+    private static void revivePlayer(ServerPlayer player, SplitPersonalityComponent component) {
+        // 复活玩家
+        player.setHealth(player.getMaxHealth());
+        
+        // 恢复库存
+        if (personalityInventories.containsKey(player.getUUID())) {
+            ItemStack[] inventory = personalityInventories.get(player.getUUID());
+            for (int i = 0; i < 36; i++) {
+                player.getInventory().setItem(i, inventory[i].copy());
+            }
+        }
+        
+        // 恢复ender箱
+        if (personalityEnderChests.containsKey(player.getUUID())) {
+            ItemStack[] enderChestItems = personalityEnderChests.get(player.getUUID());
+            PlayerEnderChestContainer enderChest = player.getEnderChestInventory();
+            for (int i = 0; i < 27; i++) {
+                enderChest.setItem(i, enderChestItems[i].copy());
+            }
+        }
+        
+        // 将玩家状态改为活跃
+        // 注意：这里可能需要与TMM游戏系统集成来正确处理复活
+    }
+
+    /**
+     * 获取另一个人格的玩家
+     */
+    public static ServerPlayer getOtherPersonality(ServerPlayer player) {
+        var component = SplitPersonalityComponent.KEY.get(player);
+        if (component == null || component.getMainPersonality() == null) return null;
+        
+        UUID otherPersonalityUUID;
+        if (component.isMainPersonality()) {
+            otherPersonalityUUID = component.getSecondPersonality();
+        } else {
+            otherPersonalityUUID = component.getMainPersonality();
+        }
+        
+        return (ServerPlayer) player.level().getPlayerByUUID(otherPersonalityUUID);
+    }
+
+    /**
+     * 检查玩家是否是观察者（未活跃的人格）
+     */
+    public static boolean isObserver(ServerPlayer player) {
+        var component = SplitPersonalityComponent.KEY.get(player);
+        if (component == null) return false;
+        return !component.isCurrentlyActive();
+    }
+
+    /**
+     * 清理库存数据
+     */
+    public static void cleanupInventoryData(UUID uuid) {
+        personalityInventories.remove(uuid);
+        personalityEnderChests.remove(uuid);
     }
 }

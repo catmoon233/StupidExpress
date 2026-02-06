@@ -6,6 +6,7 @@
   "client": [
     "modifier.lovers.LoversHudMixin",
     "modifier.refugee.RefugeeHudMixin",
+    "modifier.split_personality.SplitPersonalityHudMixin",
     "role.CustomWinnerAnnouncementMixin",
     "role.CustomWinnerTextRendering",
     "role.amnesiac.AmnesiacHudMixin",

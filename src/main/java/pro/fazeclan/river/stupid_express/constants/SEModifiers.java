@@ -1,10 +1,8 @@
 package pro.fazeclan.river.stupid_express.constants;
 
 import dev.doctor4t.trainmurdermystery.TMM;
-import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
@@ -23,6 +21,7 @@ import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
 import pro.fazeclan.river.stupid_express.modifier.allergist.cca.AllergistComponent;
+import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 
 public class SEModifiers {
 
@@ -128,7 +127,7 @@ public class SEModifiers {
             null,
             null,
             false,
-            false));
+            true));
 
     public static void init() {
         initModifiersCount();
@@ -161,37 +160,83 @@ public class SEModifiers {
 
             var level = lover.serverLevel();
 
-            // choose second lover
-            ServerPlayer loverTwo = null;
+            // choose second person
+            ServerPlayer personTwo = null;
             var arrs = new ArrayList<>(level.players());
             Collections.shuffle(arrs);
-            for (var can_i_love : arrs) {
-                if (GameFunctions.isPlayerAliveAndSurvival(can_i_love)) {
-                    if (!lover.equals(can_i_love)) {
-                        loverTwo = can_i_love;
+            for (var can_person : arrs) {
+                if (GameFunctions.isPlayerAliveAndSurvival(can_person)) {
+                    if (!lover.equals(can_person)) {
+                        personTwo = can_person;
                         break;
                     }
                 }
             }
-            if (loverTwo == null) {
-                loverTwo = lover;
+            if (personTwo == null) {
+                personTwo = lover;
             }
             // assign both lovers
-            var loverComponentOne = LoversComponent.KEY.get(lover);
+            var splitPersonalityComponent = SplitPersonalityComponent.KEY.get(lover);
 
-            loverComponentOne.setLover(loverTwo.getUUID());
-            loverComponentOne.sync();
+            splitPersonalityComponent.setMainPersonality(player.getUUID());
+            splitPersonalityComponent.setSecondPersonality(lover.getUUID());
+            splitPersonalityComponent.sync();
 
-            var loverComponentTwo = LoversComponent.KEY.get(loverTwo);
+            var splitPersonalityComponentTwo = SplitPersonalityComponent.KEY.get(personTwo);
 
-            loverComponentTwo.setLover(lover.getUUID());
-            loverComponentTwo.sync();
+            splitPersonalityComponentTwo.setMainPersonality(personTwo.getUUID());
+            splitPersonalityComponentTwo.setSecondPersonality(lover.getUUID());
+            splitPersonalityComponentTwo.sync();
 
             var worldModifierComponent = WorldModifierComponent.KEY.get(level);
-            worldModifierComponent.addModifier(loverTwo.getUUID(), LOVERS); // visually show lovers on the other player
+            worldModifierComponent.addModifier(personTwo.getUUID(), SPLIT_PERSONALITY); // visually show lovers on the other player
+        }));
+        /// SPLIT_PERSONALITY
+        ModifierAssigned.EVENT.register(((player, modifier) -> {
+            if (!modifier.equals(SPLIT_PERSONALITY)) {
+                return;
+            }
+            if (!(player instanceof ServerPlayer person)) {
+                return;
+            }
+
+            var level = person.serverLevel();
+
+            // 选择另一个平民作为第二人格
+            ServerPlayer secondPersonality = null;
+            var arrs = new ArrayList<>(level.players());
+            Collections.shuffle(arrs);
+            for (var candidate : arrs) {
+                if (GameFunctions.isPlayerAliveAndSurvival(candidate)) {
+                    if (!person.equals(candidate)) {
+                        secondPersonality = candidate;
+                        break;
+                    }
+                }
+            }
+            if (secondPersonality == null) {
+                secondPersonality = person;
+            }
+
+            // 为两个人格都设置SplitPersonalityComponent
+            var componentOne = SplitPersonalityComponent.KEY.get(person);
+            componentOne.setMainPersonality(person.getUUID());
+            componentOne.setSecondPersonality(secondPersonality.getUUID());
+            componentOne.setCurrentActivePerson(person.getUUID()); // 主人格是第一个被激活的
+            componentOne.sync();
+
+            var componentTwo = SplitPersonalityComponent.KEY.get(secondPersonality);
+            componentTwo.setMainPersonality(person.getUUID());
+            componentTwo.setSecondPersonality(secondPersonality.getUUID());
+            componentTwo.setCurrentActivePerson(person.getUUID()); // 主人格是第一个被激活的
+            componentTwo.sync();
+
+            var worldModifierComponent = WorldModifierComponent.KEY.get(level);
+            worldModifierComponent.addModifier(secondPersonality.getUUID(), SPLIT_PERSONALITY); // 给第二人格添加修饰符
         }));
 
         /// TINY & TALL & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT & SPLIT_PERSONALITY
+        /// TINY & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT &
         ModifierAssigned.EVENT.register(((player, modifier) -> {
             if (modifier.equals(TINY)) {
                 var worldModifierComponent = WorldModifierComponent.KEY.get(player.level());
@@ -239,11 +284,8 @@ public class SEModifiers {
                 knightComponent.setKnight(player.getUUID());
                 knightComponent.sync();
             }
-            if (modifier.equals(SPLIT_PERSONALITY)) {
-                var splitPersonalityComponent = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY.get(player);
-                splitPersonalityComponent.setSplitPersonality(player.getUUID());
-                splitPersonalityComponent.sync();
-            }
+
+
         }));
 
         ResetPlayerEvent.EVENT.register(player -> {
@@ -275,6 +317,8 @@ public class SEModifiers {
             knightComponent.sync();
             // Reset split personality component
             var splitPersonalityComponent = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY.get(player);
+            // 清理库存数据
+            pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler.cleanupInventoryData(player.getUUID());
             splitPersonalityComponent.reset();
             splitPersonalityComponent.sync();
             // Reset refugee component
