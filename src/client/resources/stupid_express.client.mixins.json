@@ -11,6 +11,7 @@
     "modifier.split_personality.SplitPersonalityPositionSyncMixin",
     "modifier.split_personality.SplitPersonalityPlayerHideMixin",
     "modifier.split_personality.SplitPersonalityInputBlockMixin",
+    "modifier.split_personality.InventoryScreenSplitPersonalityMixin",
     "role.CustomWinnerAnnouncementMixin",
     "role.CustomWinnerTextRendering",
     "role.amnesiac.AmnesiacHudMixin",

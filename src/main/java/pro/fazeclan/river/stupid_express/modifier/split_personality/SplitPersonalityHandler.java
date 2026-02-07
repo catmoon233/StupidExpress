@@ -88,6 +88,10 @@ public class SplitPersonalityHandler {
     /**
      * 处理死亡选择的结果
      */
+    public static void handleDeathChoicesPublic(ServerPlayer player, SplitPersonalityComponent component) {
+        handleDeathChoices(player, component);
+    }
+    
     private static void handleDeathChoices(ServerPlayer player, SplitPersonalityComponent component) {
         var mainChoice = component.getMainPersonalityChoice();
         var secondChoice = component.getSecondPersonalityChoice();

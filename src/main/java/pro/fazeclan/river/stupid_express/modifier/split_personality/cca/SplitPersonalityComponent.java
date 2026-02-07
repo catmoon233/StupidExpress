@@ -169,9 +169,6 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         if (isDeath) {
             return false;  // 死亡时不能切换
         }
-        if (isInDeathCountdown) {
-            return false;  // 死亡倒计时期间不能切换
-        }
         if (mainPersonality == null || secondPersonality == null) {
             return false;  // 两个人格都初始化才能切换
         }

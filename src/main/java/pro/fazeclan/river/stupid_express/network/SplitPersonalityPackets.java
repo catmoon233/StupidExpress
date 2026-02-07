@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
+import pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler;
 
 public class SplitPersonalityPackets {
     
@@ -49,14 +50,16 @@ public class SplitPersonalityPackets {
     }
 
     public static void registerPackets() {
+        // 注册选择payload
         PayloadTypeRegistry.playC2S().register(SplitPersonalityChoicePayload.ID, SplitPersonalityChoicePayload.CODEC);
 
+        // 处理选择payload
         ServerPlayNetworking.registerGlobalReceiver(SplitPersonalityChoicePayload.ID, (payload, context) -> {
             context.server().submit(() -> {
                 ServerPlayer player = context.player();
                 var component = SplitPersonalityComponent.KEY.get(player);
 
-                if (component == null || component.getMainPersonality() == null) {
+                if (component == null || component.getMainPersonality() == null || component.isDeath()) {
                     return;
                 }
 
@@ -77,7 +80,7 @@ public class SplitPersonalityPackets {
                 
                 // 检查是否两个人都已选择，如果是则处理结果
                 if (component.bothMadeChoice()) {
-                    SplitPersonalityHandler.handleDeathChoices(player, component);
+                    SplitPersonalityHandler.handleDeathChoicesPublic(player, component);
                 }
             });
         });

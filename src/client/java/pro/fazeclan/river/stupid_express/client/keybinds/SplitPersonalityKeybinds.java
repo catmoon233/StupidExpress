@@ -36,11 +36,7 @@ public class SplitPersonalityKeybinds {
             return;
         }
         
-        // 不在死亡倒计时期间切换
-        if (component.isInDeathCountdown()) {
-            player.displayClientMessage(Component.literal("§c死亡倒计时中，无法切换"), true);
-            return;
-        }
+        // 已经移除了死亡倒计时机制
         
         // 已死亡无法切换
         if (component.isDeath()) {

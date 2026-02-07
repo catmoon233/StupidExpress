@@ -1,26 +1,33 @@
 package pro.fazeclan.river.stupid_express.client.gui;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import pro.fazeclan.river.stupid_express.client.network.SplitPersonalityClientPackets;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
+import pro.fazeclan.river.stupid_express.network.SplitPersonalityChoicePayload;
 
 import java.awt.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class SplitPersonalityChoiceScreen extends Screen {
     
-    private static SplitPersonalityComponent.ChoiceType currentPlayerChoice = SplitPersonalityComponent.ChoiceType.SACRIFICE;
+    private SplitPersonalityComponent.ChoiceType currentPlayerChoice;
     private Player otherPlayer;
+    private SplitPersonalityComponent component;
     
     public SplitPersonalityChoiceScreen(Player otherPlayer) {
         super(Component.literal("双重人格选择"));
         this.otherPlayer = otherPlayer;
+        this.component = SplitPersonalityComponent.KEY.get(Minecraft.getInstance().player);
+        // 初始化当前选择为默认值或现有选择
+        this.currentPlayerChoice = component != null ? 
+            (component.isMainPersonality() ? 
+                component.getMainPersonalityChoice() : 
+                component.getSecondPersonalityChoice()) : 
+            SplitPersonalityComponent.ChoiceType.SACRIFICE;
     }
 
     @Override
@@ -30,35 +37,39 @@ public class SplitPersonalityChoiceScreen extends Screen {
         int centerX = this.width / 2;
         int centerY = this.height / 2;
 
+        // 根据CCA组件状态判断是否解锁选择
+        boolean canChoose = component != null && component.getMainPersonality() != null && !component.isDeath();
+        
         // 欺骗按钮
-        this.addRenderableWidget(Button.builder(Component.literal("欺骗 (Betray)"), button -> {
-            currentPlayerChoice = SplitPersonalityComponent.ChoiceType.BETRAY;
-            sendChoiceToServer(SplitPersonalityComponent.ChoiceType.BETRAY);
-            this.onClose();
+        Button betrayButton = Button.builder(Component.literal("欺骗 (Betray)"), button -> {
+            if (canChoose) {
+                currentPlayerChoice = SplitPersonalityComponent.ChoiceType.BETRAY;
+                sendChoiceToServer(SplitPersonalityComponent.ChoiceType.BETRAY);
+                this.onClose();
+            }
         })
                 .bounds(centerX - 105, centerY - 20, 100, 40)
-                .build());
+                .build();
+        betrayButton.active = canChoose;
+        this.addRenderableWidget(betrayButton);
 
         // 奉献按钮 (默认选中)
-        this.addRenderableWidget(Button.builder(Component.literal("奉献 (Sacrifice)"), button -> {
-            currentPlayerChoice = SplitPersonalityComponent.ChoiceType.SACRIFICE;
-            sendChoiceToServer(SplitPersonalityComponent.ChoiceType.SACRIFICE);
-            this.onClose();
+        Button sacrificeButton = Button.builder(Component.literal("奉献 (Sacrifice)"), button -> {
+            if (canChoose) {
+                currentPlayerChoice = SplitPersonalityComponent.ChoiceType.SACRIFICE;
+                sendChoiceToServer(SplitPersonalityComponent.ChoiceType.SACRIFICE);
+                this.onClose();
+            }
         })
                 .bounds(centerX + 5, centerY - 20, 100, 40)
-                .build());
-
-        // 显示当前选择状态
-        updateButtonStates();
-    }
-
-    private void updateButtonStates() {
-        // 可以在这里添加按钮状态的视觉反馈
+                .build();
+        sacrificeButton.active = canChoose;
+        this.addRenderableWidget(sacrificeButton);
     }
 
     private void sendChoiceToServer(SplitPersonalityComponent.ChoiceType choice) {
         int choiceValue = choice == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 0 : 1;
-        SplitPersonalityClientPackets.sendChoicePacket(choiceValue);
+        ClientPlayNetworking.send(new SplitPersonalityChoicePayload(choiceValue));
     }
 
     @Override
@@ -80,6 +91,26 @@ public class SplitPersonalityChoiceScreen extends Screen {
         guiGraphics.drawCenteredString(this.font, Component.literal(currentChoiceText),
             this.width / 2, this.height / 2 + 30, 
             currentPlayerChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 0x00FF00 : 0xFF0000);
+        
+        // 显示状态信息
+        String statusText;
+        int statusColor;
+        if (component == null) {
+            statusText = "未初始化双重人格组件";
+            statusColor = 0xFF0000;
+        } else if (component.getMainPersonality() == null) {
+            statusText = "未分配人格";
+            statusColor = 0xFF0000;
+        } else if (component.isDeath()) {
+            statusText = "已死亡，无法选择";
+            statusColor = 0xFF0000;
+        } else {
+            statusText = "可进行选择";
+            statusColor = 0x00FF00;
+        }
+        
+        guiGraphics.drawCenteredString(this.font, Component.literal(statusText),
+            this.width / 2, this.height / 2 + 50, statusColor);
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
@@ -94,11 +125,11 @@ public class SplitPersonalityChoiceScreen extends Screen {
         return false;
     }
 
-    public static SplitPersonalityComponent.ChoiceType getCurrentPlayerChoice() {
+    public SplitPersonalityComponent.ChoiceType getCurrentPlayerChoice() {
         return currentPlayerChoice;
     }
 
-    public static void setCurrentPlayerChoice(SplitPersonalityComponent.ChoiceType choice) {
-        currentPlayerChoice = choice;
+    public void setCurrentPlayerChoice(SplitPersonalityComponent.ChoiceType choice) {
+        this.currentPlayerChoice = choice;
     }
 }

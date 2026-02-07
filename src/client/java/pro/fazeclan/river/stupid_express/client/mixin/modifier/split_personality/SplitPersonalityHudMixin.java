@@ -61,10 +61,8 @@ public abstract class SplitPersonalityHudMixin {
         // 显示另一人格信息
         renderOtherPersonalityInfo(context, renderer, component, clientPlayer, x, y + 50);
 
-        // 如果在死亡倒计时中，显示选择按钮
-        if (component.isInDeathCountdown()) {
-            renderDeathChoiceUI(context, renderer, component, x, y + 65);
-        }
+        // 显示当前选择状态
+        renderChoiceStatus(context, renderer, component, x, y + 65);
 
         context.pose().popPose();
     }
@@ -105,19 +103,41 @@ public abstract class SplitPersonalityHudMixin {
         }
     }
 
-    private static void renderDeathChoiceUI(GuiGraphics context, Font renderer, SplitPersonalityComponent component, int x, int y) {
-        long remaining = component.getDeathCountdownRemainingTicks() / 20; // 转换为秒
-        String countdownText = String.format("§c死亡倒计时: §f%d§c秒", remaining);
-        context.drawString(renderer, countdownText, x, y, 0xFF5555);
-
-        // 显示选择提示
-        String choiceText = "§e[B]§e奉献 [V]§e欺骗";
-        context.drawString(renderer, choiceText, x + 80, y, 0xFFFF55);
-
-        // 显示已选择的状态
-        if (component.getMainPersonalityChoice() != SplitPersonalityComponent.ChoiceType.NONE) {
-            String choice = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? "§2奉献" : "§c欺骗";
-            context.drawString(renderer, String.format("§f你的选择: %s", choice), x, y + 12, 0xFFFFFF);
+    private static void renderChoiceStatus(GuiGraphics context, Font renderer, SplitPersonalityComponent component, int x, int y) {
+        // 显示当前选择状态
+        String choiceText;
+        int choiceColor;
+        
+        if (component.isMainPersonality()) {
+            choiceText = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
+                "§f当前选择: §2奉献" : "§f当前选择: §c欺骗";
+            choiceColor = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
+                0x00FF00 : 0xFF0000;
+        } else {
+            choiceText = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
+                "§f当前选择: §2奉献" : "§f当前选择: §c欺骗";
+            choiceColor = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
+                0x00FF00 : 0xFF0000;
         }
+        
+        context.drawString(renderer, choiceText, x, y, choiceColor);
+        
+        // 显示配对玩家的选择
+        String partnerChoiceText;
+        int partnerColor;
+        
+        if (component.isMainPersonality()) {
+            partnerChoiceText = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
+                "§f配对选择: §2奉献" : "§f配对选择: §c欺骗";
+            partnerColor = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
+                0x00FF00 : 0xFF0000;
+        } else {
+            partnerChoiceText = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
+                "§f配对选择: §2奉献" : "§f配对选择: §c欺骗";
+            partnerColor = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
+                0x00FF00 : 0xFF0000;
+        }
+        
+        context.drawString(renderer, partnerChoiceText, x, y + 12, partnerColor);
     }
 }
