@@ -20,7 +20,6 @@
     "role.initiate.InitiateCoinsOnMoodMixin",
     "role.initiate.InitiateKillMixin",
     "role.necromancer.NecromancerStatsMixin",
-    "modifier.refugee.RefugeeDeathMixin",
     "modifier.split_personality.SplitPersonalityServerInputBlockMixin"
   ],
   "injectors": {

@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
-
+import pro.fazeclan.river.stupid_express.modifier.refugee.cca.PlayerStatsBeforeRefugee;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
 import pro.fazeclan.river.stupid_express.network.SplitPersonalityPackets;
 import pro.fazeclan.river.stupid_express.role.initiate.InitiateUtils;
@@ -90,8 +90,8 @@ public class StupidExpress implements ModInitializer {
                 (player -> {
                     WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.level());
                     return modifierComponent.isModifier(player, SEModifiers.SPLIT_PERSONALITY);
-                })
-        );
+                }));
+        PlayerStatsBeforeRefugee.RegisterDeathEvent();
     }
 
     public static ResourceLocation id(String key) {
