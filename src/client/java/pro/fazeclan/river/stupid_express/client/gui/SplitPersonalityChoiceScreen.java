@@ -8,7 +8,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
-import pro.fazeclan.river.stupid_express.network.SplitPersonalityChoicePayload;
+import pro.fazeclan.river.stupid_express.network.SplitPersonalityPackets;
+
 
 import java.awt.*;
 
@@ -69,7 +70,7 @@ public class SplitPersonalityChoiceScreen extends Screen {
 
     private void sendChoiceToServer(SplitPersonalityComponent.ChoiceType choice) {
         int choiceValue = choice == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 0 : 1;
-        ClientPlayNetworking.send(new SplitPersonalityChoicePayload(choiceValue));
+        ClientPlayNetworking.send(new SplitPersonalityPackets.SplitPersonalityChoicePayload(choiceValue));
     }
 
     @Override

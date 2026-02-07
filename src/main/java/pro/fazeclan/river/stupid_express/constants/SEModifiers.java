@@ -267,11 +267,15 @@ public class SEModifiers {
             componentOne.setMainPersonality(person.getUUID());
             componentOne.setSecondPersonality(secondPersonality.getUUID());
             componentOne.setCurrentActivePerson(person.getUUID()); // 主人格是第一个被激活的
+            componentOne.setMainPersonalityChoice(SplitPersonalityComponent.ChoiceType.SACRIFICE);
+            componentOne.setSecondPersonalityChoice(SplitPersonalityComponent.ChoiceType.SACRIFICE);
             componentOne.sync();
 
             var componentTwo = SplitPersonalityComponent.KEY.get(secondPersonality);
             componentTwo.setMainPersonality(person.getUUID());
             componentTwo.setSecondPersonality(secondPersonality.getUUID());
+            componentTwo.setMainPersonalityChoice(SplitPersonalityComponent.ChoiceType.SACRIFICE);
+            componentTwo.setSecondPersonalityChoice(SplitPersonalityComponent.ChoiceType.SACRIFICE);
             componentTwo.setCurrentActivePerson(person.getUUID()); // 主人格是第一个被激活的
             componentTwo.sync();
 

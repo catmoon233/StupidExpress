@@ -123,21 +123,21 @@ public abstract class SplitPersonalityHudMixin {
         context.drawString(renderer, choiceText, x, y, choiceColor);
         
         // 显示配对玩家的选择
-        String partnerChoiceText;
-        int partnerColor;
+//        String partnerChoiceText;
+//        int partnerColor;
+//
+//        if (component.isMainPersonality()) {
+//            partnerChoiceText = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ?
+//                "§f配对选择: §2奉献" : "§f配对选择: §c欺骗";
+//            partnerColor = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ?
+//                0x00FF00 : 0xFF0000;
+//        } else {
+//            partnerChoiceText = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ?
+//                "§f配对选择: §2奉献" : "§f配对选择: §c欺骗";
+//            partnerColor = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ?
+//                0x00FF00 : 0xFF0000;
+//        }
         
-        if (component.isMainPersonality()) {
-            partnerChoiceText = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
-                "§f配对选择: §2奉献" : "§f配对选择: §c欺骗";
-            partnerColor = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
-                0x00FF00 : 0xFF0000;
-        } else {
-            partnerChoiceText = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
-                "§f配对选择: §2奉献" : "§f配对选择: §c欺骗";
-            partnerColor = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
-                0x00FF00 : 0xFF0000;
-        }
-        
-        context.drawString(renderer, partnerChoiceText, x, y + 12, partnerColor);
+ //       context.drawString(renderer, partnerChoiceText, x, y + 12, partnerColor);
     }
 }

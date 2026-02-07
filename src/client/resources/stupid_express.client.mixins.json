@@ -6,23 +6,24 @@
   "client": [
     "modifier.lovers.LoversHudMixin",
     "modifier.refugee.RefugeeHudMixin",
-    "modifier.split_personality.SplitPersonalityHudMixin",
-    "modifier.split_personality.SplitPersonalityVisibilityMixin",
-    "modifier.split_personality.SplitPersonalityPositionSyncMixin",
-    "modifier.split_personality.SplitPersonalityPlayerHideMixin",
-    "modifier.split_personality.SplitPersonalityInputBlockMixin",
+    "modifier.split_personality.InventoryMixin",
     "modifier.split_personality.InventoryScreenSplitPersonalityMixin",
+    "modifier.split_personality.SplitPersonalityHudMixin",
+    "modifier.split_personality.SplitPersonalityInputBlockMixin",
+    "modifier.split_personality.SplitPersonalityPlayerHideMixin",
+    "modifier.split_personality.SplitPersonalityPositionSyncMixin",
+    "modifier.split_personality.SplitPersonalityVisibilityMixin",
     "role.CustomWinnerAnnouncementMixin",
     "role.CustomWinnerTextRendering",
     "role.amnesiac.AmnesiacHudMixin",
+    "role.amnesiac.AmnesiacInstinctGlowMixin",
     "role.arsonist.ArsonistHudMixin",
     "role.arsonist.ArsonistInstinctMixin",
     "role.initiate.InitiateCoinMixin",
     "role.initiate.InitiateInstinctMixin",
     "role.initiate.InitiateShopMixin",
     "role.necromancer.NecromancerHudMixin",
-    "role.necromancer.NecromancerNoShopMixin",
-    "role.amnesiac.AmnesiacInstinctGlowMixin"
+    "role.necromancer.NecromancerNoShopMixin"
   ],
   "injectors": {
     "defaultRequire": 1

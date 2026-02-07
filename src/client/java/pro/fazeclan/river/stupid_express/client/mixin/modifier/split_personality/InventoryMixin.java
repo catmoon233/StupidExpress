@@ -3,40 +3,39 @@ package pro.fazeclan.river.stupid_express.client.mixin.modifier.split_personalit
 import dev.doctor4t.trainmurdermystery.client.gui.screen.ingame.LimitedHandledScreen;
 import dev.doctor4t.trainmurdermystery.client.gui.screen.ingame.LimitedInventoryScreen;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import org.spongepowered.asm.mixin.Final;
+import net.minecraft.world.inventory.InventoryMenu;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.Unique;
-import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.client.gui.widget.SplitPersonalityChoiceWidget;
+import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 
 /**
  * Mixin for InventoryScreen to add SplitPersonality choice functionality
  * 参考 SwapperScreenMixin 的设计模式，在背包界面中集成双重人格选择功能
  */
-@Mixin(LimitedInventoryScreen.class)
-public abstract class InventoryScreenSplitPersonalityMixin extends LimitedHandledScreen<InventoryMenu> {
+@Mixin(InventoryScreen.class)
+public abstract class InventoryMixin extends EffectRenderingInventoryScreen<InventoryMenu> {
 
 
-    
+
     @Unique
     private Button sacrificeButton;
     @Unique
     private Button betrayButton;
-    
+
     @Unique
     private SplitPersonalityComponent component;
 
-    public InventoryScreenSplitPersonalityMixin(InventoryMenu handler, Inventory inventory, Component title) {
+    public InventoryMixin(InventoryMenu handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
     }
 
@@ -55,7 +54,7 @@ public abstract class InventoryScreenSplitPersonalityMixin extends LimitedHandle
             SplitPersonalityChoiceWidget widgetFactory = new SplitPersonalityChoiceWidget(player);
             
             int buttonX = self.width / 2 - 110;
-            int buttonY = self.height / 2 + 60;
+            int buttonY = self.height / 2 + 120;
             
             // 创建并添加两个独立的按钮
             this.sacrificeButton = widgetFactory.createSacrificeButton(buttonX, buttonY);
