@@ -83,7 +83,6 @@ dependencies {
     modRuntimeOnly "maven.modrinth:simple-voice-chat:fabric-${voicechat_version}"
     modRuntimeOnly "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}:fabric-stub"
 
-    modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzyConfigVersion}"
 }
 
 processResources {

@@ -240,8 +240,8 @@ public class SEModifiers {
         /// TINY & TALL & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT & SPLIT_PERSONALITY
         /// TINY & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT &
         ModifierAssigned.EVENT.register(((player, modifier) -> {
+            var worldModifierComponent = WorldModifierComponent.KEY.get(player.level());
             if (modifier.equals(TINY)) {
-                var worldModifierComponent = WorldModifierComponent.KEY.get(player.level());
                 // Cannot assign TALL if player has TINY
                 if (worldModifierComponent.isModifier(player.getUUID(), TALL)) {
                     worldModifierComponent.removeModifier(player.getUUID(), TALL);
@@ -251,7 +251,6 @@ public class SEModifiers {
                 player.getAttribute(Attributes.SCALE).addPermanentModifier(tinyModifier);
             }
             if (modifier.equals(TALL)) {
-                var worldModifierComponent = WorldModifierComponent.KEY.get(player.level());
                 // Cannot assign TINY if player has TALL
                 if (worldModifierComponent.isModifier(player.getUUID(), TINY)) {
                     worldModifierComponent.removeModifier(player.getUUID(), TINY);
@@ -260,11 +259,14 @@ public class SEModifiers {
                 player.getAttribute(Attributes.SCALE).removeModifier(tallModifier);
                 player.getAttribute(Attributes.SCALE).addPermanentModifier(tallModifier);
             }
+            // Double-check: ensure TINY and TALL are never both present
+            if (worldModifierComponent.isModifier(player.getUUID(), TINY) && worldModifierComponent.isModifier(player.getUUID(), TALL)) {
+                // If both are present, remove TALL (arbitrary choice)
+                worldModifierComponent.removeModifier(player.getUUID(), TALL);
+                player.getAttribute(Attributes.SCALE).removeModifier(tallModifier);
+            }
             if (modifier.equals(FEATHER)) {
-                player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
-                        net.minecraft.world.effect.MobEffects.SLOW_FALLING,
-                        net.minecraft.world.effect.MobEffectInstance.INFINITE_DURATION,
-                        0, true, false));
+                // Feather modifier no longer has slow falling effect
             }
             if (modifier.equals(ALLERGIST)) {
                 var allergistComponent = AllergistComponent.KEY.get(player);
@@ -295,8 +297,6 @@ public class SEModifiers {
             player.getAttribute(Attributes.SCALE).removeModifier(tinyModifier);
             // Remove tall modifier
             player.getAttribute(Attributes.SCALE).removeModifier(tallModifier);
-            // Remove feather effect
-            player.removeEffect(net.minecraft.world.effect.MobEffects.SLOW_FALLING);
             // Reset lovers component
             var component = LoversComponent.KEY.get(player);
             component.reset();

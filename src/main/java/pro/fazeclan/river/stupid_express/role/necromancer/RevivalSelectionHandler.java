@@ -1,10 +1,13 @@
 package pro.fazeclan.river.stupid_express.role.necromancer;
 
+import de.maxhenkel.voicechat.api.Group;
+import de.maxhenkel.voicechat.api.VoicechatConnection;
 import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
+import dev.doctor4t.trainmurdermystery.compat.TrainVoicePlugin;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -17,6 +20,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.Harpymodloader;
+import org.jetbrains.annotations.NotNull;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
@@ -24,9 +28,19 @@ import pro.fazeclan.river.stupid_express.utils.RoleUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.UUID;
+
+import static dev.doctor4t.trainmurdermystery.compat.TrainVoicePlugin.*;
 
 public class RevivalSelectionHandler {
+    public static void removeVoice(@NotNull UUID player) {
+            VoicechatConnection connection = SERVER_API.getConnectionOf(player);
+            if (connection != null) {
+                    connection.setGroup(null);
+                }
 
+
+    }
     public static void init() {
         UseEntityCallback.EVENT.register(((player, level, interactionHand, entity, entityHitResult) -> {
             if (!(player instanceof ServerPlayer interacting)) {
@@ -80,6 +94,7 @@ public class RevivalSelectionHandler {
                     });
             revived.teleportTo(body.getX(), body.getY(), body.getZ());
             revived.setGameMode(GameType.ADVENTURE);
+            removeVoice(revived.getUUID());
             body.remove(Entity.RemovalReason.DISCARDED); // like it never existed
 
             RoleUtils.changeRole(revived, selectedRole);
