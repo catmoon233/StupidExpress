@@ -17,6 +17,7 @@ import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.agmas.harpymodloader.events.GameInitializeEvent;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import org.agmas.harpymodloader.events.ModifierAssigned;
+import org.agmas.harpymodloader.events.ModifierRemoved;
 import org.agmas.harpymodloader.events.ResetPlayerEvent;
 import org.agmas.harpymodloader.modifiers.HMLModifiers;
 import org.agmas.harpymodloader.modifiers.Modifier;
@@ -146,31 +147,34 @@ public class SEModifiers {
         ModdedRoleAssigned.EVENT.register(
                 (player, role) -> {
 
-                }
-        );
+                });
         GameInitializeEvent.EVENT.register(
                 (serverLevel, gameWorldComponent, serverPlayers) -> {
                     serverPlayers.forEach(
                             player -> {
-                                var splitPersonalityComponent2 = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY.get(player);
-                                pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler.cleanupInventoryData(player.getUUID());
+                                var splitPersonalityComponent2 = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY
+                                        .get(player);
+                                pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler
+                                        .cleanupInventoryData(player.getUUID());
                                 splitPersonalityComponent2.reset();
-                                SkinSplitPersonalityComponent skinSplitPersonalityComponent2 = SkinSplitPersonalityComponent.KEY.get(player);
+                                SkinSplitPersonalityComponent skinSplitPersonalityComponent2 = SkinSplitPersonalityComponent.KEY
+                                        .get(player);
                                 skinSplitPersonalityComponent2.clear();
-                            }
-                    );
-                }
-        );
-        ResetPlayerEvent.EVENT.register(player -> {
-                    var splitPersonalityComponent2 = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY.get(player);
-                    pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler.cleanupInventoryData(player.getUUID());
-                    splitPersonalityComponent2.reset();
-                    SkinSplitPersonalityComponent skinSplitPersonalityComponent2 = SkinSplitPersonalityComponent.KEY.get(player);
-                    skinSplitPersonalityComponent2.clear();
+                            });
                 });
+        ResetPlayerEvent.EVENT.register(player -> {
+            var splitPersonalityComponent2 = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY
+                    .get(player);
+            pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler
+                    .cleanupInventoryData(player.getUUID());
+            splitPersonalityComponent2.reset();
+            SkinSplitPersonalityComponent skinSplitPersonalityComponent2 = SkinSplitPersonalityComponent.KEY
+                    .get(player);
+            skinSplitPersonalityComponent2.clear();
+        });
         TMM.canCollide.add(p -> {
             var modifiers = WorldModifierComponent.KEY.get(p.level());
-            if(modifiers.isModifier(p.getUUID(), FEATHER)){
+            if (modifiers.isModifier(p.getUUID(), FEATHER)) {
                 return true;
             }
             return false;
@@ -178,7 +182,18 @@ public class SEModifiers {
     }
 
     public static void assignModifierComponents() {
-
+        ModifierRemoved.EVENT.register((player, modifier) -> {
+            if (modifier.equals(SPLIT_PERSONALITY)) {
+                var a = SplitPersonalityComponent.KEY.get(player);
+                if (a != null) {
+                    a.reset();
+                }
+                var b = SkinSplitPersonalityComponent.KEY.get(player);
+                if (b != null) {
+                    b.clear();
+                }
+            }
+        });
         /// LOVERS
         ModifierAssigned.EVENT.register(((player, modifier) -> {
             if (!modifier.equals(LOVERS)) {
@@ -268,7 +283,8 @@ public class SEModifiers {
             worldModifierComponent.addModifier(secondPersonality.getUUID(), SPLIT_PERSONALITY); // 给第二人格添加修饰符
         }));
 
-        /// TINY & TALL & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT & SPLIT_PERSONALITY
+        /// TINY & TALL & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT &
+        /// SPLIT_PERSONALITY
         /// TINY & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT &
         ModifierAssigned.EVENT.register(((player, modifier) -> {
             var worldModifierComponent = WorldModifierComponent.KEY.get(player.level());
@@ -291,7 +307,8 @@ public class SEModifiers {
                 player.getAttribute(Attributes.SCALE).addPermanentModifier(tallModifier);
             }
             // Double-check: ensure TINY and TALL are never both present
-            if (worldModifierComponent.isModifier(player.getUUID(), TINY) && worldModifierComponent.isModifier(player.getUUID(), TALL)) {
+            if (worldModifierComponent.isModifier(player.getUUID(), TINY)
+                    && worldModifierComponent.isModifier(player.getUUID(), TALL)) {
                 // If both are present, remove TALL (arbitrary choice)
                 worldModifierComponent.removeModifier(player.getUUID(), TALL);
                 player.getAttribute(Attributes.SCALE).removeModifier(tallModifier);
@@ -305,21 +322,23 @@ public class SEModifiers {
                 allergistComponent.sync();
             }
             if (modifier.equals(CURSED)) {
-                var cursedComponent = pro.fazeclan.river.stupid_express.modifier.cursed.cca.CursedComponent.KEY.get(player);
+                var cursedComponent = pro.fazeclan.river.stupid_express.modifier.cursed.cca.CursedComponent.KEY
+                        .get(player);
                 cursedComponent.setCursed(player.getUUID());
                 cursedComponent.sync();
             }
             if (modifier.equals(SECRETIVE)) {
-                var secretiveComponent = pro.fazeclan.river.stupid_express.modifier.secretive.cca.SecretiveComponent.KEY.get(player);
+                var secretiveComponent = pro.fazeclan.river.stupid_express.modifier.secretive.cca.SecretiveComponent.KEY
+                        .get(player);
                 secretiveComponent.setSecretive(player.getUUID());
                 secretiveComponent.sync();
             }
             if (modifier.equals(KNIGHT)) {
-                var knightComponent = pro.fazeclan.river.stupid_express.modifier.knight.cca.KnightComponent.KEY.get(player);
+                var knightComponent = pro.fazeclan.river.stupid_express.modifier.knight.cca.KnightComponent.KEY
+                        .get(player);
                 knightComponent.setKnight(player.getUUID());
                 knightComponent.sync();
             }
-
 
         }));
 
@@ -341,7 +360,8 @@ public class SEModifiers {
             cursedComponent.reset();
             cursedComponent.sync();
             // Reset secretive component
-            var secretiveComponent = pro.fazeclan.river.stupid_express.modifier.secretive.cca.SecretiveComponent.KEY.get(player);
+            var secretiveComponent = pro.fazeclan.river.stupid_express.modifier.secretive.cca.SecretiveComponent.KEY
+                    .get(player);
             secretiveComponent.reset();
             secretiveComponent.sync();
             // Reset knight component
@@ -349,9 +369,11 @@ public class SEModifiers {
             knightComponent.reset();
             knightComponent.sync();
             // Reset split personality component
-            var splitPersonalityComponent = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY.get(player);
+            var splitPersonalityComponent = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY
+                    .get(player);
             // 清理库存数据
-            pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler.cleanupInventoryData(player.getUUID());
+            pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler
+                    .cleanupInventoryData(player.getUUID());
             splitPersonalityComponent.reset();
             SkinSplitPersonalityComponent skinSplitPersonalityComponent = SkinSplitPersonalityComponent.KEY.get(player);
             skinSplitPersonalityComponent.clear();
@@ -361,6 +383,7 @@ public class SEModifiers {
             if (refugeeC != null) {
                 refugeeC.reset();
             }
+
         });
 
     }
@@ -383,16 +406,16 @@ public class SEModifiers {
         }
 
         /// TINY
-            StupidExpress.LOGGER.info("Modifier [Tiny] enabled in this round!");
-            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("tiny"), 5);
+        StupidExpress.LOGGER.info("Modifier [Tiny] enabled in this round!");
+        Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("tiny"), 5);
 
         /// TALL
-            StupidExpress.LOGGER.info("Modifier [Tall] enabled in this round!");
-            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("tall"), 4);
+        StupidExpress.LOGGER.info("Modifier [Tall] enabled in this round!");
+        Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("tall"), 4);
 
         /// FEATHER
-            StupidExpress.LOGGER.info("Modifier [Feather] enabled in this round!");
-            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("feather"), 2);
+        StupidExpress.LOGGER.info("Modifier [Feather] enabled in this round!");
+        Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("feather"), 2);
 
         /// MAGNATE
         if (Math.random() < 0.5) {
@@ -450,6 +473,7 @@ public class SEModifiers {
         } else {
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("split_personality"), 0);
         }
+
     }
 
 }
