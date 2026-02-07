@@ -15,10 +15,10 @@ import pro.fazeclan.river.stupid_express.StupidExpress;
 
 import java.util.UUID;
 
-public class SplitPersonalityComponent implements AutoSyncedComponent , ServerTickingComponent {
+public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTickingComponent {
 
-    public static final ComponentKey<SplitPersonalityComponent> KEY =
-            ComponentRegistry.getOrCreate(StupidExpress.id("split_personality"), SplitPersonalityComponent.class);
+    public static final ComponentKey<SplitPersonalityComponent> KEY = ComponentRegistry
+            .getOrCreate(StupidExpress.id("split_personality"), SplitPersonalityComponent.class);
 
     public enum ChoiceType {
         NONE, // 未选择
@@ -66,6 +66,18 @@ public class SplitPersonalityComponent implements AutoSyncedComponent , ServerTi
     private long deathCountdownStart = -1;
     private ChoiceType mainPersonalityChoice = ChoiceType.NONE;
     private ChoiceType secondPersonalityChoice = ChoiceType.NONE;
+
+    // 临时复活相关 (60秒限制)
+    private long temporaryRevivalStart = -1;
+
+    public long getTemporaryRevivalStart() {
+        return temporaryRevivalStart;
+    }
+
+    public void setTemporaryRevivalStart(long temporaryRevivalStart) {
+        this.temporaryRevivalStart = temporaryRevivalStart;
+        sync();
+    }
 
     public boolean isDeath() {
         return isDeath;
@@ -150,29 +162,27 @@ public class SplitPersonalityComponent implements AutoSyncedComponent , ServerTi
         if (!canSwitch()) {
             return;
         }
-        
+
         // 计算新的活跃人格（切换控制权）
-        UUID newActivePerson = currentActivePerson.equals(mainPersonality) ? 
-            secondPersonality : mainPersonality;
-        
+        UUID newActivePerson = currentActivePerson.equals(mainPersonality) ? secondPersonality : mainPersonality;
+
         // 更新切换时间
         long currentTime = System.currentTimeMillis();
         this.lastSwitchTime = currentTime;
         this.currentActivePerson = newActivePerson;
         this.sync();
-        
+
         // 同步另一个人格的状态（确保两个人格的currentActivePerson完全一致）
         Player otherPlayer = player.level().getPlayerByUUID(
-            currentActivePerson.equals(mainPersonality) ? secondPersonality : mainPersonality
-        );
-        if (mainPersonality != null && mainPersonality.equals(player.getUUID())){
-            if (player instanceof ServerPlayer serverPlayer){
+                currentActivePerson.equals(mainPersonality) ? secondPersonality : mainPersonality);
+        if (mainPersonality != null && mainPersonality.equals(player.getUUID())) {
+            if (player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.setGameMode(GameType.ADVENTURE);
                 serverPlayer.setCamera(serverPlayer);
             }
         }
-        if (mainPersonality != null && mainPersonality.equals(otherPlayer.getUUID())){
-            if (otherPlayer instanceof ServerPlayer serverPlayer){
+        if (mainPersonality != null && mainPersonality.equals(otherPlayer.getUUID())) {
+            if (otherPlayer instanceof ServerPlayer serverPlayer) {
                 serverPlayer.setGameMode(GameType.ADVENTURE);
                 serverPlayer.setCamera(serverPlayer);
             }
@@ -207,7 +217,8 @@ public class SplitPersonalityComponent implements AutoSyncedComponent , ServerTi
     }
 
     public long getDeathCountdownRemainingTicks() {
-        if (!isInDeathCountdown) return 0;
+        if (!isInDeathCountdown)
+            return 0;
         long elapsed = System.currentTimeMillis() - deathCountdownStart;
         long remaining = 60000 - elapsed; // 60秒 = 60000毫秒
         return Math.max(0, remaining / 50); // 转换为游戏刻 (1刻 = 50ms)
@@ -245,6 +256,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent , ServerTi
         this.deathCountdownStart = -1;
         this.mainPersonalityChoice = ChoiceType.NONE;
         this.secondPersonalityChoice = ChoiceType.NONE;
+        this.temporaryRevivalStart = -1;
         sync();
     }
 
@@ -278,8 +290,11 @@ public class SplitPersonalityComponent implements AutoSyncedComponent , ServerTi
         if (tag.contains("second_choice")) {
             this.secondPersonalityChoice = ChoiceType.valueOf(tag.getString("second_choice"));
         }
-        if (tag.contains("is_death")){
+        if (tag.contains("is_death")) {
             this.isDeath = tag.getBoolean("is_death");
+        }
+        if (tag.contains("temp_revival_start")) {
+            this.temporaryRevivalStart = tag.getLong("temp_revival_start");
         }
     }
 
@@ -300,6 +315,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent , ServerTi
         tag.putString("main_choice", this.mainPersonalityChoice.name());
         tag.putString("second_choice", this.secondPersonalityChoice.name());
         tag.putBoolean("is_death", this.isDeath);
+        tag.putLong("temp_revival_start", this.temporaryRevivalStart);
     }
 
     @Override
@@ -313,14 +329,29 @@ public class SplitPersonalityComponent implements AutoSyncedComponent , ServerTi
                 switchPersonality();
             }
         }
-        if (!isInDeathCountdown && mainPersonality != null && isSecondPersonality()) {
-            if (player instanceof ServerPlayer serverPlayer){
-                serverPlayer.setGameMode(GameType.SPECTATOR);
-                serverPlayer.serverLevel().players().forEach(player -> {
-                    if (player.getGameProfile().getId().equals(mainPersonality)) {
-                        serverPlayer.setCamera( player);
+        // 检查是否是非活跃人格，如果是，则设置为旁观者并锁定视角
+        if (!isInDeathCountdown && currentActivePerson != null && !currentActivePerson.equals(player.getUUID())) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                if (serverPlayer.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) {
+                    serverPlayer.setGameMode(GameType.SPECTATOR);
+                }
+
+                // 寻找活跃人格并锁定视角
+                serverPlayer.serverLevel().players().forEach(p -> {
+                    if (p.getUUID().equals(currentActivePerson)) {
+                        if (serverPlayer.getCamera() != p) {
+                            serverPlayer.setCamera(p);
+                        }
                     }
                 });
+            }
+        } else if (!isInDeathCountdown && currentActivePerson != null && currentActivePerson.equals(player.getUUID())) {
+            // 如果是活跃人格，确保不是旁观者模式
+            if (player instanceof ServerPlayer serverPlayer) {
+                if (serverPlayer.gameMode.getGameModeForPlayer() == GameType.SPECTATOR) {
+                    serverPlayer.setGameMode(GameType.SURVIVAL); // 或者 ADVENTURE，取决于游戏规则
+                    serverPlayer.setCamera(serverPlayer);
+                }
             }
         }
         // 检查死亡倒计时是否结束

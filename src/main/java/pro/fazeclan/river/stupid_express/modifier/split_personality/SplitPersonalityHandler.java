@@ -20,23 +20,23 @@ public class SplitPersonalityHandler {
     // 存储每对双重人格的库存和ender箱
     private static final Map<UUID, ItemStack[]> personalityInventories = new HashMap<>();
     private static final Map<UUID, ItemStack[]> personalityEnderChests = new HashMap<>();
-    
+
     // 监听双重人格的替换者
     private static final Set<UUID> switchingWatchers = new HashSet<>();
 
     public static void init() {
         // 注册死亡事件 - 处理双重人格死亡时的倒计时选择
         OnPlayerDeath.EVENT.register((victim, deathReason) -> {
-            if (!(victim instanceof ServerPlayer serverVictim)) return;
-            
+            if (!(victim instanceof ServerPlayer serverVictim))
+                return;
+
             var component = SplitPersonalityComponent.KEY.get(serverVictim);
-            
+
             // 检查是否是双重人格
             if (component.getMainPersonality() == null || component.getSecondPersonality() == null) {
                 return;
             }
 
-            
             // 启动死亡倒计时
             component.startDeathCountdown();
 
@@ -47,7 +47,7 @@ public class SplitPersonalityHandler {
                     inventory[i] = person.getInventory().getItem(i).copy();
                 }
                 personalityInventories.put(serverVictim.getUUID(), inventory);
-                
+
                 // 保存ender箱
                 PlayerEnderChestContainer enderChest = person.getEnderChestInventory();
                 ItemStack[] enderChestItems = new ItemStack[27];
@@ -56,19 +56,34 @@ public class SplitPersonalityHandler {
                 }
                 personalityEnderChests.put(serverVictim.getUUID(), enderChestItems);
             }
-            component.setDeath( true);
+            component.setDeath(true);
         });
 
         // 监听选择逻辑
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 var component = SplitPersonalityComponent.KEY.get(player);
-                
-                if (component == null || component.getMainPersonality() == null) continue;
-                
+
+                if (component == null || component.getMainPersonality() == null)
+                    continue;
+
                 // 检查倒计时是否结束
                 if (component.isInDeathCountdown() && component.getDeathCountdownRemainingTicks() <= 0) {
                     handleDeathChoices(player, component);
+                }
+
+                // 检查临时复活是否超时 (60秒)
+                if (component.getTemporaryRevivalStart() > 0) {
+                    long elapsed = System.currentTimeMillis() - component.getTemporaryRevivalStart();
+                    if (elapsed >= 60000) {
+                        // 超时，强制死亡
+                        component.setTemporaryRevivalStart(-1); // 防止重复杀死
+                        if (GameFunctions.isPlayerAliveAndSurvival(player)) {
+                            GameFunctions.killPlayer(player, true, null);
+                            player.displayClientMessage(net.minecraft.network.chat.Component.literal("§c你的临时生命已耗尽！"),
+                                    true);
+                        }
+                    }
                 }
             }
         });
@@ -80,61 +95,78 @@ public class SplitPersonalityHandler {
     private static void handleDeathChoices(ServerPlayer player, SplitPersonalityComponent component) {
         var mainChoice = component.getMainPersonalityChoice();
         var secondChoice = component.getSecondPersonalityChoice();
-        
+
         // 获取两个人格的玩家对象
         Player mainPlayer = player.level().getPlayerByUUID(component.getMainPersonality());
         Player secondPlayer = player.level().getPlayerByUUID(component.getSecondPersonality());
-        
-        if (mainPlayer == null || secondPlayer == null || !(mainPlayer instanceof ServerPlayer) || !(secondPlayer instanceof ServerPlayer)) {
+
+        if (mainPlayer == null || secondPlayer == null || !(mainPlayer instanceof ServerPlayer)
+                || !(secondPlayer instanceof ServerPlayer)) {
             return;
         }
-        
+
         ServerPlayer mainServerPlayer = (ServerPlayer) mainPlayer;
         ServerPlayer secondServerPlayer = (ServerPlayer) secondPlayer;
-        
+
         // 情况1：两个都选择欺骗 -> 直接死亡
-        if (mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY && 
-            secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
+        if (mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY &&
+                secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
             // 双双死亡，不需要做任何操作 (已经死了)
 
             component.endDeathCountdown();
             return;
         }
-        
+
         // 情况2：一个欺骗一个奉献
-        if ((mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY && secondChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE) ||
-            (mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE && secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY)) {
-            
-            ServerPlayer betrayerPlayer = mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY ? mainServerPlayer : secondServerPlayer;
-            ServerPlayer sacrificePlayer = mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE ? mainServerPlayer : secondServerPlayer;
-            
+        if ((mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY
+                && secondChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE) ||
+                (mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE
+                        && secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY)) {
+
+            ServerPlayer betrayerPlayer = mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY ? mainServerPlayer
+                    : secondServerPlayer;
+            ServerPlayer sacrificePlayer = mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE
+                    ? mainServerPlayer
+                    : secondServerPlayer;
+
             // 欺骗者复活，奉献者保持死亡
             revivePlayer(betrayerPlayer, component);
-            if (GameFunctions.isPlayerAliveAndSurvival( sacrificePlayer)) {
+            if (GameFunctions.isPlayerAliveAndSurvival(sacrificePlayer)) {
                 GameFunctions.killPlayer(sacrificePlayer, true, null);
             }
             component.endDeathCountdown();
-            if (component.getPlayer()==betrayerPlayer){
-                component.setDeath( false);
+            if (component.getPlayer() == betrayerPlayer) {
+                component.setDeath(false);
             }
             return;
         }
-        
+
         // 情况3：两个都选择奉献 -> 两个都复活，但时间只有60秒
-        if (mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE && 
-            secondChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE) {
-            
+        if (mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE &&
+                secondChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE) {
+
             revivePlayer(mainServerPlayer, component);
             revivePlayer(secondServerPlayer, component);
-            if (component.getPlayer()==secondServerPlayer){
-                component.setDeath( false);
+            if (component.getPlayer() == secondServerPlayer) {
+                component.setDeath(false);
             }
-            if (component.getPlayer()==mainServerPlayer){
-                component.setDeath( false);
+            if (component.getPlayer() == mainServerPlayer) {
+                component.setDeath(false);
             }
 
             // 给予60秒的额外时间限制（可在UI中显示）
             component.endDeathCountdown();
+
+            // 设置临时复活开始时间
+            long now = System.currentTimeMillis();
+            var mainComp = SplitPersonalityComponent.KEY.get(mainServerPlayer);
+            var secondComp = SplitPersonalityComponent.KEY.get(secondServerPlayer);
+
+            if (mainComp != null)
+                mainComp.setTemporaryRevivalStart(now);
+            if (secondComp != null)
+                secondComp.setTemporaryRevivalStart(now);
+
             return;
         }
 
@@ -146,10 +178,10 @@ public class SplitPersonalityHandler {
     private static void revivePlayer(ServerPlayer player, SplitPersonalityComponent component) {
         // 复活玩家
         player.setHealth(player.getMaxHealth());
-        
+
         // 消除所有负面效果
         player.removeAllEffects();
-        
+
         // 清空并恢复库存
         player.getInventory().clearContent();
         if (personalityInventories.containsKey(player.getUUID())) {
@@ -161,7 +193,7 @@ public class SplitPersonalityHandler {
                 }
             }
         }
-        
+
         // 恢复ender箱
         if (personalityEnderChests.containsKey(player.getUUID())) {
             ItemStack[] enderChestItems = personalityEnderChests.get(player.getUUID());
@@ -173,7 +205,7 @@ public class SplitPersonalityHandler {
                 }
             }
         }
-        
+
         // 发送重生包到客户端
         player.setRespawnPosition(player.level().dimension(), player.blockPosition(), 0f, true, false);
     }
@@ -183,15 +215,16 @@ public class SplitPersonalityHandler {
      */
     public static ServerPlayer getOtherPersonality(ServerPlayer player) {
         var component = SplitPersonalityComponent.KEY.get(player);
-        if (component == null || component.getMainPersonality() == null) return null;
-        
+        if (component == null || component.getMainPersonality() == null)
+            return null;
+
         UUID otherPersonalityUUID;
         if (component.isMainPersonality()) {
             otherPersonalityUUID = component.getSecondPersonality();
         } else {
             otherPersonalityUUID = component.getMainPersonality();
         }
-        
+
         return (ServerPlayer) player.level().getPlayerByUUID(otherPersonalityUUID);
     }
 
@@ -200,7 +233,8 @@ public class SplitPersonalityHandler {
      */
     public static boolean isObserver(ServerPlayer player) {
         var component = SplitPersonalityComponent.KEY.get(player);
-        if (component == null) return false;
+        if (component == null)
+            return false;
         return !component.isCurrentlyActive();
     }
 
