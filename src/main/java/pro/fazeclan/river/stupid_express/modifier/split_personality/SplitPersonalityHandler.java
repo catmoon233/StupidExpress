@@ -1,6 +1,7 @@
 package pro.fazeclan.river.stupid_express.modifier.split_personality;
 
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.event.AllowPlayerDeath;
 import dev.doctor4t.trainmurdermystery.event.OnPlayerDeath;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -8,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
@@ -26,17 +28,21 @@ public class SplitPersonalityHandler {
 
     public static void init() {
         // 注册死亡事件 - 处理双重人格死亡时的倒计时选择
-        OnPlayerDeath.EVENT.register((victim, deathReason) -> {
+        AllowPlayerDeath.EVENT.register((victim, deathReason) -> {
             if (!(victim instanceof ServerPlayer serverVictim))
-                return;
+                return true;
 
             var component = SplitPersonalityComponent.KEY.get(serverVictim);
 
             // 检查是否是双重人格
             if (component.getMainPersonality() == null || component.getSecondPersonality() == null) {
-                return;
+                return true;
             }
-
+            if (component.getTemporaryRevivalStartTick() >0){
+                component.reset();
+                return true;
+            }
+            component.setDeath(true);
             // 直接处理死亡选择逻辑
             handleDeathChoices(serverVictim, component);
 
@@ -54,7 +60,8 @@ public class SplitPersonalityHandler {
                 enderChestItems[i] = enderChest.getItem(i).copy();
             }
             personalityEnderChests.put(serverVictim.getUUID(), enderChestItems);
-            component.setDeath(true);
+
+            return false;
         });
 
         // 监听选择逻辑
@@ -69,13 +76,13 @@ public class SplitPersonalityHandler {
 
                 // 检查临时复活是否超时 (60秒 = 1200刻)
                 if (component.getTemporaryRevivalStartTick() > 0 && player.level() != null) {
-                    long currentTick = player.level().getGameTime();
-                    long elapsedTicks = currentTick - component.getTemporaryRevivalStartTick();
-                    if (elapsedTicks >= 1200) {
+
+                    if (component.getTemporaryRevivalStartTick( ) ==1) {
                         // 超时，强制死亡
                         component.setTemporaryRevivalStartTick(-1); // 防止重复杀死
                         if (GameFunctions.isPlayerAliveAndSurvival(player)) {
                             GameFunctions.killPlayer(player, true, null);
+                            component.reset();
                             player.displayClientMessage(net.minecraft.network.chat.Component.literal("§c你的临时生命已耗尽！"),
                                     true);
                         }
@@ -112,6 +119,14 @@ public class SplitPersonalityHandler {
         if (mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY &&
                 secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
             // 双双死亡，不需要做任何操作 (已经死了)
+            GameFunctions.killPlayer(mainServerPlayer, true, null);
+            GameFunctions.killPlayer(secondServerPlayer, true, null);
+            component.reset();
+            SplitPersonalityComponent.KEY.get(secondServerPlayer).reset();
+            
+            // 添加消息提示
+            mainServerPlayer.displayClientMessage(net.minecraft.network.chat.Component.literal("§c你们都选择了欺骗，双双死亡！"), true);
+            secondServerPlayer.displayClientMessage(net.minecraft.network.chat.Component.literal("§c你们都选择了欺骗，双双死亡！"), true);
             return;
         }
 
@@ -131,10 +146,19 @@ public class SplitPersonalityHandler {
             revivePlayer(betrayerPlayer, component);
             if (GameFunctions.isPlayerAliveAndSurvival(sacrificePlayer)) {
                 GameFunctions.killPlayer(sacrificePlayer, true, null);
+                SplitPersonalityComponent.KEY.get(secondServerPlayer).reset();
+                component.reset();
             }
             if (component.getPlayer() == betrayerPlayer) {
+                SplitPersonalityComponent.KEY.get(secondServerPlayer).reset();
                 component.setDeath(false);
+                component.reset();
+
             }
+            
+            // 添加消息提示
+            betrayerPlayer.displayClientMessage(net.minecraft.network.chat.Component.literal("§a你选择了欺骗，成功复活！"), true);
+            sacrificePlayer.displayClientMessage(net.minecraft.network.chat.Component.literal("§c你选择了奉献，不幸死亡！"), true);
             return;
         }
 
@@ -156,13 +180,20 @@ public class SplitPersonalityHandler {
             var secondComp = SplitPersonalityComponent.KEY.get(secondServerPlayer);
 
             if (mainComp != null)
-                mainComp.setTemporaryRevivalStartTick(mainComp.getBaseTickCounter());
+                mainComp.setTemporaryRevivalStartTick(1200);
             if (secondComp != null)
-                secondComp.setTemporaryRevivalStartTick(secondComp.getBaseTickCounter());
+                secondComp.setTemporaryRevivalStartTick(1200);
 
+            mainServerPlayer.setGameMode(GameType.ADVENTURE);
+            secondServerPlayer.setGameMode(GameType.ADVENTURE);
+            
+            // 添加消息提示
+            mainServerPlayer.displayClientMessage(net.minecraft.network.chat.Component.literal("§a你们都选择了奉献，双双复活！但只有60秒的时间..."), true);
+            secondServerPlayer.displayClientMessage(net.minecraft.network.chat.Component.literal("§a你们都选择了奉献，双双复活！但只有60秒的时间..."), true);
             return;
         }
     }
+
 
     /**
      * 复活玩家并恢复库存

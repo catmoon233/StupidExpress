@@ -44,7 +44,7 @@ public abstract class InventoryMixin extends EffectRenderingInventoryScreen<Inve
      */
     @Inject(method = "init", at = @At("HEAD"))
     private void stupid_express$onInit(CallbackInfo ci) {
-        LimitedInventoryScreen self = (LimitedInventoryScreen) (Object) this;
+        InventoryScreen self = (InventoryScreen) (Object) this;
 
         Player player = this.minecraft.player;
         this.component = SplitPersonalityComponent.KEY.get(player);
@@ -60,8 +60,8 @@ public abstract class InventoryMixin extends EffectRenderingInventoryScreen<Inve
             this.sacrificeButton = widgetFactory.createSacrificeButton(buttonX, buttonY);
             this.betrayButton = widgetFactory.createBetrayButton(buttonX + 110, buttonY);
             
-            self.addRenderableWidget(this.sacrificeButton);
-            self.addRenderableWidget(this.betrayButton);
+            this.addRenderableWidget(this.sacrificeButton);
+            this.addRenderableWidget(this.betrayButton);
         }
     }
     
@@ -70,7 +70,7 @@ public abstract class InventoryMixin extends EffectRenderingInventoryScreen<Inve
      */
     @Inject(method = "render", at = @At("TAIL"))
     private void stupid_express$onRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        LimitedInventoryScreen self = (LimitedInventoryScreen) (Object) this;
+        InventoryScreen self = (InventoryScreen) (Object) this;
 
         Player player = this.minecraft.player;
         if (component == null) {

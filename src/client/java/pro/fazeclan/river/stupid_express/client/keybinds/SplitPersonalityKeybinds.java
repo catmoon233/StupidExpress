@@ -14,7 +14,7 @@ public class SplitPersonalityKeybinds {
     public static final KeyMapping SWITCH_PERSONALITY_KEY = KeyBindingHelper.registerKeyBinding(
             new KeyMapping(
                     "key.stupid_express.switch_personality",
-                    GLFW.GLFW_KEY_P,
+                    GLFW.GLFW_KEY_Y,
                     "category.stupid_express"));
 
     public static void registerKeyPressCallbacks() {

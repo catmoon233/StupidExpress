@@ -11,6 +11,7 @@ import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 
@@ -34,15 +35,22 @@ public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
         // if (players.interactionManager.getGameMode().equals(GameMode.SPECTATOR)) {
         players.level().players().forEach((p) -> {
             if (p != players) {
-                    if (modifierComponent.isModifier(p, SEModifiers.SPLIT_PERSONALITY))
+                    if (modifierComponent.isModifier(p, SEModifiers.SPLIT_PERSONALITY)) {
                         if (modifierComponent.isModifier(players, SEModifiers.SPLIT_PERSONALITY)) {
-                                VoicechatConnection con = api.getConnectionOf(p.getUUID());
-                                api.sendLocationalSoundPacketTo(con, event.getPacket().locationalSoundPacketBuilder()
-                                        .position(api.createPosition(p.getX(), p.getY(), p.getZ()))
-                                        .distance((float) api.getVoiceChatDistance())
-                                        .build());
-                    }
-
+                            VoicechatConnection con = api.getConnectionOf(p.getUUID());
+                            api.sendLocationalSoundPacketTo(con, event.getPacket().locationalSoundPacketBuilder()
+                                    .position(api.createPosition(p.getX(), p.getY(), p.getZ()))
+                                    .distance((float) api.getVoiceChatDistance())
+                                    .build());
+                        }
+//                    }else {
+//                        if (p instanceof ServerPlayer serverPlayer){
+//                            if (serverPlayer.gameMode.getGameModeForPlayer() == GameType.SPECTATOR){
+//                                VoicechatConnection con = api.getConnectionOf(players);
+//                                api.
+//                            }
+//                        }
+//                    }
             }
             // if (gameWorldComponent.isRole(p,
             // Noellesroles.THE_INSANE_DAMNED_PARANOID_KILLER_OF_DOOM_DEATH_DESTRUCTION_AND_WAFFLES)

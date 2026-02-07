@@ -47,7 +47,7 @@ public abstract class SplitPersonalityHudMixin {
         int y = screenHeight - 120;
 
         // 绘制背景面板
-        context.fill(x - 5, y - 5, x + 205, y + 95, 0x80000000);
+        context.fill(x - 5, y - 5, x + 205, y + 110, 0x80000000);
 
         // 显示双重人格状态标题
         context.drawString(renderer, "§6双重人格", x, y, 0xFFFF55);
@@ -58,11 +58,14 @@ public abstract class SplitPersonalityHudMixin {
         // 显示自动切换倒计时
         renderSwitchTimer(context, renderer, component, x, y + 35);
 
+        // 显示复活倒计时
+        renderRevivalTimer(context, renderer, component, x, y + 50);
+
         // 显示另一人格信息
-        renderOtherPersonalityInfo(context, renderer, component, clientPlayer, x, y + 50);
+        renderOtherPersonalityInfo(context, renderer, component, clientPlayer, x, y + 65);
 
         // 显示当前选择状态
-        renderChoiceStatus(context, renderer, component, x, y + 65);
+        renderChoiceStatus(context, renderer, component, x, y + 80);
 
         context.pose().popPose();
     }
@@ -83,11 +86,20 @@ public abstract class SplitPersonalityHudMixin {
     }
 
     private static void renderSwitchTimer(GuiGraphics context, Font renderer, SplitPersonalityComponent component, int x, int y) {
-        long remaining = component.canSwitch() ? 0 : (1200-(component. getBaseTickCounter()))/20;
+        long remaining = component.canSwitch() ? 0 : (1200-(component.getBaseTickCounter()))/20;
         if (remaining < 0) remaining = 0;
 
-        String timerText = String.format("§9切换冷却: §f%d§9秒 (§fP§9键)", remaining);
+        String timerText = String.format("§9切换冷却: §f%d§9秒 (§fY§9键)", remaining);
         context.drawString(renderer, timerText, x, y, 0x99BBFF);
+    }
+
+    private static void renderRevivalTimer(GuiGraphics context, Font renderer, SplitPersonalityComponent component, int x, int y) {
+        if (component.getTemporaryRevivalStartTick()<=0)return;
+        long remaining = ( component.getTemporaryRevivalStartTick()) / 20;
+        if (remaining < 0) remaining = 0;
+
+        String timerText = String.format("§a生命倒计时: §f%d§a秒", remaining);
+        context.drawString(renderer, timerText, x, y, 0x55FF55);
     }
 
     private static void renderOtherPersonalityInfo(GuiGraphics context, Font renderer, SplitPersonalityComponent component, LocalPlayer currentPlayer, int x, int y) {
@@ -114,12 +126,12 @@ public abstract class SplitPersonalityHudMixin {
             choiceColor = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
                 0x00FF00 : 0xFF0000;
         } else {
-            choiceText = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
+            choiceText = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ?
                 "§f当前选择: §2奉献" : "§f当前选择: §c欺骗";
-            choiceColor = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
+            choiceColor = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ?
                 0x00FF00 : 0xFF0000;
         }
-        
+
         context.drawString(renderer, choiceText, x, y, choiceColor);
         
         // 显示配对玩家的选择

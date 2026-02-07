@@ -84,10 +84,10 @@ public class SplitPersonalityPackets {
                 }
                 component.sync();
                 
-                // 检查是否两个人都已选择，如果是则处理结果
-                if (component.bothMadeChoice()) {
-                    SplitPersonalityHandler.handleDeathChoicesPublic(player, component);
-                }
+//                // 检查是否两个人都已选择，如果是则处理结果
+//                if (component.bothMadeChoice()) {
+//                    SplitPersonalityHandler.handleDeathChoicesPublic(player, component);
+//                }
             });
         });
     }
