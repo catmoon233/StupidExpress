@@ -41,21 +41,19 @@ public class SplitPersonalityHandler {
             component.startDeathCountdown();
 
             // 保存当前库存
-            if (serverVictim instanceof ServerPlayer person) {
-                ItemStack[] inventory = new ItemStack[36]; // 标准库存大小
-                for (int i = 0; i < 36; i++) {
-                    inventory[i] = person.getInventory().getItem(i).copy();
-                }
-                personalityInventories.put(serverVictim.getUUID(), inventory);
-
-                // 保存ender箱
-                PlayerEnderChestContainer enderChest = person.getEnderChestInventory();
-                ItemStack[] enderChestItems = new ItemStack[27];
-                for (int i = 0; i < 27; i++) {
-                    enderChestItems[i] = enderChest.getItem(i).copy();
-                }
-                personalityEnderChests.put(serverVictim.getUUID(), enderChestItems);
+            ItemStack[] inventory = new ItemStack[36]; // 标准库存大小
+            for (int i = 0; i < 36; i++) {
+                inventory[i] = serverVictim.getInventory().getItem(i).copy();
             }
+            personalityInventories.put(serverVictim.getUUID(), inventory);
+
+            // 保存ender箱
+            PlayerEnderChestContainer enderChest = serverVictim.getEnderChestInventory();
+            ItemStack[] enderChestItems = new ItemStack[27];
+            for (int i = 0; i < 27; i++) {
+                enderChestItems[i] = enderChest.getItem(i).copy();
+            }
+            personalityEnderChests.put(serverVictim.getUUID(), enderChestItems);
             component.setDeath(true);
         });
 
@@ -72,12 +70,13 @@ public class SplitPersonalityHandler {
                     handleDeathChoices(player, component);
                 }
 
-                // 检查临时复活是否超时 (60秒)
-                if (component.getTemporaryRevivalStart() > 0) {
-                    long elapsed = System.currentTimeMillis() - component.getTemporaryRevivalStart();
-                    if (elapsed >= 60000) {
+                // 检查临时复活是否超时 (60秒 = 1200刻)
+                if (component.getTemporaryRevivalStartTick() > 0 && player.level() != null) {
+                    long currentTick = player.level().getGameTime();
+                    long elapsedTicks = currentTick - component.getTemporaryRevivalStartTick();
+                    if (elapsedTicks >= 1200) {
                         // 超时，强制死亡
-                        component.setTemporaryRevivalStart(-1); // 防止重复杀死
+                        component.setTemporaryRevivalStartTick(-1); // 防止重复杀死
                         if (GameFunctions.isPlayerAliveAndSurvival(player)) {
                             GameFunctions.killPlayer(player, true, null);
                             player.displayClientMessage(net.minecraft.network.chat.Component.literal("§c你的临时生命已耗尽！"),
@@ -157,15 +156,14 @@ public class SplitPersonalityHandler {
             // 给予60秒的额外时间限制（可在UI中显示）
             component.endDeathCountdown();
 
-            // 设置临时复活开始时间
-            long now = System.currentTimeMillis();
+            // 设置临时复活开始时间（使用自定义tick计数器）
             var mainComp = SplitPersonalityComponent.KEY.get(mainServerPlayer);
             var secondComp = SplitPersonalityComponent.KEY.get(secondServerPlayer);
 
             if (mainComp != null)
-                mainComp.setTemporaryRevivalStart(now);
+                mainComp.setTemporaryRevivalStartTick(mainComp.getBaseTickCounter());
             if (secondComp != null)
-                secondComp.setTemporaryRevivalStart(now);
+                secondComp.setTemporaryRevivalStartTick(secondComp.getBaseTickCounter());
 
             return;
         }

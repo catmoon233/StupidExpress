@@ -26,14 +26,31 @@ public class SplitPersonalityKeybinds {
             return;
 
         var component = SplitPersonalityComponent.KEY.get(player);
-        if (component == null || component.getMainPersonality() == null)
+        if (component == null) {
+            player.displayClientMessage(Component.literal("§c还未初始化双重人格"), true);
             return;
-
-        // 只允许在未死亡倒计时时切换
-        if (!component.isInDeathCountdown() && component.canSwitch()) {
-            // 发送切换包到服务器
-            SplitPersonalityClientPackets.sendSwitchPacket();
-            player.displayClientMessage(Component.literal("§e你已切换人格"), false);
         }
+        
+        if (component.getMainPersonality() == null) {
+            player.displayClientMessage(Component.literal("§c双重人格未初始化"), true);
+            return;
+        }
+        
+        // 不在死亡倒计时期间切换
+        if (component.isInDeathCountdown()) {
+            player.displayClientMessage(Component.literal("§c死亡倒计时中，无法切换"), true);
+            return;
+        }
+        
+        // 已死亡无法切换
+        if (component.isDeath()) {
+            player.displayClientMessage(Component.literal("§c已死亡，无法切换"), true);
+            return;
+        }
+
+        // 发送切换请求到服务器
+        // 服务器会验证冷却时间和其他条件
+        SplitPersonalityClientPackets.sendSwitchPacket();
+        player.displayClientMessage(Component.literal("§e正在切换人格..."), true);
     }
 }

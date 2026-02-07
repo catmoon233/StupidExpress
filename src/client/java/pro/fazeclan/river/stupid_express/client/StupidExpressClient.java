@@ -35,29 +35,38 @@ public class StupidExpressClient implements ClientModInitializer {
 
         // 注册按键事件监听
         registerKeyEvents();
+        
+        // 注册网络接收器
+        registerClientNetworkReceivers();
     }
 
     private static void registerKeyEvents() {
         // 使用 Fabric Events 来处理按键按下事件
-        if (Minecraft.getInstance().options != null) {
-            // 按键处理会在客户端刻中进行
-            net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(client -> {
-                var player = client.player;
-                if (player == null)
-                    return;
+        net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            var player = client.player;
+            if (player == null)
+                return;
 
-                while (SplitPersonalityKeybinds.SWITCH_PERSONALITY_KEY.consumeClick()) {
+            // 处理人格切换按键
+            while (SplitPersonalityKeybinds.SWITCH_PERSONALITY_KEY.consumeClick()) {
+                client.execute(() -> {
+
                     SplitPersonalityKeybinds.handleSwitchPersonalityKey(player);
-                }
+                });
+            }
 
-                // 检查是否需要打开死亡选择界面
-                var component = SplitPersonalityComponent.KEY.get(player);
-                if (component != null && component.isInDeathCountdown()) {
-                    if (!(client.screen instanceof SplitPersonalityDeathScreen)) {
-                        client.setScreen(new SplitPersonalityDeathScreen());
-                    }
+            // 检查是否需要打开死亡选择界面
+            var component = SplitPersonalityComponent.KEY.get(player);
+            if (component != null && component.isInDeathCountdown()) {
+                if (!(client.screen instanceof SplitPersonalityDeathScreen)) {
+                    client.setScreen(new SplitPersonalityDeathScreen());
                 }
-            });
-        }
+            }
+        });
+    }
+    
+    private static void registerClientNetworkReceivers() {
+        // 客户端网络接收器注册
+        // 实际的网络包处理已在SplitPersonalityPackets中注册
     }
 }

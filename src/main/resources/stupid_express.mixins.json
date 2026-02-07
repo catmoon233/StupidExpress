@@ -5,11 +5,13 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "accessor.PlayerPoisonComponentAccessor",
-    "modifier.lovers.LoversDeathMixin",
-    "modifier.lovers.LoversWinConditionMixin",
-    "modifier.taskmaster.TaskmasterGiveCoinsMixin",
     "modifier.allergist.AllergistEatMixin",
     "modifier.cursed.CursedDeathMixin",
+    "modifier.lovers.LoversDeathMixin",
+    "modifier.lovers.LoversWinConditionMixin",
+    "modifier.split_personality.QuitVoiceMixin",
+    "modifier.split_personality.SplitPersonalityServerInputBlockMixin",
+    "modifier.taskmaster.TaskmasterGiveCoinsMixin",
     "role.CustomWinnerCheckMixin",
     "role.CustomWinnerResetMixin",
     "role.arsonist.ArsonistKeepAliveMixin",
@@ -19,8 +21,7 @@
     "role.initiate.InitiateBuyMixin",
     "role.initiate.InitiateCoinsOnMoodMixin",
     "role.initiate.InitiateKillMixin",
-    "role.necromancer.NecromancerStatsMixin",
-    "modifier.split_personality.SplitPersonalityServerInputBlockMixin"
+    "role.necromancer.NecromancerStatsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

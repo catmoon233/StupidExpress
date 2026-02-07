@@ -41,11 +41,23 @@ public class SplitPersonalitySwitchPacket implements CustomPacketPayload {
                 ServerPlayer player = context.player();
                 var component = SplitPersonalityComponent.KEY.get(player);
 
-                if (component == null || !component.canSwitch()) {
+                if (component == null) {
+                    return;
+                }
+
+                if (!component.canSwitch()) {
+                    // 反馈：无法切换
+                    player.displayClientMessage(
+                            net.minecraft.network.chat.Component.literal("§c无法切换人格！检查死亡倒计时或冷却时间。"),
+                            true);
                     return;
                 }
 
                 component.switchPersonality();
+                // 反馈：切换成功
+                player.displayClientMessage(
+                        net.minecraft.network.chat.Component.literal("§e你已切换人格"),
+                        true);
             });
         });
     }

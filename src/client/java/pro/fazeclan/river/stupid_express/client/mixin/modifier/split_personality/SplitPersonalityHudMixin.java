@@ -35,7 +35,7 @@ public abstract class SplitPersonalityHudMixin {
             return;
         }
 
-        if (TMMClient.isPlayerSpectatingOrCreative()) {
+        if (TMMClient.isPlayerSpectatingOrCreative() && component.isDeath()) {
             return;
         }
 
@@ -44,7 +44,7 @@ public abstract class SplitPersonalityHudMixin {
         int screenWidth = context.guiWidth();
         int screenHeight = context.guiHeight();
         int x = screenWidth - 200;
-        int y = screenHeight - 100;
+        int y = screenHeight - 120;
 
         // 绘制背景面板
         context.fill(x - 5, y - 5, x + 205, y + 95, 0x80000000);
@@ -85,7 +85,7 @@ public abstract class SplitPersonalityHudMixin {
     }
 
     private static void renderSwitchTimer(GuiGraphics context, Font renderer, SplitPersonalityComponent component, int x, int y) {
-        long remaining = component.canSwitch() ? 0 : (60000 - (System.currentTimeMillis() % 60000)) / 1000;
+        long remaining = component.canSwitch() ? 0 : (1200-(component. getBaseTickCounter() -component. getLastSwitchTick()))/20;
         if (remaining < 0) remaining = 0;
 
         String timerText = String.format("§9切换冷却: §f%d§9秒 (§fP§9键)", remaining);
