@@ -74,7 +74,7 @@ public abstract class AllergistEatMixin extends LivingEntity {
             player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
                     net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED,
                     40,
-                    1, true, false));
+                    1, false, false));
 
             player.displayClientMessage(
                     Component.translatable(
