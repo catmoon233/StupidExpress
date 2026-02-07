@@ -48,7 +48,7 @@ public class SplitPersonalitySwitchPacket implements CustomPacketPayload {
                 if (!component.canSwitch()) {
                     // 反馈：无法切换
                     player.displayClientMessage(
-                            net.minecraft.network.chat.Component.literal("§c无法切换人格！检查死亡倒计时或冷却时间。"),
+                            net.minecraft.network.chat.Component.literal("§c无法切换人格！"),
                             true);
                     return;
                 }

@@ -56,7 +56,7 @@ public class SplitPersonalityPackets {
                 ServerPlayer player = context.player();
                 var component = SplitPersonalityComponent.KEY.get(player);
 
-                if (component == null || !component.isInDeathCountdown()) {
+                if (component == null || component.getMainPersonality() == null) {
                     return;
                 }
 
@@ -67,8 +67,18 @@ public class SplitPersonalityPackets {
                     choice = SplitPersonalityComponent.ChoiceType.BETRAY;
                 }
 
-                component.setMainPersonalityChoice(choice);
+                // 设置当前玩家的选择
+                if (component.isMainPersonality()) {
+                    component.setMainPersonalityChoice(choice);
+                } else {
+                    component.setSecondPersonalityChoice(choice);
+                }
                 component.sync();
+                
+                // 检查是否两个人都已选择，如果是则处理结果
+                if (component.bothMadeChoice()) {
+                    SplitPersonalityHandler.handleDeathChoices(player, component);
+                }
             });
         });
     }

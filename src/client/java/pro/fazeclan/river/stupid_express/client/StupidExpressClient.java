@@ -8,11 +8,14 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.lwjgl.glfw.GLFW;
+import pro.fazeclan.river.stupid_express.client.gui.SplitPersonalityChoiceScreen;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.client.keybinds.SplitPersonalityKeybinds;
 import pro.fazeclan.river.stupid_express.client.gui.SplitPersonalityDeathScreen;
+import pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 
 public class StupidExpressClient implements ClientModInitializer {
@@ -38,6 +41,9 @@ public class StupidExpressClient implements ClientModInitializer {
         
         // 注册网络接收器
         registerClientNetworkReceivers();
+        
+        // 注册背包界面事件
+        registerInventoryEvents();
     }
 
     private static void registerKeyEvents() {
@@ -55,12 +61,10 @@ public class StupidExpressClient implements ClientModInitializer {
                 });
             }
 
-            // 检查是否需要打开死亡选择界面
+            // 检查是否需要打开选择界面
             var component = SplitPersonalityComponent.KEY.get(player);
-            if (component != null && component.isInDeathCountdown()) {
-                if (!(client.screen instanceof SplitPersonalityDeathScreen)) {
-                    client.setScreen(new SplitPersonalityDeathScreen());
-                }
+            if (component != null && component.getMainPersonality() != null) {
+                // 可以在这里添加其他条件来触发选择界面
             }
         });
     }
@@ -68,5 +72,35 @@ public class StupidExpressClient implements ClientModInitializer {
     private static void registerClientNetworkReceivers() {
         // 客户端网络接收器注册
         // 实际的网络包处理已在SplitPersonalityPackets中注册
+    }
+    
+    private static void registerInventoryEvents() {
+        // 监听背包打开事件，在背包界面添加双重人格选择按钮
+        net.fabricmc.fabric.api.client.screen.v1.ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (screen instanceof net.minecraft.client.gui.screens.inventory.InventoryScreen) {
+                var player = client.player;
+                if (player == null) return;
+                
+                var component = SplitPersonalityComponent.KEY.get(player);
+                if (component != null && component.getMainPersonality() != null) {
+                    // 添加选择按钮
+                    int buttonX = scaledWidth / 2 - 50;
+                    int buttonY = scaledHeight / 2 + 60;
+                    
+                    var choiceButton = net.minecraft.client.gui.components.Button.builder(
+                        net.minecraft.network.chat.Component.literal("人格选择"),
+                        button -> {
+                            // 打开选择界面
+                            ServerPlayer otherPlayer = SplitPersonalityHandler.getOtherPersonality((ServerPlayer) player);
+                            if (otherPlayer != null) {
+                                client.setScreen(new SplitPersonalityChoiceScreen(otherPlayer));
+                            }
+                        }
+                    ).bounds(buttonX, buttonY, 100, 20).build();
+                    
+                    screen.addRenderableWidget(choiceButton);
+                }
+            }
+        });
     }
 }

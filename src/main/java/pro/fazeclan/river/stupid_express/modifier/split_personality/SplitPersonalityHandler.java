@@ -37,8 +37,8 @@ public class SplitPersonalityHandler {
                 return;
             }
 
-            // 启动死亡倒计时
-            component.startDeathCountdown();
+            // 直接处理死亡选择逻辑
+            handleDeathChoices(serverVictim, component);
 
             // 保存当前库存
             ItemStack[] inventory = new ItemStack[36]; // 标准库存大小
@@ -65,10 +65,7 @@ public class SplitPersonalityHandler {
                 if (component == null || component.getMainPersonality() == null)
                     continue;
 
-                // 检查倒计时是否结束
-                if (component.isInDeathCountdown() && component.getDeathCountdownRemainingTicks() <= 0) {
-                    handleDeathChoices(player, component);
-                }
+                // 移除倒计时检查逻辑
 
                 // 检查临时复活是否超时 (60秒 = 1200刻)
                 if (component.getTemporaryRevivalStartTick() > 0 && player.level() != null) {
@@ -111,8 +108,6 @@ public class SplitPersonalityHandler {
         if (mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY &&
                 secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
             // 双双死亡，不需要做任何操作 (已经死了)
-
-            component.endDeathCountdown();
             return;
         }
 
@@ -133,7 +128,6 @@ public class SplitPersonalityHandler {
             if (GameFunctions.isPlayerAliveAndSurvival(sacrificePlayer)) {
                 GameFunctions.killPlayer(sacrificePlayer, true, null);
             }
-            component.endDeathCountdown();
             if (component.getPlayer() == betrayerPlayer) {
                 component.setDeath(false);
             }
@@ -153,9 +147,6 @@ public class SplitPersonalityHandler {
                 component.setDeath(false);
             }
 
-            // 给予60秒的额外时间限制（可在UI中显示）
-            component.endDeathCountdown();
-
             // 设置临时复活开始时间（使用自定义tick计数器）
             var mainComp = SplitPersonalityComponent.KEY.get(mainServerPlayer);
             var secondComp = SplitPersonalityComponent.KEY.get(secondServerPlayer);
@@ -167,7 +158,6 @@ public class SplitPersonalityHandler {
 
             return;
         }
-
     }
 
     /**

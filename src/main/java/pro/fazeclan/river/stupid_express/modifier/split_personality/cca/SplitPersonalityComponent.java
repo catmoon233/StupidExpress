@@ -53,10 +53,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
     // 最后一次切换的tick值
     private int lastSwitchTick = 0;
 
-    public SplitPersonalityComponent setInDeathCountdown(boolean inDeathCountdown) {
-        isInDeathCountdown = inDeathCountdown;
-        return this;
-    }
+    // 移除死亡倒计时相关方法
 
     public int getLastSwitchTick() {
         return lastSwitchTick;
@@ -72,21 +69,11 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         return baseTickCounter;
     }
 
-    public int getDeathCountdownStartTick() {
-        return deathCountdownStartTick;
-    }
+    // 移除死亡倒计时相关getter/setter
 
-    public SplitPersonalityComponent setDeathCountdownStartTick(int deathCountdownStartTick) {
-        this.deathCountdownStartTick = deathCountdownStartTick;
-        sync();
-        return this;
-    }
-
-    // 死亡倒计时相关 (使用tick计数器)
-    private boolean isInDeathCountdown = false;
-    private int deathCountdownStartTick = -1;
-    private ChoiceType mainPersonalityChoice = ChoiceType.NONE;
-    private ChoiceType secondPersonalityChoice = ChoiceType.NONE;
+    // 选择相关
+    private ChoiceType mainPersonalityChoice = ChoiceType.SACRIFICE;  // 默认选择奉献
+    private ChoiceType secondPersonalityChoice = ChoiceType.SACRIFICE;  // 默认选择奉献
 
     // 临时复活相关 (60秒限制，使用tick计数器)
     private int temporaryRevivalStartTick = -1;
@@ -231,10 +218,12 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
             return;
         }
 
+
         // 更新切换时间（使用自定义tick计数器）
-        int currentTick = baseTickCounter;
+        int currentTick = 0;
 
         // 更新当前人格的组件
+        this.baseTickCounter = currentTick;
         this.lastSwitchTick = currentTick;
         this.currentActivePerson = newActivePerson;
         this.sync();
@@ -242,6 +231,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         // 更新另一个人格的组件
         var otherComponent = SplitPersonalityComponent.KEY.get(otherPlayer);
         if (otherComponent != null) {
+            otherComponent.baseTickCounter = currentTick;
             otherComponent.lastSwitchTick = currentTick;
             otherComponent.currentActivePerson = newActivePerson;
             otherComponent.sync();
@@ -280,51 +270,13 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
     }
 
     // ========== 死亡倒计时相关 ==========
-    public boolean isInDeathCountdown() {
-        return isInDeathCountdown;
-    }
+    // 移除死亡倒计时检查方法
 
-    public void startDeathCountdown() {
-        this.isInDeathCountdown = true;
-        this.deathCountdownStartTick = baseTickCounter;  // 使用自定义tick计数器
-        this.mainPersonalityChoice = ChoiceType.NONE;
-        this.secondPersonalityChoice = ChoiceType.NONE;
-        sync();
+    // 移除死亡倒计时启动方法
 
-        // 双重人格都进入死亡倒计时模式
-        if (player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.setGameMode(GameType.ADVENTURE);  // 保持可互动状态
-            // 寻找另一个人格并同步状态
-            Player otherPlayer = serverPlayer.serverLevel().getPlayerByUUID(
-                    serverPlayer.getUUID().equals(mainPersonality) ? secondPersonality : mainPersonality);
-            if (otherPlayer instanceof ServerPlayer otherServer) {
-                otherServer.setGameMode(GameType.ADVENTURE);
-                var otherComponent = SplitPersonalityComponent.KEY.get(otherPlayer);
-                if (otherComponent != null) {
-                    otherComponent.isInDeathCountdown = true;
-                    otherComponent.deathCountdownStartTick = this.deathCountdownStartTick;
-                    otherComponent.mainPersonalityChoice = ChoiceType.NONE;
-                    otherComponent.secondPersonalityChoice = ChoiceType.NONE;
-                    otherComponent.sync();
-                }
-            }
-        }
-    }
+    // 移除死亡倒计时结束方法
 
-    public void endDeathCountdown() {
-        this.isInDeathCountdown = false;
-        this.deathCountdownStartTick = -1;
-        sync();
-    }
-
-    public int getDeathCountdownRemainingTicks() {
-        if (!isInDeathCountdown || deathCountdownStartTick == -1)
-            return 0;
-        
-        int elapsedTicks = baseTickCounter - deathCountdownStartTick;
-        int remainingTicks = 1200 - elapsedTicks;  // 60秒 = 1200刻
-        return Math.max(0, remainingTicks);
-    }
+    // 移除死亡倒计时剩余时间方法
 
 
     public void setMainPersonalityChoice(ChoiceType choice) {
@@ -355,8 +307,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         this.secondPersonality = null;
         this.currentActivePerson = null;
         this.lastSwitchTick = 0;
-        this.isInDeathCountdown = false;
-        this.deathCountdownStartTick = -1;
+        this.baseTickCounter = 0;
         this.mainPersonalityChoice = ChoiceType.NONE;
         this.secondPersonalityChoice = ChoiceType.NONE;
         this.temporaryRevivalStartTick = -1;
@@ -386,16 +337,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
             // 向后兼容：如果只有旧的毫秒时间戳，转换为刻
             this.lastSwitchTick = 0;  // 重置为0，视为初始状态
         }
-        if (tag.contains("in_death_countdown")) {
-            this.isInDeathCountdown = tag.getBoolean("in_death_countdown");
-        }
-        // 支持新的游戏刻格式
-        if (tag.contains("death_countdown_start_tick")) {
-            this.deathCountdownStartTick = tag.getInt("death_countdown_start_tick");
-        } else if (tag.contains("death_countdown_start")) {
-            // 向后兼容
-            this.deathCountdownStartTick = -1;
-        }
+        // 移除死亡倒计时NBT读取
         if (tag.contains("main_choice")) {
             this.mainPersonalityChoice = ChoiceType.valueOf(tag.getString("main_choice"));
         }
@@ -428,9 +370,8 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         if (this.currentActivePerson != null) {
             tag.putUUID("current_active", this.currentActivePerson);
         }
-        tag.putLong("last_switch_time", this.lastSwitchTick);
-        tag.putBoolean("in_death_countdown", this.isInDeathCountdown);
-        tag.putInt("death_countdown_start_tick", this.deathCountdownStartTick);
+        tag.putInt("last_switch_time", this.lastSwitchTick);
+        // 移除死亡倒计时NBT写入
         tag.putString("main_choice", this.mainPersonalityChoice.name());
         tag.putString("second_choice", this.secondPersonalityChoice.name());
         tag.putBoolean("is_death", this.isDeath);
@@ -451,27 +392,16 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         // 每tick递增基础计数器
         baseTickCounter++;
         // 检查是否需要自动切换 (60秒 = 1200刻)
-        if (!isInDeathCountdown && mainPersonality != null && secondPersonality != null) {
+        if (mainPersonality != null && secondPersonality != null) {
             int ticksSinceLastSwitch = baseTickCounter - lastSwitchTick;
             if (ticksSinceLastSwitch >= 1200) {  // 60秒自动切换
                 switchPersonality();
             }
         }
         
-        // 死亡倒计时期间的特殊处理
-        if (isInDeathCountdown && currentActivePerson != null && player instanceof ServerPlayer serverPlayer) {
-            handleDeathCountdownMode(serverPlayer);
-            return;
-        }
-        
         // 正常模式下的人格状态管理
-        if (!isInDeathCountdown && currentActivePerson != null && player instanceof ServerPlayer serverPlayer) {
+        if (currentActivePerson != null && player instanceof ServerPlayer serverPlayer) {
             handleNormalMode(serverPlayer);
-        }
-        
-        // 检查死亡倒计时是否结束
-        if (isInDeathCountdown && getDeathCountdownRemainingTicks() <= 0) {
-            endDeathCountdown();
         }
         if (baseTickCounter%20==0){
             sync();
@@ -479,25 +409,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
 
     }
     
-    private void handleDeathCountdownMode(ServerPlayer serverPlayer) {
-        // 死亡倒计时期间，保持两个人格都是冒险/观察模式
-        if (!currentActivePerson.equals(serverPlayer.getUUID())) {
-            // 非活跃人格变为观察者
-            if (serverPlayer.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) {
-                serverPlayer.setGameMode(GameType.SPECTATOR);
-                Player activePlayer = serverPlayer.serverLevel().getPlayerByUUID(currentActivePerson);
-                if (activePlayer != null) {
-                    serverPlayer.setCamera(activePlayer);
-                }
-            }
-        } else {
-            // 活跃人格保持冒险模式
-            if (serverPlayer.gameMode.getGameModeForPlayer() == GameType.SPECTATOR) {
-                serverPlayer.setGameMode(GameType.ADVENTURE);
-                serverPlayer.setCamera(serverPlayer);
-            }
-        }
-    }
+    // 移除死亡倒计时模式处理方法
     
     private void handleNormalMode(ServerPlayer serverPlayer) {
         // 检查是否是非活跃人格

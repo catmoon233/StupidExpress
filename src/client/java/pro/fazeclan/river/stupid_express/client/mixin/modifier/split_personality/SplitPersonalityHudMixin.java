@@ -85,7 +85,7 @@ public abstract class SplitPersonalityHudMixin {
     }
 
     private static void renderSwitchTimer(GuiGraphics context, Font renderer, SplitPersonalityComponent component, int x, int y) {
-        long remaining = component.canSwitch() ? 0 : (1200-(component. getBaseTickCounter() -component. getLastSwitchTick()))/20;
+        long remaining = component.canSwitch() ? 0 : (1200-(component. getBaseTickCounter()))/20;
         if (remaining < 0) remaining = 0;
 
         String timerText = String.format("§9切换冷却: §f%d§9秒 (§fP§9键)", remaining);
