@@ -385,7 +385,11 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         if (getTemporaryRevivalStartTick() >0){
             temporaryRevivalStartTick = temporaryRevivalStartTick-1;
         }
-        if (getTemporaryRevivalStartTick()>0 )return;
+        if (temporaryRevivalStartTick % 20 == 0){
+            sync();
+        }
+
+            if (getTemporaryRevivalStartTick()>0 )return;
 
         if (isDeath) {
             return;

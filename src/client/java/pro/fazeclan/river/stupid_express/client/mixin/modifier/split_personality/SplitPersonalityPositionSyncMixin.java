@@ -25,9 +25,10 @@ public abstract class SplitPersonalityPositionSyncMixin {
         LocalPlayer player = (LocalPlayer) (Object) this;
         var component = SplitPersonalityComponent.KEY.get(player);
         
-        if (component == null || component.getMainPersonality() == null) {
+        if (component == null || component.getMainPersonality() == null || component.getSecondPersonality() == null) {
             return;
         }
+        if (component.getTemporaryRevivalStartTick()>0)return;
 
         // 如果是旁观者，同步位置到活跃人格
         if (!component.isCurrentlyActive()) {
