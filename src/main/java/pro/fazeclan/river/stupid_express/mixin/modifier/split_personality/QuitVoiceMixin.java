@@ -13,7 +13,7 @@ import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPer
 
 @Mixin(TMM.class)
 public class QuitVoiceMixin {
-    @Redirect(method = "lambda$registerGlobalReceivers$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;isSpectator()Z"))
+    @Redirect(method = "joinVoice", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;isSpectator()Z"))
     private static boolean quitVoice(ServerPlayer instance) {
         final var worldModifierComponent = WorldModifierComponent.KEY.get(instance.serverLevel());
         if (worldModifierComponent.isModifier(instance.getUUID(), SEModifiers.SPLIT_PERSONALITY)){
