@@ -29,7 +29,7 @@ public class SplitPersonalityChoiceWidget {
      * 创建奉献按钮
      */
     public Button createSacrificeButton(int x, int y) {
-        return Button.builder(Component.literal("奉献 (Sacrifice)"), button -> {
+        return Button.builder(Component.translatable("hud.stupid_express.split_personality.sacrifice"), button -> {
             submitChoice(SplitPersonalityComponent.ChoiceType.SACRIFICE);
         })
                 .bounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT)
@@ -40,7 +40,7 @@ public class SplitPersonalityChoiceWidget {
      * 创建欺骗按钮
      */
     public Button createBetrayButton(int x, int y) {
-        return Button.builder(Component.literal("欺骗 (Betray)"), button -> {
+        return Button.builder(Component.translatable("hud.stupid_express.split_personality.betray"), button -> {
             submitChoice(SplitPersonalityComponent.ChoiceType.BETRAY);
         })
                 .bounds(x, y, BUTTON_WIDTH, BUTTON_HEIGHT)
