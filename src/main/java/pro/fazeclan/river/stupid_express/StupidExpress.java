@@ -22,6 +22,7 @@ import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.PlayerStatsBeforeRefugee;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
+import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.network.SplitBackCamera;
 import pro.fazeclan.river.stupid_express.network.SplitPersonalityPackets;
 import pro.fazeclan.river.stupid_express.role.initiate.InitiateUtils;
@@ -79,12 +80,21 @@ public class StupidExpress implements ModInitializer {
         });
         OnPlayerDeath.EVENT.register((victim, deathReason) -> {
             var gameWorldComponent = GameWorldComponent.KEY.get(victim.level());
+            var modifierComponent = WorldModifierComponent.KEY.get(victim.level());
             if (gameWorldComponent != null) {
                 Role role = gameWorldComponent.getRole(victim);
                 if (role != null) {
                     if (role.identifier().getPath().equals(TMMRoles.LOOSE_END.identifier().getPath())) {
                         var refugeeComponent = RefugeeComponent.KEY.get(victim.level());
                         refugeeComponent.onLooseEndDeath(victim);
+                    }
+                }
+            }
+            if (modifierComponent != null) {
+                if (modifierComponent.isModifier(victim, SEModifiers.SPLIT_PERSONALITY)) {
+                    var splc = SplitPersonalityComponent.KEY.get(victim);
+                    if (splc != null && !splc.isDeath()) {
+                        splc.setDeath(true);
                     }
                 }
             }

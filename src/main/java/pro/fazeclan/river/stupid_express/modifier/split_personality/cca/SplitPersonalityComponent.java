@@ -1,6 +1,7 @@
 package pro.fazeclan.river.stupid_express.modifier.split_personality.cca;
 
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -17,7 +18,7 @@ import pro.fazeclan.river.stupid_express.StupidExpress;
 
 import java.util.UUID;
 
-public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTickingComponent , ClientTickingComponent {
+public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTickingComponent, ClientTickingComponent {
 
     public static final ComponentKey<SplitPersonalityComponent> KEY = ComponentRegistry
             .getOrCreate(StupidExpress.id("split_personality"), SplitPersonalityComponent.class);
@@ -30,7 +31,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
 
     @Override
     public void clientTick() {
-        if (!isDeath){
+        if (!isDeath) {
             clientDo();
         }
     }
@@ -38,6 +39,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
     private void clientDo() {
         // 预留客户端逻辑
     }
+
     private final Player player;
 
     // 两个人格的UUID
@@ -49,7 +51,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
 
     // 基础tick计数器
     private int baseTickCounter = 0;
-    
+
     // 最后一次切换的tick值
     private int lastSwitchTick = 0;
 
@@ -72,8 +74,8 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
     // 移除死亡倒计时相关getter/setter
 
     // 选择相关
-    private ChoiceType mainPersonalityChoice = ChoiceType.SACRIFICE;  // 默认选择奉献
-    private ChoiceType secondPersonalityChoice = ChoiceType.SACRIFICE;  // 默认选择奉献
+    private ChoiceType mainPersonalityChoice = ChoiceType.SACRIFICE; // 默认选择奉献
+    private ChoiceType secondPersonalityChoice = ChoiceType.SACRIFICE; // 默认选择奉献
 
     // 临时复活相关 (60秒限制，使用tick计数器)
     private int temporaryRevivalStartTick = -1;
@@ -163,19 +165,19 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
     public boolean canSwitch() {
         // 必须在服务器端检查
         if (!(player instanceof ServerPlayer)) {
-            return false;  // 客户端不应该检查这个
+            return false; // 客户端不应该检查这个
         }
-        
+
         if (isDeath) {
-            return false;  // 死亡时不能切换
+            return false; // 死亡时不能切换
         }
         if (mainPersonality == null || secondPersonality == null) {
-            return false;  // 两个人格都初始化才能切换
+            return false; // 两个人格都初始化才能切换
         }
-        
+
         // 使用自定义tick计数器进行时间检查
-//        int ticksElapsed = baseTickCounter - lastSwitchTick;
-        return isCurrentlyActive();  // 60秒 = 1200刻 (20刻/秒)
+        // int ticksElapsed = baseTickCounter - lastSwitchTick;
+        return isCurrentlyActive(); // 60秒 = 1200刻 (20刻/秒)
     }
 
     @Override
@@ -190,9 +192,9 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
                 if (ticksLeft > 0) {
                     double secondsLeft = ticksLeft / 20.0;
                     serverPlayer.displayClientMessage(
-                        Component.literal("§c还需等待 " + String.format("%.1f", secondsLeft) + " 秒才能切换"), 
-                        true
-                    );
+                            Component.translatable("msg.stupid_express.split_personality.cooldown", String.format("%.1f", secondsLeft))
+                                    .withStyle(ChatFormatting.RED),
+                            true);
                 }
             }
             return;
@@ -205,7 +207,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
 
         // 计算新的活跃人格（切换控制权）
         UUID newActivePerson = currentActivePerson.equals(mainPersonality) ? secondPersonality : mainPersonality;
-        
+
         // 获取另一个人格的玩家
         Player otherPlayer = serverPlayer.serverLevel().getPlayerByUUID(
                 currentActivePerson.equals(mainPersonality) ? secondPersonality : mainPersonality);
@@ -214,7 +216,6 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         if (otherPlayer == null || !(otherPlayer instanceof ServerPlayer otherServerPlayer)) {
             return;
         }
-
 
         // 更新切换时间（使用自定义tick计数器）
         int currentTick = 0;
@@ -244,13 +245,12 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
             // 当前玩家成为活跃人格
             thisPlayer.setGameMode(GameType.ADVENTURE);
             thisPlayer.setCamera(thisPlayer);
-            thisPlayer.displayClientMessage(Component.literal("§e你已成为活跃人格，获得控制权"), true);
+            thisPlayer.displayClientMessage(Component.translatable("msg.stupid_express.split_personality.your_control").withStyle(ChatFormatting.YELLOW), true);
         } else {
             // 当前玩家成为观察者
             thisPlayer.setGameMode(GameType.SPECTATOR);
             thisPlayer.setCamera(otherPlayer);
-
-            thisPlayer.displayClientMessage(Component.literal("§7你已失去控制权，成为观察者"), true);
+            thisPlayer.displayClientMessage(Component.translatable("msg.stupid_express.split_personality.lose_control").withStyle(ChatFormatting.GRAY), true);
         }
 
         // 更新另一个玩家的游戏模式
@@ -258,12 +258,12 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
             // 另一个玩家成为活跃人格
             otherPlayer.setGameMode(GameType.ADVENTURE);
             otherPlayer.setCamera(otherPlayer);
-            otherPlayer.displayClientMessage(Component.literal("§e你已成为活跃人格，获得控制权"), true);
+            otherPlayer.displayClientMessage(Component.translatable("msg.stupid_express.split_personality.your_control").withStyle(ChatFormatting.YELLOW), true);
         } else {
             // 另一个玩家成为观察者
             otherPlayer.setGameMode(GameType.SPECTATOR);
             otherPlayer.setCamera(thisPlayer);
-            otherPlayer.displayClientMessage(Component.literal("§7你已失去控制权，成为观察者"), false);
+            otherPlayer.displayClientMessage(Component.translatable("msg.stupid_express.split_personality.lose_control").withStyle(ChatFormatting.GRAY), false);
         }
     }
 
@@ -275,7 +275,6 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
     // 移除死亡倒计时结束方法
 
     // 移除死亡倒计时剩余时间方法
-
 
     public void setMainPersonalityChoice(ChoiceType choice) {
         this.mainPersonalityChoice = choice;
@@ -321,19 +320,22 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
     public void readFromNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
         if (tag.contains("main_personality")) {
             this.mainPersonality = tag.getUUID("main_personality");
-        }else this.mainPersonality = null;
+        } else
+            this.mainPersonality = null;
         if (tag.contains("second_personality")) {
             this.secondPersonality = tag.getUUID("second_personality");
-        }else this.secondPersonality = null;
+        } else
+            this.secondPersonality = null;
         if (tag.contains("current_active")) {
             this.currentActivePerson = tag.getUUID("current_active");
-        }else this.currentActivePerson = null;
+        } else
+            this.currentActivePerson = null;
         // 支持新的游戏刻格式
         if (tag.contains("last_switch_tick")) {
             this.lastSwitchTick = tag.getInt("last_switch_tick");
         } else if (tag.contains("last_switch_time")) {
             // 向后兼容：如果只有旧的毫秒时间戳，转换为刻
-            this.lastSwitchTick = 0;  // 重置为0，视为初始状态
+            this.lastSwitchTick = 0; // 重置为0，视为初始状态
         }
         // 移除死亡倒计时NBT读取
         if (tag.contains("main_choice")) {
@@ -352,7 +354,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
             // 向后兼容
             this.temporaryRevivalStartTick = -1;
         }
-        if (tag.contains("base_tick_counter")){
+        if (tag.contains("base_tick_counter")) {
             this.baseTickCounter = tag.getInt("base_tick_counter");
         }
     }
@@ -374,50 +376,51 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         tag.putString("second_choice", this.secondPersonalityChoice.name());
         tag.putBoolean("is_death", this.isDeath);
         tag.putInt("temp_revival_start_tick", this.temporaryRevivalStartTick);
-        tag .putInt("base_tick_counter", this.baseTickCounter);
+        tag.putInt("base_tick_counter", this.baseTickCounter);
     }
 
     @Override
     public void serverTick() {
-        if (mainPersonality==null || secondPersonality==null){
+        if (mainPersonality == null || secondPersonality == null) {
             reset();
             return;
         }
-        if (getTemporaryRevivalStartTick() >0){
-            temporaryRevivalStartTick = temporaryRevivalStartTick-1;
+        if (getTemporaryRevivalStartTick() > 0) {
+            temporaryRevivalStartTick = temporaryRevivalStartTick - 1;
         }
-        if (temporaryRevivalStartTick % 20 == 0){
+        if (temporaryRevivalStartTick % 20 == 0) {
             sync();
         }
 
-            if (getTemporaryRevivalStartTick()>0 )return;
+        if (getTemporaryRevivalStartTick() > 0)
+            return;
 
         if (isDeath) {
             return;
         }
-        
+
         // 每tick递增基础计数器
         baseTickCounter++;
         // 检查是否需要自动切换 (60秒 = 1200刻)
         if (mainPersonality != null && secondPersonality != null) {
             int ticksSinceLastSwitch = baseTickCounter - lastSwitchTick;
-            if (ticksSinceLastSwitch >= 1200) {  // 60秒自动切换
+            if (ticksSinceLastSwitch >= 1200) { // 60秒自动切换
                 switchPersonality();
             }
         }
-        
+
         // 正常模式下的人格状态管理
         if (currentActivePerson != null && player instanceof ServerPlayer serverPlayer) {
             handleNormalMode(serverPlayer);
         }
-        if (baseTickCounter%20==0){
+        if (baseTickCounter % 20 == 0) {
             sync();
         }
 
     }
-    
+
     // 移除死亡倒计时模式处理方法
-    
+
     private void handleNormalMode(ServerPlayer serverPlayer) {
         // 检查是否是非活跃人格
         if (!currentActivePerson.equals(player.getUUID())) {

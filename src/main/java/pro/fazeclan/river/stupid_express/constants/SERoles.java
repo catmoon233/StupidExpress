@@ -12,6 +12,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.Util;
 import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.events.ResetPlayerEvent;
+import org.agmas.harpymodloader.modded_murder.RoleAssignmentManager;
+
 import pro.fazeclan.river.stupid_express.BuyableShopEntry;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.role.amnesiac.RoleSelectionHandler;
@@ -123,7 +125,7 @@ public class SERoles {
                 Harpymodloader.setRoleMaximum(NECROMANCER.getIdentifier(), 1);
                 Harpymodloader.setRoleMaximum(AVARICIOUS.getIdentifier(), 1);
                 Harpymodloader.setRoleMaximum(INITIATE.getIdentifier(), playerList.size() >= 12 ? 1 : 0); 
-                Harpymodloader.Occupations_Roles.put(SERoles.INITIATE, SERoles.INITIATE);
+                RoleAssignmentManager.addOccupationRole(SERoles.INITIATE, SERoles.INITIATE);
             } else {
                 Harpymodloader.setRoleMaximum(NECROMANCER.getIdentifier(), 0);
                 Harpymodloader.setRoleMaximum(AVARICIOUS.getIdentifier(), 0);
