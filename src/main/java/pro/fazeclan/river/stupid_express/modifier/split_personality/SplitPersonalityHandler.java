@@ -122,10 +122,12 @@ public class SplitPersonalityHandler {
                 || !(secondPlayer instanceof ServerPlayer)) {
             return;
         }
+        final var worldModifierComponent = WorldModifierComponent.KEY.get(player.serverLevel());
 
         ServerPlayer mainServerPlayer = (ServerPlayer) mainPlayer;
         ServerPlayer secondServerPlayer = (ServerPlayer) secondPlayer;
         ServerPlayNetworking.send(mainServerPlayer, new SplitBackCamera());
+
         ServerPlayNetworking.send(secondServerPlayer, new SplitBackCamera());
         // 情况1：两个都选择欺骗 -> 直接死亡
         if (mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY &&
@@ -135,6 +137,8 @@ public class SplitPersonalityHandler {
             GameFunctions.killPlayer(secondServerPlayer, true, null);
             component.reset();
             SplitPersonalityComponent.KEY.get(secondServerPlayer).reset();
+            worldModifierComponent.removeModifier(mainServerPlayer.getUUID(), SEModifiers.SPLIT_PERSONALITY);
+            worldModifierComponent.removeModifier(secondServerPlayer.getUUID(), SEModifiers.SPLIT_PERSONALITY);
 
             // 添加消息提示
             MutableComponent deathMessage = net.minecraft.network.chat.Component
@@ -162,6 +166,7 @@ public class SplitPersonalityHandler {
             revivePlayer(betrayerPlayer, component);
             if (GameFunctions.isPlayerAliveAndSurvival(sacrificePlayer)) {
                 GameFunctions.killPlayer(sacrificePlayer, true, null);
+
                 SplitPersonalityComponent.KEY.get(secondServerPlayer).reset();
                 component.reset();
             }
@@ -171,7 +176,8 @@ public class SplitPersonalityHandler {
                 component.reset();
 
             }
-
+            worldModifierComponent.removeModifier(mainServerPlayer.getUUID(), SEModifiers.SPLIT_PERSONALITY);
+            worldModifierComponent.removeModifier(secondServerPlayer.getUUID(), SEModifiers.SPLIT_PERSONALITY);
             // 添加消息提示
             betrayerPlayer.displayClientMessage(net.minecraft.network.chat.Component
                     .translatable("msg.stupid_express.split_personality.revive").withStyle(ChatFormatting.GREEN), true);
