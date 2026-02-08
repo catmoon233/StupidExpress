@@ -6,12 +6,17 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+
+import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
 
 import java.awt.*;
@@ -26,10 +31,24 @@ public class ArsonistInstinctMixin {
     private static void enableArsonistInstinct(CallbackInfoReturnable<Boolean> cir) {
         var player = Minecraft.getInstance().player;
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
+        WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.level());
         if (gameWorldComponent.isRole(player, SERoles.ARSONIST)) {
             if (instinctKeybind.isDown()) {
                 cir.setReturnValue(true);
                 cir.cancel();
+            }
+        }
+        if (modifierComponent != null) {
+            if (player.isSpectator() && modifierComponent.isModifier(player, SEModifiers.SPLIT_PERSONALITY)) {
+                var splc = SplitPersonalityComponent.KEY.get(player);
+                if (splc != null) {
+                    if (!splc.isDeath()) {
+                        cir.setReturnValue(false);
+                        cir.cancel();
+                    }
+
+                }
+
             }
         }
     }
