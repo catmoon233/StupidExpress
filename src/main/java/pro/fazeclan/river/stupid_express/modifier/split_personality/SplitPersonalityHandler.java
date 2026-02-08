@@ -231,7 +231,7 @@ public class SplitPersonalityHandler {
         player.removeAllEffects();
 
         // 清空并恢复库存
-        player.getInventory().clearContent();
+//        player.getInventory().clearContent();
         if (personalityInventories.containsKey(player.getUUID())) {
             ItemStack[] inventory = personalityInventories.get(player.getUUID());
             for (int i = 0; i < Math.min(36, inventory.length); i++) {
