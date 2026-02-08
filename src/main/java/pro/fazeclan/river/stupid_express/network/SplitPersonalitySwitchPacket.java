@@ -2,6 +2,7 @@ package pro.fazeclan.river.stupid_express.network;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -14,11 +15,9 @@ public class SplitPersonalitySwitchPacket implements CustomPacketPayload {
     public static final ResourceLocation SWITCH_PACKET_ID = StupidExpress.id("split_personality_switch");
     public static final Type<SplitPersonalitySwitchPacket> ID = new Type<>(SWITCH_PACKET_ID);
 
-    public static final StreamCodec<FriendlyByteBuf, SplitPersonalitySwitchPacket> CODEC =
-            StreamCodec.ofMember(
-                    SplitPersonalitySwitchPacket::write,
-                    SplitPersonalitySwitchPacket::read
-            );
+    public static final StreamCodec<FriendlyByteBuf, SplitPersonalitySwitchPacket> CODEC = StreamCodec.ofMember(
+            SplitPersonalitySwitchPacket::write,
+            SplitPersonalitySwitchPacket::read);
 
     public void write(FriendlyByteBuf buf) {
         // 无需发送任何数据
@@ -48,7 +47,9 @@ public class SplitPersonalitySwitchPacket implements CustomPacketPayload {
                 if (!component.canSwitch()) {
                     // 反馈：无法切换
                     player.displayClientMessage(
-                            net.minecraft.network.chat.Component.literal("§c无法切换人格！"),
+                            net.minecraft.network.chat.Component
+                                    .translatable("msg.stupid_express.split_personality.changefailed")
+                                    .withStyle(ChatFormatting.RED),
                             true);
                     return;
                 }
@@ -56,7 +57,9 @@ public class SplitPersonalitySwitchPacket implements CustomPacketPayload {
                 component.switchPersonality();
                 // 反馈：切换成功
                 player.displayClientMessage(
-                        net.minecraft.network.chat.Component.literal("§e你已切换人格"),
+                        net.minecraft.network.chat.Component
+                                .translatable("msg.stupid_express.split_personality.havechanged")
+                                .withStyle(ChatFormatting.YELLOW),
                         true);
             });
         });
