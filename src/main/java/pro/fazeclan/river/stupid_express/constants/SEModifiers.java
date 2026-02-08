@@ -140,7 +140,6 @@ public class SEModifiers {
         assignModifierComponents();
         pro.fazeclan.river.stupid_express.modifier.magnate.MagnatePassiveIncomeHandler.init();
         pro.fazeclan.river.stupid_express.modifier.cursed.CursedHandler.init();
-        pro.fazeclan.river.stupid_express.modifier.secretive.SecretiveHandler.init();
         pro.fazeclan.river.stupid_express.modifier.knight.KnightHandler.init();
         pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler.init();
 

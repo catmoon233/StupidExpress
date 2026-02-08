@@ -9,6 +9,7 @@
     "modifier.cursed.CursedDeathMixin",
     "modifier.lovers.LoversDeathMixin",
     "modifier.lovers.LoversWinConditionMixin",
+    "modifier.secretive.SecretiveDeathMixin",
     "modifier.split_personality.QuitVoiceMixin",
     "modifier.split_personality.SplitPersonalityServerInputBlockMixin",
     "modifier.taskmaster.TaskmasterGiveCoinsMixin",
