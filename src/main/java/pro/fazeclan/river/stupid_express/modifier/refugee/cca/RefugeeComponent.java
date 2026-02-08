@@ -1,5 +1,17 @@
 package pro.fazeclan.river.stupid_express.modifier.refugee.cca;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+
+import org.agmas.harpymodloader.component.WorldModifierComponent;
+import org.ladysnake.cca.api.v3.component.ComponentKey;
+import org.ladysnake.cca.api.v3.component.ComponentRegistry;
+import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
+import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
+
 import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
@@ -24,21 +36,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import org.agmas.harpymodloader.component.WorldModifierComponent;
-import org.agmas.harpymodloader.modded_murder.ModdedMurderGameMode;
-import org.ladysnake.cca.api.v3.component.ComponentKey;
-import org.ladysnake.cca.api.v3.component.ComponentRegistry;
-import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
-import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.utils.RoleUtils;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
 
 public class RefugeeComponent implements AutoSyncedComponent, ServerTickingComponent {
 
@@ -144,7 +144,9 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
 
         // Effects and notifications
         player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 30 * 20, 0, false, false));
-        serverLevel.getServer().getCommands().performPrefixedCommand(serverLevel.getServer().createCommandSourceStack(), "title @a title \"\\u00a74亡命时刻\"");
+        serverLevel.getServer().getCommands().performPrefixedCommand(serverLevel.getServer().createCommandSourceStack(),
+                "title @a title {\"translate\":\"title.stupid_express.refugee.active\",\"color\":\"dark_red\"}");
+                
         serverLevel.players().forEach(p -> {
             p.playNotifySound(SoundEvents.WITHER_DEATH, SoundSource.PLAYERS, 1.0f, 1.0f);
             p.addEffect(new MobEffectInstance(MobEffects.WEAVING, 120 * 20, 0, false, false));
@@ -231,12 +233,13 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         isAnyRevivals = false;
         LoadPlayersStats();
         players_stats.clear(); // 清空玩家位置信息，避免浪费资源
-        sp.getServer().getCommands().performPrefixedCommand(sp.getServer().createCommandSourceStack(), "title @a title \"\\u00a76一切恢复平静\"");
+        sp.getServer().getCommands().performPrefixedCommand(sp.getServer().createCommandSourceStack(),
+                "{\"translate\":\"title.stupid_express.refugee.died\",\"color\":\"gold\"}");
 
         sp.getServer().getPlayerList().getPlayers().forEach((p) -> {
             p.playNotifySound(SoundEvents.ENDER_DRAGON_DEATH, SoundSource.PLAYERS, 1.0f, 1.0f);
             p.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 40, 0, false, false));
-            if (p.hasEffect(MobEffects.WEAVING)){
+            if (p.hasEffect(MobEffects.WEAVING)) {
                 p.removeEffect(MobEffects.WEAVING);
             }
             p.displayClientMessage(Component.translatable("gui.stupid_express.refugee.all_death"), true);
