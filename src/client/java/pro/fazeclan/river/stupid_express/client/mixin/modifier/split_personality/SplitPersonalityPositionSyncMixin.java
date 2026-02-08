@@ -22,30 +22,30 @@ public abstract class SplitPersonalityPositionSyncMixin {
             at = @At("HEAD")
     )
     void syncSplitPersonalityPosition(CallbackInfo ci) {
-        LocalPlayer player = (LocalPlayer) (Object) this;
-        var component = SplitPersonalityComponent.KEY.get(player);
-        
-        if (component == null || component.getMainPersonality() == null || component.getSecondPersonality() == null) {
-            return;
-        }
-        if (component.getTemporaryRevivalStartTick()>0)return;
-
-        // 如果是旁观者，同步位置到活跃人格
-        if (!component.isCurrentlyActive()) {
-            AbstractClientPlayer activePlayer = (AbstractClientPlayer) player.level().getPlayerByUUID(component.getCurrentActivePerson());
-            if (activePlayer != null && activePlayer != player) {
-                // 同步位置 - 确保旁观者始终在活跃人格的位置
-                player.setPos(activePlayer.getX(), activePlayer.getY(), activePlayer.getZ());
-                player.xRotO = activePlayer.xRotO;
-                player.yRotO = activePlayer.yRotO;
-                player.setXRot(activePlayer.getXRot());
-                player.setYRot(activePlayer.getYRot());
-                
-                // 同步眼睛高度
-                
-                // 清除所有移动输入
-                player.setDeltaMovement(0, player.getDeltaMovement().y, 0);
-            }
-        }
+//        LocalPlayer player = (LocalPlayer) (Object) this;
+//        var component = SplitPersonalityComponent.KEY.get(player);
+//
+//        if (component == null || component.getMainPersonality() == null || component.getSecondPersonality() == null) {
+//            return;
+//        }
+//        if (component.getTemporaryRevivalStartTick()>0)return;
+//
+//        // 如果是旁观者，同步位置到活跃人格
+//        if (!component.isCurrentlyActive()) {
+//            AbstractClientPlayer activePlayer = (AbstractClientPlayer) player.level().getPlayerByUUID(component.getCurrentActivePerson());
+//            if (activePlayer != null && activePlayer != player) {
+//                // 同步位置 - 确保旁观者始终在活跃人格的位置
+//                player.setPos(activePlayer.getX(), activePlayer.getY(), activePlayer.getZ());
+//                player.xRotO = activePlayer.xRotO;
+//                player.yRotO = activePlayer.yRotO;
+//                player.setXRot(activePlayer.getXRot());
+//                player.setYRot(activePlayer.getYRot());
+//
+//                // 同步眼睛高度
+//
+//                // 清除所有移动输入
+//                player.setDeltaMovement(0, player.getDeltaMovement().y, 0);
+//            }
+//        }
     }
 }

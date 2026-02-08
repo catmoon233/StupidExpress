@@ -244,12 +244,13 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
             // 当前玩家成为活跃人格
             thisPlayer.setGameMode(GameType.ADVENTURE);
             thisPlayer.setCamera(thisPlayer);
-            thisPlayer.displayClientMessage(Component.literal("§e你已成为活跃人格，获得控制权"), false);
+            thisPlayer.displayClientMessage(Component.literal("§e你已成为活跃人格，获得控制权"), true);
         } else {
             // 当前玩家成为观察者
             thisPlayer.setGameMode(GameType.SPECTATOR);
             thisPlayer.setCamera(otherPlayer);
-            thisPlayer.displayClientMessage(Component.literal("§7你已失去控制权，成为观察者"), false);
+
+            thisPlayer.displayClientMessage(Component.literal("§7你已失去控制权，成为观察者"), true);
         }
 
         // 更新另一个玩家的游戏模式
@@ -257,7 +258,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
             // 另一个玩家成为活跃人格
             otherPlayer.setGameMode(GameType.ADVENTURE);
             otherPlayer.setCamera(otherPlayer);
-            otherPlayer.displayClientMessage(Component.literal("§e你已成为活跃人格，获得控制权"), false);
+            otherPlayer.displayClientMessage(Component.literal("§e你已成为活跃人格，获得控制权"), true);
         } else {
             // 另一个玩家成为观察者
             otherPlayer.setGameMode(GameType.SPECTATOR);

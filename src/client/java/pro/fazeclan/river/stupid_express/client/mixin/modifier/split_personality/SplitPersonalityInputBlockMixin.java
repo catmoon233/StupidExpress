@@ -22,7 +22,7 @@ public abstract class SplitPersonalityInputBlockMixin {
     void blockSplitPersonalityObserverInput(CallbackInfo ci) {
         LocalPlayer player = (LocalPlayer) (Object) this;
         var component = SplitPersonalityComponent.KEY.get(player);
-        
+        if (component.getTemporaryRevivalStartTick()>0)return;
         // 如果是旁观者，禁用所有输入
         if (component != null && component.getMainPersonality() != null && !component.isCurrentlyActive()) {
             // 禁止移动
