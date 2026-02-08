@@ -1,22 +1,21 @@
 package pro.fazeclan.river.stupid_express.modifier.split_personality;
 
-import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.event.AllowPlayerDeath;
-import dev.doctor4t.trainmurdermystery.event.OnPlayerDeath;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
-import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
+import pro.fazeclan.river.stupid_express.network.SplitBackCamera;
 
 import java.util.*;
 
@@ -42,6 +41,9 @@ public class SplitPersonalityHandler {
                 return true;
             }
             if (component.getTemporaryRevivalStartTick() > 0) {
+                ServerPlayNetworking.send(serverVictim, new SplitBackCamera());
+                WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(serverVictim.level());
+                modifierComponent.removeModifier(serverVictim.getUUID(), SEModifiers.SPLIT_PERSONALITY);
                 component.reset();
                 return true;
             }
@@ -84,8 +86,11 @@ public class SplitPersonalityHandler {
                         // 超时，强制死亡
                         component.setTemporaryRevivalStartTick(-1); // 防止重复杀死
                         if (GameFunctions.isPlayerAliveAndSurvival(player)) {
-                            GameFunctions.killPlayer(player, true, null);
+                            ServerPlayNetworking.send(player, new SplitBackCamera());
                             component.reset();
+                            WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.level());
+                            modifierComponent.removeModifier(player.getUUID(), SEModifiers.SPLIT_PERSONALITY);
+                            GameFunctions.killPlayer(player, true, null);
                             player.displayClientMessage(
                                     net.minecraft.network.chat.Component
                                             .translatable("msg.stupid_express.split_personality.almostdead")
@@ -120,7 +125,8 @@ public class SplitPersonalityHandler {
 
         ServerPlayer mainServerPlayer = (ServerPlayer) mainPlayer;
         ServerPlayer secondServerPlayer = (ServerPlayer) secondPlayer;
-
+        ServerPlayNetworking.send(mainServerPlayer, new SplitBackCamera());
+        ServerPlayNetworking.send(secondServerPlayer, new SplitBackCamera());
         // 情况1：两个都选择欺骗 -> 直接死亡
         if (mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY &&
                 secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
@@ -167,8 +173,11 @@ public class SplitPersonalityHandler {
             }
 
             // 添加消息提示
-            betrayerPlayer.displayClientMessage(net.minecraft.network.chat.Component.translatable("msg.stupid_express.split_personality.revive").withStyle(ChatFormatting.GREEN), true);
-            sacrificePlayer.displayClientMessage(net.minecraft.network.chat.Component.translatable("msg.stupid_express.split_personality.donatedied").withStyle(ChatFormatting.RED), true);
+            betrayerPlayer.displayClientMessage(net.minecraft.network.chat.Component
+                    .translatable("msg.stupid_express.split_personality.revive").withStyle(ChatFormatting.GREEN), true);
+            sacrificePlayer.displayClientMessage(net.minecraft.network.chat.Component
+                    .translatable("msg.stupid_express.split_personality.donatedied").withStyle(ChatFormatting.RED),
+                    true);
             return;
         }
 

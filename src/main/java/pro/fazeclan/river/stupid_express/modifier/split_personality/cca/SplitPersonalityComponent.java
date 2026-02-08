@@ -245,12 +245,12 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
             // 当前玩家成为活跃人格
             thisPlayer.setGameMode(GameType.ADVENTURE);
             thisPlayer.setCamera(thisPlayer);
-            thisPlayer.displayClientMessage(Component.translatable("msg.stupid_express.split_personality.your_control").withStyle(ChatFormatting.YELLOW), false);
+            thisPlayer.displayClientMessage(Component.translatable("msg.stupid_express.split_personality.your_control").withStyle(ChatFormatting.YELLOW), true);
         } else {
             // 当前玩家成为观察者
             thisPlayer.setGameMode(GameType.SPECTATOR);
             thisPlayer.setCamera(otherPlayer);
-            thisPlayer.displayClientMessage(Component.translatable("msg.stupid_express.split_personality.lose_control").withStyle(ChatFormatting.GRAY), false);
+            thisPlayer.displayClientMessage(Component.translatable("msg.stupid_express.split_personality.lose_control").withStyle(ChatFormatting.GRAY), true);
         }
 
         // 更新另一个玩家的游戏模式
@@ -258,7 +258,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
             // 另一个玩家成为活跃人格
             otherPlayer.setGameMode(GameType.ADVENTURE);
             otherPlayer.setCamera(otherPlayer);
-            otherPlayer.displayClientMessage(Component.translatable("msg.stupid_express.split_personality.your_control").withStyle(ChatFormatting.YELLOW), false);
+            otherPlayer.displayClientMessage(Component.translatable("msg.stupid_express.split_personality.your_control").withStyle(ChatFormatting.YELLOW), true);
         } else {
             // 另一个玩家成为观察者
             otherPlayer.setGameMode(GameType.SPECTATOR);

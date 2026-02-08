@@ -1,10 +1,12 @@
 package pro.fazeclan.river.stupid_express.client;
 
+import com.mojang.authlib.minecraft.client.MinecraftClient;
 import dev.doctor4t.ratatouille.util.TextUtils;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -19,6 +21,7 @@ import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.client.keybinds.SplitPersonalityKeybinds;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
+import pro.fazeclan.river.stupid_express.network.SplitBackCamera;
 
 public class StupidExpressClient implements ClientModInitializer {
 
@@ -46,6 +49,9 @@ public class StupidExpressClient implements ClientModInitializer {
         
         // 注册背包界面事件
         registerInventoryEvents();
+        ClientPlayNetworking.registerGlobalReceiver(SplitBackCamera.TYPE, (payload, context) -> {
+            Minecraft.getInstance().setCameraEntity(Minecraft.getInstance().player);
+        });
     }
 
     private static void registerKeyEvents() {

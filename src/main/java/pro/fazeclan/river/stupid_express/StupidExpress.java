@@ -8,6 +8,7 @@ import dev.doctor4t.trainmurdermystery.event.OnPlayerDeath;
 import dev.doctor4t.trainmurdermystery.game.GameReplayManager;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
@@ -22,6 +23,7 @@ import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.PlayerStatsBeforeRefugee;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
+import pro.fazeclan.river.stupid_express.network.SplitBackCamera;
 import pro.fazeclan.river.stupid_express.network.SplitPersonalityPackets;
 import pro.fazeclan.river.stupid_express.role.initiate.InitiateUtils;
 
@@ -65,6 +67,8 @@ public class StupidExpress implements ModInitializer {
 
         // 初始化网络包处理
         SplitPersonalityPackets.registerPackets();
+        PayloadTypeRegistry.playS2C().register(SplitBackCamera.TYPE, SplitBackCamera.CODEC);
+
         pro.fazeclan.river.stupid_express.network.SplitPersonalitySwitchPacket.register();
 
         GameInitializeEvent.EVENT.register((ServerLevel, gameWorldComponent, serverPlayers) -> {

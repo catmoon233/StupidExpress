@@ -2,6 +2,7 @@ package pro.fazeclan.river.stupid_express.mixin.modifier.split_personality;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,26 +23,33 @@ public abstract class SplitPersonalityServerInputBlockMixin {
     )
     void blockServerSideSplitPersonalityInput(CallbackInfo ci) {
         Player player = (Player) (Object) this;
-        var component = SplitPersonalityComponent.KEY.get(player);
-        
-        // 如果是旁观者，清除所有移动
-        if (component != null && component.getMainPersonality() != null && !component.isCurrentlyActive()) {
-            // 禁止移动
-            player.setDeltaMovement(Vec3.ZERO);
-            player.hasImpulse = false;
-            
-            // 禁止飞行模式
-            if (player.getAbilities().flying) {
-                player.getAbilities().flying = false;
+        if (player instanceof ServerPlayer serverPlayer) {
+            var component = SplitPersonalityComponent.KEY.get(player);
+            if (component.getTemporaryRevivalStartTick() > 0) {
+                return;
             }
-            
-            // 同步到活跃人格的位置
-            Player activePlayer = (Player) player.level().getPlayerByUUID(component.getCurrentActivePerson());
-            if (activePlayer != null && activePlayer != player) {
-                // 强制旁观者位置与活跃人格一致
-                player.teleportTo(activePlayer.getX(), activePlayer.getY(), activePlayer.getZ());
-                player.setXRot(activePlayer.getXRot());
-                player.setYRot(activePlayer.getYRot());
+
+            // 如果是旁观者，清除所有移动
+            if (component != null && component.getMainPersonality() != null && !component.isCurrentlyActive()) {
+                // 禁止移动
+                serverPlayer.setGameMode(GameType.SPECTATOR);
+                serverPlayer.setCamera(serverPlayer);
+//            player.setDeltaMovement(Vec3.ZERO);
+//            player.hasImpulse = false;
+//
+//            // 禁止飞行模式
+//            if (player.getAbilities().flying) {
+//                player.getAbilities().flying = false;
+//            }
+//
+//            // 同步到活跃人格的位置
+//            Player activePlayer = (Player) player.level().getPlayerByUUID(component.getCurrentActivePerson());
+//            if (activePlayer != null && activePlayer != player) {
+//                // 强制旁观者位置与活跃人格一致
+//                player.teleportTo(activePlayer.getX(), activePlayer.getY(), activePlayer.getZ());
+//                player.setXRot(activePlayer.getXRot());
+//                player.setYRot(activePlayer.getYRot());
+//            }
             }
         }
     }
