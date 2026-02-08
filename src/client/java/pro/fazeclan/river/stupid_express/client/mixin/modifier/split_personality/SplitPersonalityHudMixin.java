@@ -1,6 +1,7 @@
 package pro.fazeclan.river.stupid_express.client.mixin.modifier.split_personality;
 
 import dev.doctor4t.trainmurdermystery.client.TMMClient;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -8,6 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,9 +28,11 @@ public abstract class SplitPersonalityHudMixin {
     private static float nametagAlpha;
 
     @Inject(method = "renderHud", at = @At("TAIL"))
-    private static void splitPersonalityHud(Font renderer, LocalPlayer player, GuiGraphics context, DeltaTracker tickCounter, CallbackInfo ci) {
+    private static void splitPersonalityHud(Font renderer, LocalPlayer player, GuiGraphics context,
+            DeltaTracker tickCounter, CallbackInfo ci) {
         var clientPlayer = Minecraft.getInstance().player;
-        if (clientPlayer == null) return;
+        if (clientPlayer == null)
+            return;
 
         var component = SplitPersonalityComponent.KEY.get(clientPlayer);
         if (component == null || component.getMainPersonality() == null || component.getSecondPersonality() == null) {
@@ -50,7 +54,8 @@ public abstract class SplitPersonalityHudMixin {
         context.fill(x - 5, y - 5, x + 205, y + 110, 0x80000000);
 
         // 显示双重人格状态标题
-        context.drawString(renderer, "§6双重人格", x, y, 0xFFFF55);
+        context.drawString(renderer, Component.translatable("announcement.modifier.stupid_express.split_personality"),
+                x, y, 0xFFFF55);
 
         // 显示当前活跃人格状态
         renderPersonalityStatus(context, renderer, component, clientPlayer, x, y + 12);
@@ -70,86 +75,130 @@ public abstract class SplitPersonalityHudMixin {
         context.pose().popPose();
     }
 
-    private static void renderPersonalityStatus(GuiGraphics context, Font renderer, SplitPersonalityComponent component, LocalPlayer currentPlayer, int x, int y) {
-        String statusText;
+    private static void renderPersonalityStatus(GuiGraphics context, Font renderer, SplitPersonalityComponent component,
+            LocalPlayer currentPlayer, int x, int y) {
+        MutableComponent statusText;
         int color;
 
         if (component.isCurrentlyActive()) {
-            statusText = "状态: §e控制身体";
+            statusText = Component.translatable("hud.stupid_express.split_personality.status", Component
+                    .translatable("hud.stupid_express.split_personality.incontrol").withStyle(ChatFormatting.AQUA));
             color = 0xFFFF55;
         } else {
-            statusText = "状态: §8旁观中";
+            statusText = Component.translatable("hud.stupid_express.split_personality.status", Component
+                    .translatable("hud.stupid_express.split_personality.spec").withStyle(ChatFormatting.DARK_GRAY));
             color = 0x888888;
         }
 
         context.drawString(renderer, statusText, x, y, color);
     }
 
-    private static void renderSwitchTimer(GuiGraphics context, Font renderer, SplitPersonalityComponent component, int x, int y) {
-        long remaining = component.canSwitch() ? 0 : (1200-(component.getBaseTickCounter()))/20;
-        if (remaining < 0) remaining = 0;
+    private static void renderSwitchTimer(GuiGraphics context, Font renderer, SplitPersonalityComponent component,
+            int x, int y) {
+        long remaining = component.canSwitch() ? 0 : (1200 - (component.getBaseTickCounter())) / 20;
+        if (remaining < 0)
+            remaining = 0;
 
-        String timerText = String.format("§9切换冷却: §f%d§9秒 (§fY§9键)", remaining);
+        MutableComponent timerText = Component
+                .translatable("hud.stupid_express.split_personality.switch_cooldown", remaining,
+                        Component.keybind("key.stupid_express.switch_personality").withStyle(ChatFormatting.AQUA))
+                .withStyle(ChatFormatting.BLUE);
         context.drawString(renderer, timerText, x, y, 0x99BBFF);
     }
 
-    private static void renderRevivalTimer(GuiGraphics context, Font renderer, SplitPersonalityComponent component, int x, int y) {
-        if (component.getTemporaryRevivalStartTick()<=0)return;
-        long remaining = ( component.getTemporaryRevivalStartTick()) / 20;
-        if (remaining < 0) remaining = 0;
-
-        String timerText = String.format("§a生命倒计时: §f%d§a秒", remaining);
+    private static void renderRevivalTimer(GuiGraphics context, Font renderer, SplitPersonalityComponent component,
+            int x, int y) {
+        if (component.getTemporaryRevivalStartTick() <= 0)
+            return;
+        long remaining = (component.getTemporaryRevivalStartTick()) / 20;
+        if (remaining < 0)
+            remaining = 0;
+        // §a生命倒计时: §f%d§a秒
+        MutableComponent timerText = Component
+                .translatable("hud.stupid_express.split_personality.death_countdown",
+                        Component.literal(remaining + "").withStyle(ChatFormatting.WHITE))
+                .withStyle(ChatFormatting.GREEN);
         context.drawString(renderer, timerText, x, y, 0x55FF55);
     }
 
-    private static void renderOtherPersonalityInfo(GuiGraphics context, Font renderer, SplitPersonalityComponent component, LocalPlayer currentPlayer, int x, int y) {
+    private static void renderOtherPersonalityInfo(GuiGraphics context, Font renderer,
+            SplitPersonalityComponent component, LocalPlayer currentPlayer, int x, int y) {
         var clientLevel = currentPlayer.level();
-        Player otherPersonality = component.isMainPersonality() ?
-                clientLevel.getPlayerByUUID(component.getSecondPersonality()) :
-                clientLevel.getPlayerByUUID(component.getMainPersonality());
+        Player otherPersonality = component.isMainPersonality()
+                ? clientLevel.getPlayerByUUID(component.getSecondPersonality())
+                : clientLevel.getPlayerByUUID(component.getMainPersonality());
 
         if (otherPersonality != null) {
-            String otherStatus = component.isCurrentlyActive() ? "§8旁观中" : "§e控制中";
-            String otherText = String.format("配对: §f%s §7%s", otherPersonality.getName().getString(), otherStatus);
+            MutableComponent otherStatus = component.isCurrentlyActive()
+                    ? Component.translatable("hud.stupid_express.split_personality.spec")
+                            .withStyle(ChatFormatting.DARK_GRAY)
+                    : Component.translatable("hud.stupid_express.split_personality.incontrol")
+                            .withStyle(ChatFormatting.YELLOW);
+            MutableComponent otherText = Component.translatable(
+                    "hud.stupid_express.split_personality.partner_with_argu", otherPersonality.getDisplayName(),
+                    otherStatus.withStyle(ChatFormatting.GRAY));
             context.drawString(renderer, otherText, x, y, 0xAAAAAA);
         }
     }
 
-    private static void renderChoiceStatus(GuiGraphics context, Font renderer, SplitPersonalityComponent component, int x, int y) {
+    private static void renderChoiceStatus(GuiGraphics context, Font renderer, SplitPersonalityComponent component,
+            int x, int y) {
         // 显示当前选择状态
-        String choiceText;
+        MutableComponent choiceText;
         int choiceColor;
-        
+
         if (component.isMainPersonality()) {
-            choiceText = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
-                "§f当前选择: §2奉献" : "§f当前选择: §c欺骗";
-            choiceColor = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 
-                0x00FF00 : 0xFF0000;
+            choiceText = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE
+                    ? Component.translatable("hud.stupid_express.split_personality.choice_now",
+                            Component
+                                    .translatable("hud.stupid_express.split_personality.sacrifice")
+                                    .withStyle(ChatFormatting.DARK_GREEN))
+                            .withStyle(ChatFormatting.WHITE)
+                    : Component.translatable("hud.stupid_express.split_personality.choice_now",
+                            Component.translatable("hud.stupid_express.split_personality.betray")
+                                    .withStyle(ChatFormatting.DARK_RED))
+                            .withStyle(ChatFormatting.WHITE);
+            choiceColor = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE
+                    ? 0x00FF00
+                    : 0xFF0000;
         } else {
-            choiceText = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ?
-                "§f当前选择: §2奉献" : "§f当前选择: §c欺骗";
-            choiceColor = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ?
-                0x00FF00 : 0xFF0000;
+            choiceText = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE
+                    ? Component.translatable("hud.stupid_express.split_personality.choice_now",
+                            Component
+                                    .translatable("hud.stupid_express.split_personality.sacrifice")
+                                    .withStyle(ChatFormatting.DARK_GREEN))
+                            .withStyle(ChatFormatting.WHITE)
+                    : Component.translatable("hud.stupid_express.split_personality.choice_now",
+                            Component.translatable("hud.stupid_express.split_personality.betray")
+                                    .withStyle(ChatFormatting.DARK_RED))
+                            .withStyle(ChatFormatting.WHITE);
+            choiceColor = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE
+                    ? 0x00FF00
+                    : 0xFF0000;
         }
 
         context.drawString(renderer, choiceText, x, y, choiceColor);
-        
+
         // 显示配对玩家的选择
-//        String partnerChoiceText;
-//        int partnerColor;
-//
-//        if (component.isMainPersonality()) {
-//            partnerChoiceText = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ?
-//                "§f配对选择: §2奉献" : "§f配对选择: §c欺骗";
-//            partnerColor = component.getSecondPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ?
-//                0x00FF00 : 0xFF0000;
-//        } else {
-//            partnerChoiceText = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ?
-//                "§f配对选择: §2奉献" : "§f配对选择: §c欺骗";
-//            partnerColor = component.getMainPersonalityChoice() == SplitPersonalityComponent.ChoiceType.SACRIFICE ?
-//                0x00FF00 : 0xFF0000;
-//        }
-        
- //       context.drawString(renderer, partnerChoiceText, x, y + 12, partnerColor);
+        // String partnerChoiceText;
+        // int partnerColor;
+        //
+        // if (component.isMainPersonality()) {
+        // partnerChoiceText = component.getSecondPersonalityChoice() ==
+        // SplitPersonalityComponent.ChoiceType.SACRIFICE ?
+        // "§f配对选择: §2奉献" : "§f配对选择: §c欺骗";
+        // partnerColor = component.getSecondPersonalityChoice() ==
+        // SplitPersonalityComponent.ChoiceType.SACRIFICE ?
+        // 0x00FF00 : 0xFF0000;
+        // } else {
+        // partnerChoiceText = component.getMainPersonalityChoice() ==
+        // SplitPersonalityComponent.ChoiceType.SACRIFICE ?
+        // "§f配对选择: §2奉献" : "§f配对选择: §c欺骗";
+        // partnerColor = component.getMainPersonalityChoice() ==
+        // SplitPersonalityComponent.ChoiceType.SACRIFICE ?
+        // 0x00FF00 : 0xFF0000;
+        // }
+
+        // context.drawString(renderer, partnerChoiceText, x, y + 12, partnerColor);
     }
 }

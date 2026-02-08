@@ -1,6 +1,7 @@
 package pro.fazeclan.river.stupid_express.client.keybinds;
 
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -27,12 +28,12 @@ public class SplitPersonalityKeybinds {
 
         var component = SplitPersonalityComponent.KEY.get(player);
         if (component == null) {
-            player.displayClientMessage(Component.literal("§c还未初始化双重人格"), true);
+            player.displayClientMessage(Component.translatable("hud.stupid_express.split_personality.notinit").withStyle(ChatFormatting.RED), true);
             return;
         }
         
         if (component.getMainPersonality() == null) {
-            player.displayClientMessage(Component.literal("§c双重人格未初始化"), true);
+            player.displayClientMessage(Component.translatable("hud.stupid_express.split_personality.notinit").withStyle(ChatFormatting.RED), true);
             return;
         }
         
@@ -40,13 +41,13 @@ public class SplitPersonalityKeybinds {
         
         // 已死亡无法切换
         if (component.isDeath()) {
-            player.displayClientMessage(Component.literal("§c已死亡，无法切换"), true);
+            player.displayClientMessage(Component.translatable("hud.stupid_express.split_personality.dead").withStyle(ChatFormatting.RED), true);
             return;
         }
 
         // 发送切换请求到服务器
         // 服务器会验证冷却时间和其他条件
         SplitPersonalityClientPackets.sendSwitchPacket();
-        player.displayClientMessage(Component.literal("§e正在切换人格..."), true);
+        player.displayClientMessage(Component.translatable("hud.stupid_express.split_personality.changing").withStyle(ChatFormatting.YELLOW), true);
     }
 }
