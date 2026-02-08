@@ -3,7 +3,8 @@ package pro.fazeclan.river.stupid_express.mixin.modifier.split_personality;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.phys.Vec3;
+import java.util.UUID;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,10 +18,7 @@ import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPer
 @Mixin(Player.class)
 public abstract class SplitPersonalityServerInputBlockMixin {
 
-    @Inject(
-            method = "aiStep()V",
-            at = @At("HEAD")
-    )
+    @Inject(method = "aiStep()V", at = @At("HEAD"))
     void blockServerSideSplitPersonalityInput(CallbackInfo ci) {
         Player player = (Player) (Object) this;
         if (player instanceof ServerPlayer serverPlayer) {
@@ -32,24 +30,13 @@ public abstract class SplitPersonalityServerInputBlockMixin {
             // 如果是旁观者，清除所有移动
             if (component != null && component.getMainPersonality() != null && !component.isCurrentlyActive()) {
                 // 禁止移动
-//                serverPlayer.setGameMode(GameType.SPECTATOR);
-//                serverPlayer.setCamera(serverPlayer);
-//            player.setDeltaMovement(Vec3.ZERO);
-//            player.hasImpulse = false;
-//
-//            // 禁止飞行模式
-//            if (player.getAbilities().flying) {
-//                player.getAbilities().flying = false;
-//            }
-//
-//            // 同步到活跃人格的位置
-//            Player activePlayer = (Player) player.level().getPlayerByUUID(component.getCurrentActivePerson());
-//            if (activePlayer != null && activePlayer != player) {
-//                // 强制旁观者位置与活跃人格一致
-//                player.teleportTo(activePlayer.getX(), activePlayer.getY(), activePlayer.getZ());
-//                player.setXRot(activePlayer.getXRot());
-//                player.setYRot(activePlayer.getYRot());
-//            }
+                if (!serverPlayer.isSpectator())
+                    serverPlayer.setGameMode(GameType.SPECTATOR);
+                UUID targetPlayerUUID = component.getCurrentActivePerson();
+                if (!serverPlayer.getCamera().getUUID().equals(targetPlayerUUID)) {
+                    var targetplayer = serverPlayer.level().getPlayerByUUID(component.getCurrentActivePerson());
+                    serverPlayer.setCamera(targetplayer);
+                }
             }
         }
     }
