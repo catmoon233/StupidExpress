@@ -14,7 +14,7 @@ import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 public abstract class BanSpectatorGuiMove {
     @Inject(method = "onHotbarSelected", at = @At("HEAD"), cancellable = true)
     private void se$onHotbarSelected(int i, CallbackInfo ci) {
-        if (TMMConfig.isLobby) {
+        if (TMM.isLobby) {
             return;
         }
         try {
@@ -30,7 +30,7 @@ public abstract class BanSpectatorGuiMove {
     }
     @Inject(method = "onMouseMiddleClick", at = @At("HEAD"), cancellable = true)
     private void se$onMouseMiddleClick(CallbackInfo ci) {
-        if (TMMConfig.isLobby) {
+        if (TMM.isLobby) {
             return;
         }
         try {
