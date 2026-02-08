@@ -7,79 +7,105 @@ import net.minecraft.world.entity.player.Player;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class AvariciousGoldHandler {
 
-    public static int TIMER_TICKS = GameConstants.getInTicks(1,0);
+    public static long gameStartTime = -1; // 添加游戏开始时间字段
+    public static int TIMER_TICKS = GameConstants.getInTicks(0, 30); // 改为30秒一次，频率加倍
+    public static double MAX_DISTANCE = 8.0; // 扩大距离范围
+    public static int STARTING_BALANCE = 100; // 初始金币翻倍
+    public static int BASE_PAYOUT_PER_PLAYER = 25; // 基础金币提高
+    public static double DISTANCE_MULTIPLIER = 1.5; // 距离奖励系数
 
-    public static double MAX_DISTANCE = 5.5;
+    private static final Map<UUID, Integer> playerBonusMap = new HashMap<>();
+    private static final int BONUS_THRESHOLD = 3; // 连续触发奖励的阈值
+    private static final int BONUS_MULTIPLIER = 2; // 连续触发时的倍率
 
-    public static int STARTING_BALANCE = 50;
-    public static int PAYOUT_PER_PLAYER = 30;
-
-    public static long gameStartTime = -1;
-
-    public static int calculatePayout(int totalPlayerCount) {
+    public static int calculatePayout(int totalPlayerCount, int nearbyPlayers, double avgDistance) {
         if (totalPlayerCount <= 6) {
-            return 40;
+            return (int)(50 * (1 + (nearbyPlayers * 0.1))); // 基础值提高，且根据附近玩家数加成
         } else if (totalPlayerCount >= 20) {
-            return 10;
+            return (int)(20 * (1 + (nearbyPlayers * 0.15))); // 提高下限和加成系数
         } else {
-            // P(N) = 80.5 * e^(-0.139 * N) + 5
-            return (int) Math.round(80.5 * Math.exp(-0.139 * totalPlayerCount) + 5);
+            // 优化后的公式：提高基础值和衰减系数，增加附近玩家加成
+            double base = 120.0 * Math.exp(-0.09 * totalPlayerCount) + 15; // 提高基础值和降低衰减
+            double nearbyBonus = 1 + (nearbyPlayers * 0.12); // 附近玩家加成
+            double distanceBonus = 1 + ((MAX_DISTANCE - avgDistance) / MAX_DISTANCE) * 0.3; // 距离奖励
+
+            return (int) Math.round(base * nearbyBonus * distanceBonus);
         }
     }
 
     public static void onGameStart() {
         ModdedRoleAssigned.EVENT.register(((player, role) -> {
-
             if (role.equals(SERoles.AVARICIOUS)) {
                 PlayerShopComponent shop = PlayerShopComponent.KEY.get(player);
-
                 shop.setBalance(STARTING_BALANCE);
-
-                gameStartTime = -1;
-
+                playerBonusMap.put(player.getUUID(), 0); // 初始化连续奖励计数
             }
-
         }));
     }
-
     @Deprecated
+
     public static void payout() {
         ModdedRoleAssigned.EVENT.register(((player, role) -> {
-
             if (role.equals(SERoles.AVARICIOUS)) {
-
                 GameTimeComponent timeComponent = GameTimeComponent.KEY.get(player.level());
                 boolean payoutTime = timeComponent.time % TIMER_TICKS == 0;
 
                 PlayerShopComponent shop = PlayerShopComponent.KEY.get(player);
 
                 if (payoutTime) {
-
-                    int playerCount = 0;
+                    int nearbyPlayerCount = 0;
+                    double totalDistance = 0.0;
 
                     for (Player playerInWorld : player.level().players()) {
-
                         if (playerInWorld != player) {
-
-                            if (playerInWorld.distanceTo(player) <= MAX_DISTANCE) {
-
-                                playerCount++;
-
+                            double distance = playerInWorld.distanceTo(player);
+                            if (distance <= MAX_DISTANCE) {
+                                nearbyPlayerCount++;
+                                totalDistance += distance;
                             }
-
                         }
-
                     }
 
-                    shop.addToBalance(playerCount * 10);
+                    if (nearbyPlayerCount > 0) {
+                        double avgDistance = totalDistance / nearbyPlayerCount;
+                        int totalPlayers = player.level().players().size();
+                        int basePayout = calculatePayout(totalPlayers, nearbyPlayerCount, avgDistance);
 
+                        // 应用距离奖励（越近奖励越高）
+                        double distanceMultiplier = 1 + (MAX_DISTANCE - avgDistance) / MAX_DISTANCE * (DISTANCE_MULTIPLIER - 1);
+                        int distanceAdjustedPayout = (int)(basePayout * distanceMultiplier);
+
+                        // 连续触发奖励
+                        int consecutiveCount = playerBonusMap.getOrDefault(player.getUUID(), 0) + 1;
+                        int finalPayout = distanceAdjustedPayout;
+
+                        if (consecutiveCount >= BONUS_THRESHOLD) {
+                            finalPayout *= BONUS_MULTIPLIER;
+                            consecutiveCount = 0; // 重置计数
+                        }
+
+                        playerBonusMap.put(player.getUUID(), consecutiveCount);
+
+                        // 额外奖励：当附近玩家达到一定数量时
+                        if (nearbyPlayerCount >= 5) {
+                            finalPayout += (int)(BASE_PAYOUT_PER_PLAYER * nearbyPlayerCount * 0.5);
+                        }
+
+                        shop.addToBalance(finalPayout);
+
+                        // 调试信息（可移除）
+                        System.out.println("[Avaricious] Payout: " + finalPayout +
+                                " | Nearby: " + nearbyPlayerCount +
+                                " | AvgDist: " + String.format("%.1f", avgDistance));
+                    }
                 }
-
             }
         }));
-
     }
-
 }

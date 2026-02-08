@@ -51,7 +51,18 @@ public class AvariciousGoldPayout {
 
             if (nearbyPlayers > 0) {
                 int totalPlayers = serverWorld.players().size();
-                int payoutPerPlayer = AvariciousGoldHandler.calculatePayout(totalPlayers);
+                // 计算平均距离
+                double totalDistance = 0.0;
+                for (ServerPlayer other : serverWorld.players()) {
+                    if (GameFunctions.isPlayerEliminated(other)) continue;
+                    if (other == player) continue;
+                    if (other.distanceTo(player) <= AvariciousGoldHandler.MAX_DISTANCE) {
+                        totalDistance += other.distanceTo(player);
+                    }
+                }
+                double avgDistance = totalDistance / nearbyPlayers;
+                
+                int payoutPerPlayer = AvariciousGoldHandler.calculatePayout(totalPlayers, nearbyPlayers, avgDistance);
                 PlayerShopComponent.KEY.get(player).addToBalance(nearbyPlayers * payoutPerPlayer);
                 player.playNotifySound(TMMSounds.UI_SHOP_BUY, SoundSource.PLAYERS, 10.0f, 0.5f);
             }

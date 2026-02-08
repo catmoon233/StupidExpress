@@ -50,7 +50,7 @@ public abstract class InventoryMixin extends EffectRenderingInventoryScreen<Inve
         this.component = SplitPersonalityComponent.KEY.get(player);
         
         // 只有在是双重人格且未死亡时才添加选择功能
-        if (component != null && component.getMainPersonality() != null && !component.isSecondPersonality() &&!component.isDeath()) {
+        if (component != null && component.getMainPersonality() != null&& component.getSecondPersonality() !=null &&!component.isDeath()) {
             SplitPersonalityChoiceWidget widgetFactory = new SplitPersonalityChoiceWidget(player);
             
             int buttonX = self.width / 2 - 110;
