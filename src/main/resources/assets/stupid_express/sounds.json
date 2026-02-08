@@ -2,7 +2,7 @@
 	"refugee.music": {
 		"sounds": [
 			{
-				"name": "stupid_express:records/refugee_music",
+				"name": "stupid_express:refugee_music",
 				"stream": true
 			}
 		]
