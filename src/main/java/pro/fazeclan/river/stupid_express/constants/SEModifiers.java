@@ -387,7 +387,6 @@ public class SEModifiers {
             if (refugeeC != null) {
                 refugeeC.reset();
             }
-
         });
 
     }

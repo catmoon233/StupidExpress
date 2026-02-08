@@ -49,7 +49,7 @@ public class StupidExpressClient implements ClientModInitializer {
                 "loose_end",
                 new StatusInit.StatusBar(
                         "loose_end",
-                        "\u00a74" + Component.translatable("gui.stupid_express.refugee.loose_end_time").getString(),
+                        Component.translatable("gui.stupid_express.refugee.loose_end_time").getString(),
                         () -> {
                             final var level = Minecraft.getInstance().player.level();
                             return Float

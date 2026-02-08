@@ -63,7 +63,6 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         this.level = level;
     }
 
-
     @Override
     public void serverTick() {
         if (pendingRevivals.isEmpty()) {
@@ -77,18 +76,24 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
                 revivePlayer(data);
                 data.isRevive = true;
             }
-            if (data.isRevive && currentTime >= data.revivalTime+2400) {
-                level.players().forEach(
-                        player -> {
-                            if (player.getUUID().equals(data.uuid)) {
-                                GameFunctions.killPlayer(player, true, null);
-                            }
+            if (data.isRevive && !data.isDead && currentTime >= data.revivalTime + 2400) {
+                data.isDead = true;
+                for (var player : level.players()) {
+                    if (player.getUUID().equals(data.uuid)) {
+                        if (GameFunctions.isPlayerAliveAndSurvival(player)) {
+                            GameFunctions.killPlayer(player, true, null);
+                            break;
                         }
-                );
+                    }
+                }
+                this.sync();
             }
         }
-
-
+        pendingRevivals.removeIf((data) -> {
+            if (data.isDead)
+                return true;
+            return false;
+        });
         // 每20 tick（1秒）发送一次倒计时提示
         if (currentTime % 20 == 0) {
             sendCountdownMessages();
@@ -134,13 +139,14 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         }
 
         var i = GameFunctions.roomToPlayer.get(data.uuid);
-        if (i == null){
+        if (i == null) {
             i = 1;
         }
         final var areasWorldComponent = AreasWorldComponent.KEY.get(serverLevel);
         final var roomPosition = areasWorldComponent.getRoomPosition(i);
         // Teleport to death location
-        player.teleportTo(serverLevel, roomPosition.x, roomPosition.y, roomPosition.z, player.getYRot(), player.getXRot());
+        player.teleportTo(serverLevel, roomPosition.x, roomPosition.y, roomPosition.z, player.getYRot(),
+                player.getXRot());
         player.setGameMode(GameType.ADVENTURE);
 
         // Remove body entity
@@ -171,9 +177,9 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 30 * 20, 0, false, false));
         serverLevel.getServer().getCommands().performPrefixedCommand(serverLevel.getServer().createCommandSourceStack(),
                 "title @a title {\"translate\":\"title.stupid_express.refugee.active\",\"color\":\"dark_red\"}");
-                
+
         serverLevel.players().forEach(p -> {
-            ServerPlayNetworking.send(p,new TriggerStatusBarPayload("loose_end"));
+            ServerPlayNetworking.send(p, new TriggerStatusBarPayload("loose_end"));
             p.playNotifySound(SoundEvents.WITHER_DEATH, SoundSource.PLAYERS, 1.0f, 1.0f);
             p.addEffect(new MobEffectInstance(MobEffects.WEAVING, 120 * 20, 0, false, false));
             p.playNotifySound(SoundEvents.WITHER_SPAWN, SoundSource.PLAYERS, 1.0f, 1.0f);
@@ -263,7 +269,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
                 "{\"translate\":\"title.stupid_express.refugee.died\",\"color\":\"gold\"}");
 
         sp.getServer().getPlayerList().getPlayers().forEach((p) -> {
-            ServerPlayNetworking.send(p,new RemoveStatusBarPayload("loose_end"));
+            ServerPlayNetworking.send(p, new RemoveStatusBarPayload("loose_end"));
             p.playNotifySound(SoundEvents.ENDER_DRAGON_DEATH, SoundSource.PLAYERS, 1.0f, 1.0f);
             p.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 40, 0, false, false));
             if (p.hasEffect(MobEffects.WEAVING)) {
@@ -284,7 +290,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
     public void addPendingRevival(UUID uuid, double x, double y, double z) {
         // 2 minutes = 120 seconds = 2400 ticks
         long revivalTime = level.getGameTime() + 2400;
-        pendingRevivals.add(new RefugeeData(uuid, revivalTime,false));
+        pendingRevivals.add(new RefugeeData(uuid, revivalTime, false));
         this.sync();
     }
 
@@ -297,8 +303,6 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         return -1;
     }
 
-
-
     @Override
     public void readFromNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
         pendingRevivals.clear();
@@ -309,8 +313,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
                 pendingRevivals.add(new RefugeeData(
                         item.getUUID("uuid"),
                         item.getLong("revival_time"),
-                        item.getBoolean("is_revive")
-                ));
+                        item.getBoolean("is_revive")));
             }
         }
     }
@@ -350,7 +353,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             return uuid;
         }
 
-        boolean isRevive;
+        boolean isRevive, isDead = false;
 
         RefugeeData(UUID uuid, long revivalTime, boolean isRevive) {
             this.uuid = uuid;
