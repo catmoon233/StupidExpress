@@ -1,4 +1,5 @@
 {
+  "or_2_argu": "%s 或 %s",
   "announcement.goals.amnesiac": "从尸首上汲取回忆，穿戴其过往经历",
   "announcement.goals.stupid_express.amnesiac": "从尸首上汲取回忆，穿戴其过往经历",
   "announcement.role.stupid_express.amnesiac": "失忆患者",
@@ -117,6 +118,7 @@
   "hud.stupid_express.split_personality.notinit": "双重人格未初始化",
   "hud.stupid_express.split_personality.notpartner": "未分配双重人格",
   "screen.stupid_express.split_personality.choice.title": "双重人格选择",
+  "screen.stupid_express.split_personality.inventory.choice.title": "□ 双重人格选择 □",
   "screen.stupid_express.split_personality.choice.dead": "已死亡，无法选择",
   "screen.stupid_express.split_personality.choice.available": "可选择",
   "hud.stupid_express.split_personality.status": "状态：%s",
@@ -125,14 +127,14 @@
   "screen.stupid_express.split_personality.partner": "你的配对: %s",
   "hud.stupid_express.split_personality.partner_with_argu": "配对: %s %s",
   "hud.stupid_express.split_personality.choice_now": "当前选择: %s",
-  "msg.stupid_express.split_personality.cooldown":"还需等待 %s 秒才能切换",
-  "msg.stupid_express.split_personality.your_control":"你已成为活跃人格，获得控制权",
-  "msg.stupid_express.split_personality.lose_control":"你已失去控制权，成为观察者",
-  "msg.stupid_express.split_personality.almostdead":"你的临时生命已耗尽！",
-  "msg.stupid_express.split_personality.liebothdie":"你们都选择了欺骗，双双死亡！",
-  "msg.stupid_express.split_personality.revive":"你选择了欺骗，成功复活！",
-  "msg.stupid_express.split_personality.donatedied":"你选择了奉献，不幸死亡！",
-  "msg.stupid_express.split_personality.reviveboth":"你们都选择了奉献，双双复活！但只有60秒的时间...",
-  "msg.stupid_express.split_personality.changefailed":"无法切换人格！",
-  "msg.stupid_express.split_personality.havechanged":"你已切换人格"
+  "msg.stupid_express.split_personality.cooldown": "还需等待 %s 秒才能切换",
+  "msg.stupid_express.split_personality.your_control": "你已成为活跃人格，获得控制权",
+  "msg.stupid_express.split_personality.lose_control": "你已失去控制权，成为观察者",
+  "msg.stupid_express.split_personality.almostdead": "你的临时生命已耗尽！",
+  "msg.stupid_express.split_personality.liebothdie": "你们都选择了欺骗，双双死亡！",
+  "msg.stupid_express.split_personality.revive": "你选择了欺骗，成功复活！",
+  "msg.stupid_express.split_personality.donatedied": "你选择了奉献，不幸死亡！",
+  "msg.stupid_express.split_personality.reviveboth": "你们都选择了奉献，双双复活！但只有60秒的时间...",
+  "msg.stupid_express.split_personality.changefailed": "无法切换人格！",
+  "msg.stupid_express.split_personality.havechanged": "你已切换人格"
 }
