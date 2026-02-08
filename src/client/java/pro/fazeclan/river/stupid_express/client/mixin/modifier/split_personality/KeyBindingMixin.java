@@ -33,6 +33,7 @@ public abstract class KeyBindingMixin {
                         this.same(Minecraft.getInstance().options.keyDrop) ||
                         this.same(Minecraft.getInstance().options.keyUp) ||
                         this.same(Minecraft.getInstance().options.keyRight) ||
+                        this.same(Minecraft.getInstance().options.keyPlayerList) ||
                         this.same(Minecraft.getInstance().options.keyLeft) ||
                         this.same(Minecraft.getInstance().options.keyDown) ||
                         this.same(Minecraft.getInstance().options.keyUse) ||
