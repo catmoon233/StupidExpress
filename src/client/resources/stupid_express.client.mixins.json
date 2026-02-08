@@ -8,6 +8,7 @@
     "modifier.refugee.RefugeeHudMixin",
     "modifier.split_personality.InventoryMixin",
     "modifier.split_personality.InventoryScreenSplitPersonalityMixin",
+    "modifier.split_personality.KeyBindingMixin",
     "modifier.split_personality.SplitPersonalityHudMixin",
     "modifier.split_personality.SplitPersonalityInputBlockMixin",
     "modifier.split_personality.SplitPersonalityPlayerHideMixin",

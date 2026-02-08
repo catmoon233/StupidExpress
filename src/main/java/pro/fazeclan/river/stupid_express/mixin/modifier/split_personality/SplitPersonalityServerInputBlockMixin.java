@@ -32,8 +32,8 @@ public abstract class SplitPersonalityServerInputBlockMixin {
             // 如果是旁观者，清除所有移动
             if (component != null && component.getMainPersonality() != null && !component.isCurrentlyActive()) {
                 // 禁止移动
-                serverPlayer.setGameMode(GameType.SPECTATOR);
-                serverPlayer.setCamera(serverPlayer);
+//                serverPlayer.setGameMode(GameType.SPECTATOR);
+//                serverPlayer.setCamera(serverPlayer);
 //            player.setDeltaMovement(Vec3.ZERO);
 //            player.hasImpulse = false;
 //
