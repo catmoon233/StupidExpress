@@ -2,6 +2,7 @@ package pro.fazeclan.river.stupid_express.client;
 
 import com.mojang.authlib.minecraft.client.MinecraftClient;
 import dev.doctor4t.ratatouille.util.TextUtils;
+import dev.doctor4t.trainmurdermystery.client.StatusInit;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -13,12 +14,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.lwjgl.glfw.GLFW;
 import pro.fazeclan.river.stupid_express.client.gui.SplitPersonalityChoiceScreen;
 import pro.fazeclan.river.stupid_express.client.gui.helper.SplitPersonalityHelper;
 import pro.fazeclan.river.stupid_express.client.gui.widget.SplitPersonalityChoiceWidget;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.client.keybinds.SplitPersonalityKeybinds;
+import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.network.SplitBackCamera;
@@ -52,8 +55,22 @@ public class StupidExpressClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(SplitBackCamera.TYPE, (payload, context) -> {
             Minecraft.getInstance().setCameraEntity(Minecraft.getInstance().player);
         });
+        StatusInit.statusBars.put(
+                "loose_end",
+                new StatusInit.StatusBar(
+                        "loose_end",
+                        "\u00a74亡命徒时刻",
+                        ()-> {
+                            final var level = Minecraft.getInstance().player.level();
+                            return Float.valueOf(RefugeeComponent.KEY.get(level).getPendingRevivals().stream().map(data -> {
+                                return (data.getRevivalTime() + 2000 - level.getGameTime() / 2000);
+                            }).findFirst().orElse(-1L));
+                        })
+        );
     }
+    static {
 
+    }
     private static void registerKeyEvents() {
         // 使用 Fabric Events 来处理按键按下事件
         net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(client -> {

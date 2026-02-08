@@ -2,10 +2,15 @@ package pro.fazeclan.river.stupid_express.modifier.refugee.cca;
 
 import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
+import dev.doctor4t.trainmurdermystery.cca.AreasWorldComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.client.StatusInit;
 import dev.doctor4t.trainmurdermystery.compat.TrainVoicePlugin;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
+import dev.doctor4t.trainmurdermystery.network.RemoveStatusBarPayload;
+import dev.doctor4t.trainmurdermystery.network.TriggerStatusBarPayload;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -24,6 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.agmas.harpymodloader.modded_murder.ModdedMurderGameMode;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
@@ -49,12 +55,18 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
     public HashMap<UUID, PlayerStatsBeforeRefugee> players_stats = new HashMap<>();
 
     private final Level level;
+
+    public List<RefugeeData> getPendingRevivals() {
+        return pendingRevivals;
+    }
+
     private final List<RefugeeData> pendingRevivals = new ArrayList<>();
     public boolean isAnyRevivals = false;
 
     public RefugeeComponent(Level level) {
         this.level = level;
     }
+
 
     @Override
     public void serverTick() {
@@ -63,15 +75,23 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         }
 
         long currentTime = level.getGameTime();
-        Iterator<RefugeeData> iterator = pendingRevivals.iterator();
 
-        while (iterator.hasNext()) {
-            RefugeeData data = iterator.next();
-            if (currentTime >= data.revivalTime) {
+        for (RefugeeData data : pendingRevivals) {
+            if (!data.isRevive && currentTime >= data.revivalTime) {
                 revivePlayer(data);
-                iterator.remove();
+                data.isRevive = true;
+            }
+            if (data.isRevive && currentTime >= data.revivalTime+2400) {
+                level.players().forEach(
+                        player -> {
+                            if (player.getUUID().equals(data.uuid)) {
+                                GameFunctions.killPlayer(player, true, null);
+                            }
+                        }
+                );
             }
         }
+
 
         // 每20 tick（1秒）发送一次倒计时提示
         if (currentTime % 20 == 0) {
@@ -117,20 +137,29 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             return; // Player is offline
         }
 
+        var i = GameFunctions.roomToPlayer.get(data.uuid);
+        if (i == null){
+            i = 1;
+        }
+        final var areasWorldComponent = AreasWorldComponent.KEY.get(serverLevel);
+        final var roomPosition = areasWorldComponent.getRoomPosition(i);
         // Teleport to death location
-        player.teleportTo(serverLevel, data.x, data.y, data.z, player.getYRot(), player.getXRot());
+        player.teleportTo(serverLevel, roomPosition.x, roomPosition.y, roomPosition.z, player.getYRot(), player.getXRot());
         player.setGameMode(GameType.ADVENTURE);
 
         // Remove body entity
-        List<PlayerBodyEntity> bodies = serverLevel.getEntitiesOfClass(PlayerBodyEntity.class,
-                new AABB(data.x - 2, data.y - 2, data.z - 2, data.x + 2, data.y + 2, data.z + 2));
+        var bodies = serverLevel.getAllEntities();
 
-        for (PlayerBodyEntity body : bodies) {
-            if (body.getPlayerUuid().equals(data.uuid)) {
-                body.remove(Entity.RemovalReason.DISCARDED);
-                break;
+        List<Entity> bodiesToRemove = new ArrayList<>();
+        for (var body : bodies) {
+            if (body instanceof PlayerBodyEntity bodyEntity) {
+                if (bodyEntity.getPlayerUuid().equals(data.uuid)) {
+                    bodiesToRemove.add(body);
+                    break;
+                }
             }
         }
+        bodiesToRemove.forEach(Entity::discard);
         player.getInventory().clearContent();
 
         // Change role to LOOSE_END and remove REFUGEE modifier
@@ -146,6 +175,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 30 * 20, 0, false, false));
         serverLevel.getServer().getCommands().performPrefixedCommand(serverLevel.getServer().createCommandSourceStack(), "title @a title \"\\u00a74亡命时刻\"");
         serverLevel.players().forEach(p -> {
+            ServerPlayNetworking.send(p,new TriggerStatusBarPayload("loose_end"));
             p.playNotifySound(SoundEvents.WITHER_DEATH, SoundSource.PLAYERS, 1.0f, 1.0f);
             p.addEffect(new MobEffectInstance(MobEffects.WEAVING, 120 * 20, 0, false, false));
             p.playNotifySound(SoundEvents.WITHER_SPAWN, SoundSource.PLAYERS, 1.0f, 1.0f);
@@ -234,6 +264,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         sp.getServer().getCommands().performPrefixedCommand(sp.getServer().createCommandSourceStack(), "title @a title \"\\u00a76一切恢复平静\"");
 
         sp.getServer().getPlayerList().getPlayers().forEach((p) -> {
+            ServerPlayNetworking.send(p,new RemoveStatusBarPayload("loose_end"));
             p.playNotifySound(SoundEvents.ENDER_DRAGON_DEATH, SoundSource.PLAYERS, 1.0f, 1.0f);
             p.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 40, 0, false, false));
             if (p.hasEffect(MobEffects.WEAVING)){
@@ -254,7 +285,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
     public void addPendingRevival(UUID uuid, double x, double y, double z) {
         // 2 minutes = 120 seconds = 2400 ticks
         long revivalTime = level.getGameTime() + 2400;
-        pendingRevivals.add(new RefugeeData(uuid, revivalTime, x, y, z));
+        pendingRevivals.add(new RefugeeData(uuid, revivalTime,false));
         this.sync();
     }
 
@@ -267,6 +298,8 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         return -1;
     }
 
+
+
     @Override
     public void readFromNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
         pendingRevivals.clear();
@@ -277,9 +310,8 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
                 pendingRevivals.add(new RefugeeData(
                         item.getUUID("uuid"),
                         item.getLong("revival_time"),
-                        item.getDouble("x"),
-                        item.getDouble("y"),
-                        item.getDouble("z")));
+                        item.getBoolean("is_revive")
+                ));
             }
         }
     }
@@ -291,25 +323,41 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             CompoundTag item = new CompoundTag();
             item.putUUID("uuid", data.uuid);
             item.putLong("revival_time", data.revivalTime);
-            item.putDouble("x", data.x);
-            item.putDouble("y", data.y);
-            item.putDouble("z", data.z);
+            item.putBoolean("is_revive", data.isRevive);
+
             list.add(item);
         }
         tag.put("pending_revivals", list);
     }
 
-    private static class RefugeeData {
+    public static class RefugeeData {
         final UUID uuid;
         final long revivalTime;
-        final double x, y, z;
 
-        RefugeeData(UUID uuid, long revivalTime, double x, double y, double z) {
+        public boolean isRevive() {
+            return isRevive;
+        }
+
+        public RefugeeData setRevive(boolean revive) {
+            isRevive = revive;
+            return this;
+        }
+
+        public long getRevivalTime() {
+            return revivalTime;
+        }
+
+        public UUID getUuid() {
+            return uuid;
+        }
+
+        boolean isRevive;
+
+        RefugeeData(UUID uuid, long revivalTime, boolean isRevive) {
             this.uuid = uuid;
             this.revivalTime = revivalTime;
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            this.isRevive = isRevive;
+
         }
     }
 
@@ -317,6 +365,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         this.players_stats.clear();
         this.isAnyRevivals = false;
         this.pendingRevivals.clear();
+
         this.sync();
     }
 }
