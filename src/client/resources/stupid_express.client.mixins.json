@@ -6,6 +6,7 @@
   "client": [
     "modifier.lovers.LoversHudMixin",
     "modifier.refugee.RefugeeHudMixin",
+    "modifier.split_personality.BanSpectatorGuiMove",
     "modifier.split_personality.InventoryMixin",
     "modifier.split_personality.InventoryScreenSplitPersonalityMixin",
     "modifier.split_personality.KeyBindingMixin",
