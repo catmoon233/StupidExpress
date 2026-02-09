@@ -49,9 +49,9 @@ public class RoleSelectionHandler {
 
             RoleUtils.changeRole(interacting, role);
 
-            TMM.REPLAY_MANAGER.recordPlayerRoleChange(interacting.getUUID(), SERoles.AMNESIAC, role);
+            // TMM.REPLAY_MANAGER.recordPlayerRoleChange(interacting.getUUID(), SERoles.AMNESIAC, role);
 
-            ModdedRoleAssigned.EVENT.invoker().assignModdedRole(interacting, role);
+            // ModdedRoleAssigned.EVENT.invoker().assignModdedRole(interacting, role);
             playerShopComponent.setBalance(200);
             ServerPlayNetworking.send(interacting,
                     new AnnounceWelcomePayload(gameWorldComponent.getRole(interacting).getIdentifier().toString(),

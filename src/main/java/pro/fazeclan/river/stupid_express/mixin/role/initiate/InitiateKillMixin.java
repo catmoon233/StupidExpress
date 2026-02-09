@@ -122,9 +122,9 @@ public abstract class InitiateKillMixin {
                 // 清除物品栏中的所有刀
                 clearAllKnives(player);
                 RoleUtils.changeRole(player, newInitiateRole);
-                ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
+                // ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
 
-                TMM.REPLAY_MANAGER.recordPlayerRoleChange(player.getUUID(), SERoles.INITIATE, newInitiateRole);
+                // TMM.REPLAY_MANAGER.recordPlayerRoleChange(player.getUUID(), SERoles.INITIATE, newInitiateRole);
 
                 ServerPlayNetworking.send(player,
                         new AnnounceWelcomePayload(gameWorldComponent.getRole(player).getIdentifier().toString(),
@@ -172,9 +172,9 @@ public abstract class InitiateKillMixin {
 
                 RoleUtils.changeRole(player, newInitiateRole);
 
-                ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
+                // ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
 
-                TMM.REPLAY_MANAGER.recordPlayerRoleChange(player.getUUID(), SERoles.INITIATE, newInitiateRole);
+                // TMM.REPLAY_MANAGER.recordPlayerRoleChange(player.getUUID(), SERoles.INITIATE, newInitiateRole);
 
                 ServerPlayNetworking.send(player,
                         new AnnounceWelcomePayload(gameWorldComponent.getRole(player).getIdentifier().toString(),

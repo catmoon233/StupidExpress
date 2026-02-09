@@ -84,8 +84,8 @@ public class InitiateUtils {
                     ServerPlayer initiate = initiates.get(0);
                     clearModItems(initiate);
                     RoleUtils.changeRole(initiate, SERoles.AMNESIAC);
-                    ModdedRoleAssigned.EVENT.invoker().assignModdedRole(initiate, SERoles.AMNESIAC);
-                    TMM.REPLAY_MANAGER.recordPlayerRoleChange(initiate.getUUID(), SERoles.INITIATE, SERoles.AMNESIAC);
+                    // ModdedRoleAssigned.EVENT.invoker().assignModdedRole(initiate, SERoles.AMNESIAC);
+                    // TMM.REPLAY_MANAGER.recordPlayerRoleChange(initiate.getUUID(), SERoles.INITIATE, SERoles.AMNESIAC);
                     ServerPlayNetworking.send(initiate,
                             new AnnounceWelcomePayload(gameWorldComponent.getRole(initiate).getIdentifier().toString(),
                                     gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
