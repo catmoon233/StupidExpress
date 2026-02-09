@@ -46,7 +46,6 @@ public abstract class KeyBindingMixin {
                 return false;
             return this.same(Minecraft.getInstance().options.keySwapOffhand) ||
                     this.same(Minecraft.getInstance().options.keyJump) ||
-                    this.same(Minecraft.getInstance().options.keyTogglePerspective) ||
                     this.same(Minecraft.getInstance().options.keyDrop) ||
                     this.same(Minecraft.getInstance().options.keyUp) ||
                     this.same(Minecraft.getInstance().options.keyRight) ||

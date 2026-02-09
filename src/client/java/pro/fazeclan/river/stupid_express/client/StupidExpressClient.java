@@ -1,8 +1,11 @@
 package pro.fazeclan.river.stupid_express.client;
 
+import java.util.UUID;
+
 import dev.doctor4t.ratatouille.util.TextUtils;
 import dev.doctor4t.trainmurdermystery.client.StatusInit;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
+import dev.doctor4t.trainmurdermystery.event.AllowOtherCameraType;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -45,6 +48,30 @@ public class StupidExpressClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(SplitBackCamera.TYPE, (payload, context) -> {
             Minecraft.getInstance().setCameraEntity(Minecraft.getInstance().player);
         });
+
+        AllowOtherCameraType.EVENT.register((original, localPlayer) -> {
+            final var splitPersonalityComponent = SplitPersonalityComponent.KEY.get(Minecraft.getInstance().player);
+            if (splitPersonalityComponent != null && splitPersonalityComponent.getMainPersonality() != null
+                    && splitPersonalityComponent.getSecondPersonality() != null) {
+                UUID currentActive = splitPersonalityComponent.getCurrentActivePerson();
+                if (!currentActive.equals(localPlayer.getUUID())) {
+                    switch (original) {
+                        case FIRST_PERSON:
+                            return AllowOtherCameraType.ReturnCameraType.FIRST_PERSON;
+
+                        case THIRD_PERSON_BACK:
+                            return AllowOtherCameraType.ReturnCameraType.THIRD_PERSON_BACK;
+
+                        case THIRD_PERSON_FRONT:
+                            return AllowOtherCameraType.ReturnCameraType.THIRD_PERSON_FRONT;
+                        default:
+                            break;
+                    }
+                }
+            }
+            return AllowOtherCameraType.ReturnCameraType.NO_CHANGE;
+        });
+
         String loose_end_bar_name = Component.translatable("gui.stupid_express.refugee.loose_end_time").getString();
         StatusInit.statusBars.put(
                 "loose_end",
