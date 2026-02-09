@@ -70,10 +70,10 @@ public abstract class AllergistEatMixin extends LivingEntity {
                 );
             }
         } else if (random < 99) {
-            // Speed 2 for 2 seconds (40 ticks)
+            // Speed 2 for 10 seconds (200 ticks)
             player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
                     net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED,
-                    40,
+                    200,
                     1, false, false));
 
             player.displayClientMessage(
