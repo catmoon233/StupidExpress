@@ -24,8 +24,7 @@
     "role.initiate.InitiateCoinMixin",
     "role.initiate.InitiateInstinctMixin",
     "role.initiate.InitiateShopMixin",
-    "role.necromancer.NecromancerHudMixin",
-    "role.necromancer.NecromancerNoShopMixin"
+    "role.necromancer.NecromancerHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1
