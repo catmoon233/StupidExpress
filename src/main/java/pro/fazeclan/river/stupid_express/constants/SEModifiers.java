@@ -2,6 +2,7 @@ package pro.fazeclan.river.stupid_express.constants;
 
 import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -243,7 +244,7 @@ public class SEModifiers {
             }
 
             var level = person.serverLevel();
-
+            var gameComponent = GameWorldComponent.KEY.get(level);
             // 选择另一个平民作为第二人格
             ServerPlayer secondPersonality = null;
             var arrs = new ArrayList<>(level.players());
@@ -251,8 +252,15 @@ public class SEModifiers {
             for (var candidate : arrs) {
                 if (GameFunctions.isPlayerAliveAndSurvival(candidate)) {
                     if (!person.equals(candidate)) {
-                        secondPersonality = candidate;
-                        break;
+                        if (gameComponent != null) {
+                            var role = gameComponent.getRole(candidate);
+                            if (role != null) {
+                                if (role.isInnocent()) {
+                                    secondPersonality = candidate;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }

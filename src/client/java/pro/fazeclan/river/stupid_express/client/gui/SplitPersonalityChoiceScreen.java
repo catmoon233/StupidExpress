@@ -12,8 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.network.SplitPersonalityPackets;
 
-import java.awt.*;
-
 public class SplitPersonalityChoiceScreen extends Screen {
 
     private SplitPersonalityComponent.ChoiceType currentPlayerChoice;

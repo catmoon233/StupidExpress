@@ -18,7 +18,7 @@ import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPer
 @Mixin(Player.class)
 public abstract class SplitPersonalityServerInputBlockMixin {
 
-    @Inject(method = "aiStep()V", at = @At("HEAD"))
+    @Inject(method = "aiStep()V", at = @At("HEAD"), cancellable = true)
     void blockServerSideSplitPersonalityInput(CallbackInfo ci) {
         Player player = (Player) (Object) this;
         if (player instanceof ServerPlayer serverPlayer) {
@@ -34,7 +34,7 @@ public abstract class SplitPersonalityServerInputBlockMixin {
                     serverPlayer.setGameMode(GameType.SPECTATOR);
                 UUID targetPlayerUUID = component.getCurrentActivePerson();
                 if (!serverPlayer.getCamera().getUUID().equals(targetPlayerUUID)) {
-                    var targetplayer = serverPlayer.level().getPlayerByUUID(component.getCurrentActivePerson());
+                    Player targetplayer = serverPlayer.level().getPlayerByUUID(component.getCurrentActivePerson());
                     serverPlayer.setCamera(targetplayer);
                 }
             }
