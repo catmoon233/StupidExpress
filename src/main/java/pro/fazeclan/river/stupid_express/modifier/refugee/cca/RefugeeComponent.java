@@ -266,7 +266,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         LoadPlayersStats();
         players_stats.clear(); // 清空玩家位置信息，避免浪费资源
         sp.getServer().getCommands().performPrefixedCommand(sp.getServer().createCommandSourceStack(),
-                "{\"translate\":\"title.stupid_express.refugee.died\",\"color\":\"gold\"}");
+                "title @a title {\"translate\":\"title.stupid_express.refugee.died\",\"color\":\"gold\"}");
 
         sp.getServer().getPlayerList().getPlayers().forEach((p) -> {
             ServerPlayNetworking.send(p, new RemoveStatusBarPayload("loose_end"));
