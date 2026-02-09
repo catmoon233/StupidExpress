@@ -9,6 +9,8 @@ import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
@@ -41,15 +43,27 @@ public class RoleSelectionHandler {
                 return InteractionResult.PASS;
             }
             Role role = gameWorldComponent.getRole(victim.getPlayerUuid());
-
+            if (role.identifier().equals(SERoles.INITIATE.identifier())) {
+                player.displayClientMessage(
+                        Component.translatable("msg.amnesiac.change_role.failed_initiate")
+                                .withStyle(ChatFormatting.RED),
+                        true);
+                return InteractionResult.PASS;
+            }
+            if (role.identifier().equals(SERoles.AMNESIAC.identifier())) {
+                player.displayClientMessage(
+                        Component.translatable("msg.amnesiac.change_role.failed_same").withStyle(ChatFormatting.RED),
+                        true);
+                return InteractionResult.PASS;
+            }
             // 清除物品栏中的所有刀
             clearAllKnives(interacting);
 
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(interacting);
-
             RoleUtils.changeRole(interacting, role);
 
-            // TMM.REPLAY_MANAGER.recordPlayerRoleChange(interacting.getUUID(), SERoles.AMNESIAC, role);
+            // TMM.REPLAY_MANAGER.recordPlayerRoleChange(interacting.getUUID(),
+            // SERoles.AMNESIAC, role);
 
             // ModdedRoleAssigned.EVENT.invoker().assignModdedRole(interacting, role);
             playerShopComponent.setBalance(200);
