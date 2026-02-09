@@ -436,7 +436,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         } else {
             // 如果是活跃人格，确保不是旁观者模式
             if (serverPlayer.gameMode.getGameModeForPlayer() == GameType.SPECTATOR) {
-                serverPlayer.setGameMode(GameType.SURVIVAL);
+                serverPlayer.setGameMode(GameType.ADVENTURE);
                 serverPlayer.setCamera(serverPlayer);
             }
         }
