@@ -1,6 +1,8 @@
 package pro.fazeclan.river.stupid_express.client.mixin.modifier.split_personality;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+
+import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.client.TMMClient;
 import net.minecraft.client.KeyMapping;
@@ -21,6 +23,8 @@ public abstract class KeyBindingMixin {
 
     @Unique
     private boolean shouldSuppressKey() {
+        if (TMM.isLobby)
+            return false;
         if (Minecraft.getInstance() == null) {
             return false;
         }
