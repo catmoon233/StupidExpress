@@ -7,7 +7,6 @@ package pro.fazeclan.river.stupid_express;
 //import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable;
 //import org.jetbrains.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 
 public class StupidExpressConfig
       //  extends Config

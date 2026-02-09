@@ -45,11 +45,12 @@ public class StupidExpressClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(SplitBackCamera.TYPE, (payload, context) -> {
             Minecraft.getInstance().setCameraEntity(Minecraft.getInstance().player);
         });
+        String loose_end_bar_name = Component.translatable("gui.stupid_express.refugee.loose_end_time").getString();
         StatusInit.statusBars.put(
                 "loose_end",
                 new StatusInit.StatusBar(
                         "loose_end",
-                        Component.translatable("gui.stupid_express.refugee.loose_end_time").getString(),
+                        loose_end_bar_name,
                         () -> {
                             final var level = Minecraft.getInstance().player.level();
                             return Float
