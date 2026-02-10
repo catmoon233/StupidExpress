@@ -1,10 +1,13 @@
 package pro.fazeclan.river.stupid_express.client.mixin.role;
 
+import dev.doctor4t.trainmurdermystery.cca.GameRoundEndComponent;
 import dev.doctor4t.trainmurdermystery.client.gui.RoleAnnouncementTexts;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
+
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,7 +21,7 @@ public class CustomWinnerAnnouncementMixin {
             method = "getEndText",
             at = @At("HEAD"),
             cancellable = true)
-    private void getEndText(GameFunctions.WinStatus status, Component winner, CallbackInfoReturnable<Component> cir) {
+    private void getEndText(GameFunctions.@NotNull WinStatus status, Component winner, GameRoundEndComponent roundEnd, CallbackInfoReturnable<Component> cir) {
         Level level = Minecraft.getInstance().level;
         if (level == null) {
             return;
