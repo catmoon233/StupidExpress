@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
@@ -37,6 +38,11 @@ public class DousedPlayerComponent implements ServerTickingComponent, ClientTick
     public void reset() {
         this.doused = false;
         this.syncDelay = 0;
+    }
+
+    @Override
+    public boolean shouldSyncWith(ServerPlayer player) {
+        return this.player == player;
     }
 
     @Override

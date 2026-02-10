@@ -55,6 +55,12 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
     // 最后一次切换的tick值
     private int lastSwitchTick = 0;
 
+    // 上次同步的tick值，用于控制同步频率
+    private int lastSyncTick = 0;
+    
+    // 标记是否有待同步的重要变更
+    private boolean pendingImportantSync = false;
+
     // 移除死亡倒计时相关方法
 
     public int getLastSwitchTick() {
@@ -63,7 +69,8 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
 
     public SplitPersonalityComponent setLastSwitchTick(int lastSwitchTick) {
         this.lastSwitchTick = lastSwitchTick;
-        sync();
+        // 标记需要同步
+        pendingImportantSync = true;
         return this;
     }
 
@@ -86,7 +93,8 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
 
     public void setTemporaryRevivalStartTick(int temporaryRevivalStartTick) {
         this.temporaryRevivalStartTick = temporaryRevivalStartTick;
-        sync();
+        // 标记需要同步
+        pendingImportantSync = true;
     }
 
     public boolean isDeath() {
@@ -95,7 +103,8 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
 
     public SplitPersonalityComponent setDeath(boolean death) {
         isDeath = death;
-        sync();
+        // 标记需要同步
+        pendingImportantSync = true;
         return this;
     }
 
@@ -123,7 +132,8 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         if (this.lastSwitchTick == 0) {
             this.lastSwitchTick = this.baseTickCounter;
         }
-        sync();
+        // 标记需要同步
+        pendingImportantSync = true;
     }
 
     public UUID getSecondPersonality() {
@@ -136,7 +146,8 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         if (this.lastSwitchTick == 0) {
             this.lastSwitchTick = this.baseTickCounter;
         }
-        sync();
+        // 标记需要同步
+        pendingImportantSync = true;
     }
 
     public UUID getCurrentActivePerson() {
@@ -146,7 +157,8 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
     public void setCurrentActivePerson(UUID uuid) {
         this.currentActivePerson = uuid;
         this.lastSwitchTick = this.baseTickCounter;
-        sync();
+        // 标记需要同步
+        pendingImportantSync = true;
     }
 
     public boolean isMainPersonality() {
@@ -226,7 +238,8 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         this.baseTickCounter = currentTick;
         this.lastSwitchTick = currentTick;
         this.currentActivePerson = newActivePerson;
-        this.sync();
+        // 标记需要同步
+        pendingImportantSync = true;
 
         // 更新另一个人格的组件
         var otherComponent = SplitPersonalityComponent.KEY.get(otherPlayer);
@@ -234,7 +247,8 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
             otherComponent.baseTickCounter = currentTick;
             otherComponent.lastSwitchTick = currentTick;
             otherComponent.currentActivePerson = newActivePerson;
-            otherComponent.sync();
+            // 标记需要同步
+            otherComponent.pendingImportantSync = true;
         }
 
         // 更新游戏模式
@@ -278,11 +292,13 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
 
     public void setMainPersonalityChoice(ChoiceType choice) {
         this.mainPersonalityChoice = choice;
+        // 选择变更时立即同步
         sync();
     }
 
     public void setSecondPersonalityChoice(ChoiceType choice) {
         this.secondPersonalityChoice = choice;
+        // 选择变更时立即同步
         sync();
     }
 
@@ -298,6 +314,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         return mainPersonalityChoice != ChoiceType.NONE && secondPersonalityChoice != ChoiceType.NONE;
     }
 
+
     // ========== 重置 ==========
     public void reset() {
         this.mainPersonality = null;
@@ -309,6 +326,9 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         this.secondPersonalityChoice = ChoiceType.NONE;
         this.temporaryRevivalStartTick = -1;
         this.isDeath = false;
+        this.lastSyncTick = 0;
+        this.pendingImportantSync = false;
+        // 重置时立即同步
         sync();
     }
 
@@ -357,6 +377,9 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         if (tag.contains("base_tick_counter")) {
             this.baseTickCounter = tag.getInt("base_tick_counter");
         }
+        // 重置同步状态
+        this.lastSyncTick = this.baseTickCounter;
+        this.pendingImportantSync = false;
     }
 
     @Override
@@ -370,7 +393,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         if (this.currentActivePerson != null) {
             tag.putUUID("current_active", this.currentActivePerson);
         }
-        tag.putInt("last_switch_time", this.lastSwitchTick);
+        tag.putInt("last_switch_tick", this.lastSwitchTick);
         // 移除死亡倒计时NBT写入
         tag.putString("main_choice", this.mainPersonalityChoice.name());
         tag.putString("second_choice", this.secondPersonalityChoice.name());
@@ -385,11 +408,21 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
             reset();
             return;
         }
+        
+        boolean needsSync = false;
+        
+        // 检查是否有重要的状态变更需要同步
+        if (pendingImportantSync) {
+            needsSync = true;
+            pendingImportantSync = false;
+        }
+        
         if (getTemporaryRevivalStartTick() > 0) {
             temporaryRevivalStartTick = temporaryRevivalStartTick - 1;
-        }
-        if (temporaryRevivalStartTick % 20 == 0) {
-            sync();
+            // 临时复活倒计时每秒同步一次
+            if (temporaryRevivalStartTick % 20 == 0) {
+                needsSync = true;
+            }
         }
 
         if (getTemporaryRevivalStartTick() > 0)
@@ -401,11 +434,15 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
 
         // 每tick递增基础计数器
         baseTickCounter++;
+        
         // 检查是否需要自动切换 (60秒 = 1200刻)
         if (mainPersonality != null && secondPersonality != null) {
             int ticksSinceLastSwitch = baseTickCounter - lastSwitchTick;
             if (ticksSinceLastSwitch >= 1200) { // 60秒自动切换
                 switchPersonality();
+                needsSync = true; // 切换后需要同步
+            } else if (ticksSinceLastSwitch >= 1100) { // 55秒时标记即将切换
+                pendingImportantSync = true;
             }
         }
 
@@ -413,10 +450,13 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
         if (currentActivePerson != null && player instanceof ServerPlayer serverPlayer) {
             handleNormalMode(serverPlayer);
         }
-        if (baseTickCounter % 20 == 0) {
+        
+        // 控制同步频率：每5秒同步一次，或者有重要状态变化时同步
+        int ticksSinceLastSync = baseTickCounter - lastSyncTick;
+        if (needsSync || ticksSinceLastSync >= 20) { // 100 ticks = 5 seconds
             sync();
+            lastSyncTick = baseTickCounter;
         }
-
     }
 
     // 移除死亡倒计时模式处理方法
