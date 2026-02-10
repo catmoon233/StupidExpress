@@ -76,7 +76,7 @@ public class StupidExpress implements ModInitializer {
             if (refugeeC != null) {
                 refugeeC.reset();
             }
-            SEModifiers.initModifiersCount();
+            SEModifiers.initModifiersCount(serverPlayers.size());
         });
         
         OnPlayerDeath.EVENT.register((victim, deathReason) -> {

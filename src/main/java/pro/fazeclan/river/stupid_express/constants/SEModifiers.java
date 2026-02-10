@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.Harpymodloader;
@@ -137,7 +138,7 @@ public class SEModifiers {
             true));
 
     public static void init() {
-        initModifiersCount();
+        initModifiersCount(0);
         assignModifierComponents();
         pro.fazeclan.river.stupid_express.modifier.magnate.MagnatePassiveIncomeHandler.init();
         pro.fazeclan.river.stupid_express.modifier.cursed.CursedHandler.init();
@@ -398,9 +399,10 @@ public class SEModifiers {
 
     }
 
-    public static void initModifiersCount() {
+    public static void initModifiersCount(int players) {
+        Random random = new Random();
         /// LOVERS
-        if (Math.random() < 0.1) {
+        if (players >= 12 && random.nextInt(0, 100) <= 10) {
             StupidExpress.LOGGER.info("Modifier [Lovers] enabled in this round!");
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 1);
         } else {
@@ -408,7 +410,7 @@ public class SEModifiers {
         }
 
         /// REFUGEE
-        if (Math.random() < 0.1) {
+        if (players >= 12 && random.nextInt(0, 100) <= 10) {
             StupidExpress.LOGGER.info("Modifier [Refugee] enabled in this round!");
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("refugee"), 1);
         } else {
@@ -417,18 +419,18 @@ public class SEModifiers {
 
         /// TINY
         StupidExpress.LOGGER.info("Modifier [Tiny] enabled in this round!");
-        Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("tiny"), 5);
+        Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("tiny"), players / random.nextInt(4, 12));
 
         /// TALL
         StupidExpress.LOGGER.info("Modifier [Tall] enabled in this round!");
-        Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("tall"), 4);
+        Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("tall"), players / random.nextInt(4, 12));
 
         /// FEATHER
         StupidExpress.LOGGER.info("Modifier [Feather] enabled in this round!");
         Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("feather"), 2);
 
         /// MAGNATE
-        if (Math.random() < 0.5) {
+        if (random.nextInt(0, 100) < 50) {
             StupidExpress.LOGGER.info("Modifier [Magnate] enabled in this round!");
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("magnate"), 2);
         } else {
@@ -436,15 +438,15 @@ public class SEModifiers {
         }
 
         /// TASKMASTER
-        if (Math.random() < 0.5) {
+        if (random.nextInt(0, 100) < 30) {
             StupidExpress.LOGGER.info("Modifier [Taskmaster] enabled in this round!");
-            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("taskmaster"), 2);
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("taskmaster"), players / random.nextInt(8, 12));
         } else {
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("taskmaster"), 0);
         }
 
         /// ALLERGIST
-        if (Math.random() < 0.2) {
+        if (random.nextInt(0, 100) < 20) {
             StupidExpress.LOGGER.info("Modifier [Allergist] enabled in this round!");
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("allergist"), 1);
         } else {
@@ -452,7 +454,7 @@ public class SEModifiers {
         }
 
         /// CURSED
-        if (Math.random() < 0.3) {
+        if (players >= 12 && random.nextInt(0, 100) < 30) {
             StupidExpress.LOGGER.info("Modifier [Cursed] enabled in this round!");
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("cursed"), 1);
         } else {
@@ -460,16 +462,16 @@ public class SEModifiers {
         }
 
         /// SECRETIVE
-        if (Math.random() < 0.2) {
+        if (players >= 12 && random.nextInt(0, 100) < 20) {
             StupidExpress.LOGGER.info("Modifier [Secretive] enabled in this round! (2)");
-            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("secretive"), 2);
+            Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("secretive"), players / random.nextInt(8, 12));
         } else {
             StupidExpress.LOGGER.info("Modifier [Secretive] enabled in this round! (1)");
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("secretive"), 1);
         }
 
         /// KNIGHT
-        if (Math.random() < 0.3) {
+        if (players >= 12 && random.nextInt(0, 100) < 30) {
             StupidExpress.LOGGER.info("Modifier [Knight] enabled in this round!");
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("knight"), 1);
         } else {
@@ -477,7 +479,7 @@ public class SEModifiers {
         }
 
         /// SPLIT_PERSONALITY
-        if (Math.random() < 0.1) {
+        if (players >= 12 && random.nextInt(0, 100) < 10) {
             StupidExpress.LOGGER.info("Modifier [Split Personality] enabled in this round!");
             Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("split_personality"), 1);
         } else {
