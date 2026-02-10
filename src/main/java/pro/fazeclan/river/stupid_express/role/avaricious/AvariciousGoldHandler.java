@@ -97,6 +97,8 @@ public class AvariciousGoldHandler {
                             finalPayout += (int)(BASE_PAYOUT_PER_PLAYER * nearbyPlayerCount * 0.5);
                         }
 
+                        // 确保不超过150金币上限
+                        finalPayout = Math.min(finalPayout, 150);
                         shop.addToBalance(finalPayout);
 
                         // 调试信息（可移除）

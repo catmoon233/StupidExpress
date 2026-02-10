@@ -61,9 +61,12 @@ public class AvariciousGoldPayout {
                     }
                 }
                 double avgDistance = totalDistance / nearbyPlayers;
-                
+
                 int payoutPerPlayer = AvariciousGoldHandler.calculatePayout(totalPlayers, nearbyPlayers, avgDistance);
-                PlayerShopComponent.KEY.get(player).addToBalance(nearbyPlayers * payoutPerPlayer);
+                int totalPayout = nearbyPlayers * payoutPerPlayer;
+                // 确保不超过150金币上限
+                totalPayout = Math.min(totalPayout, 150);
+                PlayerShopComponent.KEY.get(player).addToBalance(totalPayout);
                 player.playNotifySound(TMMSounds.UI_SHOP_BUY, SoundSource.PLAYERS, 10.0f, 0.5f);
             }
         }
