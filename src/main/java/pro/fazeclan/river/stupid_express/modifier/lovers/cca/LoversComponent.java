@@ -17,8 +17,8 @@ import java.util.UUID;
 
 public class LoversComponent implements AutoSyncedComponent {
 
-    public static final ComponentKey<LoversComponent> KEY =
-            ComponentRegistry.getOrCreate(StupidExpress.id("lovers"), LoversComponent.class);
+    public static final ComponentKey<LoversComponent> KEY = ComponentRegistry.getOrCreate(StupidExpress.id("lovers"),
+            LoversComponent.class);
 
     private final Player player;
 
@@ -63,6 +63,11 @@ public class LoversComponent implements AutoSyncedComponent {
 
     public boolean isLover() {
         return this.lover != null && !this.lover.equals(UUID.fromString("4bdab31c-279a-4123-acac-9830ac57f5ff"));
+    }
+
+    @Override
+    public boolean shouldSyncWith(ServerPlayer sp) {
+        return sp == this.player;
     }
 
     public Player getLoverAsPlayer() {

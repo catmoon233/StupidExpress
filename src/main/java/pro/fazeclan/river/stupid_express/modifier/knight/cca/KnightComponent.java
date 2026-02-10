@@ -5,12 +5,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
-import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
+
+import dev.doctor4t.trainmurdermystery.api.RoleComponent;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 
 import java.util.UUID;
 
-public class KnightComponent implements AutoSyncedComponent {
+public class KnightComponent implements RoleComponent {
 
     public static final ComponentKey<KnightComponent> KEY =
             ComponentRegistry.getOrCreate(StupidExpress.id("knight"), KnightComponent.class);
@@ -55,5 +56,15 @@ public class KnightComponent implements AutoSyncedComponent {
         if (this.knight != null) {
             tag.putUUID("knight", this.knight);
         }
+    }
+
+    @Override
+    public void clear() {
+        this.reset();
+    }
+
+    @Override
+    public Player getPlayer() {
+        return this.player;
     }
 }

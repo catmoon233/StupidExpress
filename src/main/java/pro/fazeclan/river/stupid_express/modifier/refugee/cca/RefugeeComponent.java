@@ -94,8 +94,8 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
                 return true;
             return false;
         });
-        // 每20 tick（1秒）发送一次倒计时提示
-        if (currentTime % 20 == 0) {
+        // 每200 tick（10秒）发送一次倒计时提示
+        if (currentTime % 200 == 0) {
             sendCountdownMessages();
             sync();
         }
