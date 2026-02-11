@@ -1,5 +1,6 @@
 package pro.fazeclan.river.stupid_express.modifier.split_personality.cca;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -7,13 +8,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
+
+import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.component.tick.ClientTickingComponent;
 import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
 
 import dev.doctor4t.trainmurdermystery.api.RoleComponent;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.constants.SEModifiers;
+import pro.fazeclan.river.stupid_express.network.SplitBackCamera;
 
 import java.util.UUID;
 
@@ -407,6 +413,8 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
             reset();
             return;
         }
+        if (!(this.player instanceof ServerPlayer sp))
+            return;
 
         boolean needsSync = false;
 
@@ -417,15 +425,32 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
         }
 
         if (getTemporaryRevivalStartTick() > 0) {
+            if (this.getTemporaryRevivalStartTick() == 1) {
+                // 超时，强制死亡
+                this.setTemporaryRevivalStartTick(-1); // 防止重复杀死
+                if (GameFunctions.isPlayerAliveAndSurvival(player)) {
+                    ServerPlayNetworking.send(sp, new SplitBackCamera());
+                    this.reset();
+                    WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.level());
+                    modifierComponent.removeModifier(player.getUUID(), SEModifiers.SPLIT_PERSONALITY);
+                    GameFunctions.killPlayer(player, true, null);
+                    player.displayClientMessage(
+                            net.minecraft.network.chat.Component
+                                    .translatable("msg.stupid_express.split_personality.almostdead")
+                                    .withStyle(ChatFormatting.RED),
+                            true);
+                }
+            }
             temporaryRevivalStartTick = temporaryRevivalStartTick - 1;
             // 临时复活倒计时每秒同步一次
-            if (temporaryRevivalStartTick % 20 == 0) {
+            if (temporaryRevivalStartTick % 60 == 0) {
                 needsSync = true;
             }
-        }
-
-        if (getTemporaryRevivalStartTick() > 0)
+            if(needsSync){
+                this.sync();
+            }
             return;
+        }
 
         if (isDeath) {
             return;

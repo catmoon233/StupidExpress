@@ -67,7 +67,7 @@ dependencies {
     modApi files("libs/trainmurdermystery-3.1.01-1.21.1.jar")
     modApi files("libs/harpymodloader-1.2.4-h1.3.jar")
     modApi files("libs/midnightlib-fabric-1.9.2+1.21.1.jar")
-    modApi files("libs/uilib-1.0.1-1.21.1-fabric.jar")
+    // modApi files("libs/uilib-1.0.1-1.21.1-fabric.jar")
     modApi files("libs/architectury-13.0.8-fabric.jar")
     modApi files("libs/ratatouille-1.4.3-1.21.1.jar")
     // modApi files("libs/ForgeConfigAPIPort-v21.1.6-1.21.1-Fabric.jar")
