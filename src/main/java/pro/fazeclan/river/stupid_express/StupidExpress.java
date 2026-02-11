@@ -78,7 +78,7 @@ public class StupidExpress implements ModInitializer {
                 refugeeC.reset();
             }
         });
-        
+
         OnPlayerDeath.EVENT.register((victim, deathReason) -> {
             var gameWorldComponent = GameWorldComponent.KEY.get(victim.level());
             var modifierComponent = WorldModifierComponent.KEY.get(victim.level());
@@ -106,7 +106,15 @@ public class StupidExpress implements ModInitializer {
                     WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.level());
                     return modifierComponent.isModifier(player, SEModifiers.SPLIT_PERSONALITY);
                 }));
-                
+        TMM.cantUseChatHud.add(
+                (player -> {
+                    WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.level());
+                    GameWorldComponent gameComponent = GameWorldComponent.KEY.get(player.level());
+                    var role = gameComponent.getRole(player);
+                    return role != null && !TMM.canUseChatHud.stream().anyMatch((pre) -> pre.test(role))
+                            && modifierComponent.isModifier(player, SEModifiers.SPLIT_PERSONALITY);
+                }));
+
         PlayerStatsBeforeRefugee.RegisterDeathEvent();
     }
 

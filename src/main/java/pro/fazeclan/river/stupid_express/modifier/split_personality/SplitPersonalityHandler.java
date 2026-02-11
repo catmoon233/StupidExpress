@@ -27,7 +27,7 @@ public class SplitPersonalityHandler {
     private static final Map<UUID, ItemStack[]> personalityEnderChests = new HashMap<>();
 
     // 监听双重人格的替换者
-    private static final Set<UUID> switchingWatchers = new HashSet<>();
+    // private static final Set<UUID> switchingWatchers = new HashSet<>();
 
     public static void init() {
         // 注册死亡事件 - 处理双重人格死亡时的倒计时选择
@@ -63,7 +63,6 @@ public class SplitPersonalityHandler {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 var component = SplitPersonalityComponent.KEY.get(player);
-
                 if (component == null || component.getMainPersonality() == null)
                     continue;
 
@@ -117,9 +116,10 @@ public class SplitPersonalityHandler {
                 p_sb.setGameMode(GameType.ADVENTURE);
                 nComp.reset();
                 GameFunctions.killPlayer(p_sb, false, player, StupidExpress.id("split_personality"));
-            }else{
+            } else {
                 p_sb.teleportTo(player.getX(), player.getY(), player.getZ());
                 p_sb.setGameMode(GameType.ADVENTURE);
+                nComp.setDeath(false);
                 // revivePlayer(p_sb, nComp);
                 // 复活
             }
@@ -130,9 +130,10 @@ public class SplitPersonalityHandler {
                 p_sb.setGameMode(GameType.ADVENTURE);
                 nComp.reset();
                 GameFunctions.killPlayer(p_sa, false, player, StupidExpress.id("split_personality"));
-            }else{
+            } else {
                 p_sa.teleportTo(player.getX(), player.getY(), player.getZ());
                 p_sa.setGameMode(GameType.ADVENTURE);
+                nComp.setDeath(false);
                 // revivePlayer(p_sa, nComp);
                 // 复活
             }
@@ -230,6 +231,7 @@ public class SplitPersonalityHandler {
     private static void revivePlayer(ServerPlayer player, SplitPersonalityComponent component) {
         // 复活玩家
         player.setHealth(player.getMaxHealth());
+        component.setDeath(false);
 
         // 消除所有负面效果
         player.removeAllEffects();
