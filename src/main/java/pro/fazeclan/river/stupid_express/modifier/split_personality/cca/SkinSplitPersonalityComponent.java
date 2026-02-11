@@ -1,6 +1,5 @@
 package pro.fazeclan.river.stupid_express.modifier.split_personality.cca;
 
-
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
@@ -14,11 +13,10 @@ import pro.fazeclan.river.stupid_express.StupidExpress;
 
 import java.util.UUID;
 
-public class SkinSplitPersonalityComponent implements AutoSyncedComponent{
+public class SkinSplitPersonalityComponent implements AutoSyncedComponent {
 
     public static final ComponentKey<SkinSplitPersonalityComponent> KEY = ComponentRegistry
             .getOrCreate(StupidExpress.id("skin_split_personality"), SkinSplitPersonalityComponent.class);
-
 
     private final Player player;
 
@@ -31,7 +29,7 @@ public class SkinSplitPersonalityComponent implements AutoSyncedComponent{
         return this;
     }
 
-    private UUID skinToAppearAs =  null ;
+    private UUID skinToAppearAs = null;
 
     public SkinSplitPersonalityComponent(Player player, UUID skinToAppearAs) {
         this.player = player;
@@ -43,12 +41,9 @@ public class SkinSplitPersonalityComponent implements AutoSyncedComponent{
         this.player = player;
     }
 
-
-
     public void clear() {
         skinToAppearAs = null;
     }
-
 
     @Override
     public void readFromNbt(CompoundTag compoundTag, HolderLookup.Provider provider) {

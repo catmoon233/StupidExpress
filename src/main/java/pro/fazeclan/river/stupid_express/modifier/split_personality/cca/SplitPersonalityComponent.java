@@ -194,7 +194,7 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
 
     @Override
     public boolean shouldSyncWith(ServerPlayer player) {
-        return this.player == player && mainPersonality!= null && secondPersonality != null;
+        return this.player == player;
     }
 
     public void switchPersonality() {
