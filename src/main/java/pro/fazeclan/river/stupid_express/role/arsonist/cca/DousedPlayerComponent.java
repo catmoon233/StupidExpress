@@ -17,14 +17,19 @@ public class DousedPlayerComponent implements ServerTickingComponent, ClientTick
 
     public static final ComponentKey<DousedPlayerComponent> KEY = ComponentRegistry.getOrCreate(
             StupidExpress.id("doused"),
-            DousedPlayerComponent.class
-    );
+            DousedPlayerComponent.class);
 
     private final Player player;
-    @Getter
-    @Setter
-    private boolean doused;
-    private int syncDelay = 0;
+    private boolean doused = false;
+
+    public boolean getDoused() {
+        return this.doused;
+    }
+
+    public void setDoused(boolean douse) {
+        this.doused = douse;
+        this.sync();
+    }
 
     public DousedPlayerComponent(Player player) {
         this.player = player;
@@ -37,7 +42,7 @@ public class DousedPlayerComponent implements ServerTickingComponent, ClientTick
 
     public void reset() {
         this.doused = false;
-        this.syncDelay = 0;
+        sync();
     }
 
     @Override
@@ -46,15 +51,16 @@ public class DousedPlayerComponent implements ServerTickingComponent, ClientTick
     }
 
     @Override
-    public void clientTick() {}
+    public void clientTick() {
+    }
 
     @Override
     public void serverTick() {
-        syncDelay++;
-        if (syncDelay >= 20) {
-            syncDelay = 0;
-            sync();
-        }
+        // syncDelay++;
+        // if (syncDelay >= 200) {
+        //     syncDelay = 0;
+        //     sync();
+        // }
     }
 
     @Override

@@ -42,7 +42,7 @@ public class LighterItem extends Item {
         var server = player.getServer();
         var players = server.getPlayerList().getPlayers();
         var alivePlayers = players.stream().filter(GameFunctions::isPlayerAliveAndSurvival).toList();
-        var dousedPlayers = alivePlayers.stream().filter(p -> DousedPlayerComponent.KEY.get(p).isDoused()).toList();
+        var dousedPlayers = alivePlayers.stream().filter(p -> DousedPlayerComponent.KEY.get(p).getDoused()).toList();
         if (dousedPlayers.size() >= (int) (alivePlayers.size() * 0.3)) {
             for (ServerPlayer doused : dousedPlayers) {
                 GameFunctions.killPlayer(doused, true, player, StupidExpress.id("ignited"));

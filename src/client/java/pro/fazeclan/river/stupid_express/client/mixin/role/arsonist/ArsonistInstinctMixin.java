@@ -70,7 +70,7 @@ public class ArsonistInstinctMixin {
             return;
         }
         var douse = DousedPlayerComponent.KEY.get(targettedPlayer);
-        if (douse.isDoused()) {
+        if (douse.getDoused()) {
             cir.setReturnValue(SERoles.ARSONIST.color());
             cir.cancel();
         } else {

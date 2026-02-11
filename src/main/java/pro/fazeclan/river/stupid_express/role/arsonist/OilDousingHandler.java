@@ -40,7 +40,7 @@ public class OilDousingHandler {
             if (interacting.gameMode.isSurvival()) {
                 var alivePlayers = ((ServerLevel) level).getPlayers(GameFunctions::isPlayerAliveAndSurvival);
                 var playerCount = alivePlayers.size();
-                var dousedPlayers = alivePlayers.stream().filter(p -> DousedPlayerComponent.KEY.get(p).isDoused()).toList();
+                var dousedPlayers = alivePlayers.stream().filter(p -> DousedPlayerComponent.KEY.get(p).getDoused()).toList();
                 var cd = 45 - (5/3.0) * (double) playerCount;
 
                 if (playerCount > 15) {
@@ -54,7 +54,6 @@ public class OilDousingHandler {
             }
             DousedPlayerComponent doused = DousedPlayerComponent.KEY.get(victim);
             doused.setDoused(true);
-            doused.sync();
 
             interacting.playNotifySound(SoundEvents.BREWING_STAND_BREW, SoundSource.PLAYERS, 1.0f, 1.0f);
 
