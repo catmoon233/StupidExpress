@@ -1,15 +1,10 @@
 package pro.fazeclan.river.stupid_express.client.mixin.modifier.split_personality;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -21,9 +16,6 @@ import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPer
  */
 @Mixin(PlayerRenderer.class)
 public abstract class SplitPersonalityPlayerHideMixin {
-
-    @Shadow
-    public abstract void render(AbstractClientPlayer abstractClientPlayer, float f, float g, PoseStack poseStack, MultiBufferSource multiBufferSource, int i);
 
     @Inject(
             method = "render(Lnet/minecraft/client/player/AbstractClientPlayer;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",

@@ -7,7 +7,6 @@ import net.minecraft.world.entity.player.Player;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.ChoiceType;
 import pro.fazeclan.river.stupid_express.network.SplitPersonalityPackets;
-import pro.fazeclan.river.stupid_express.network.SplitPersonalitySwitchPacket;
 
 /**
  * 双重人格选择按钮工厂类
@@ -100,7 +99,7 @@ public class SplitPersonalityChoiceWidget {
             }
         }
         // 发送网络包到服务器
-        int choiceValue = choice == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 0 : 1;
+        int choiceValue = (choice == SplitPersonalityComponent.ChoiceType.SACRIFICE ? 0 : 1);
         ClientPlayNetworking.send(new SplitPersonalityPackets.SplitPersonalityChoicePayload(choiceValue));
     }
 

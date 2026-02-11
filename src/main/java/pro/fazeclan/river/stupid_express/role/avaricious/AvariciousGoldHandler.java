@@ -48,66 +48,66 @@ public class AvariciousGoldHandler {
             }
         }));
     }
-    @Deprecated
 
-    public static void payout() {
-        ModdedRoleAssigned.EVENT.register(((player, role) -> {
-            if (role.equals(SERoles.AVARICIOUS)) {
-                GameTimeComponent timeComponent = GameTimeComponent.KEY.get(player.level());
-                boolean payoutTime = timeComponent.time % TIMER_TICKS == 0;
+    // @Deprecated
+    // public static void payout() {
+    //     ModdedRoleAssigned.EVENT.register(((player, role) -> {
+    //         if (role.equals(SERoles.AVARICIOUS)) {
+    //             GameTimeComponent timeComponent = GameTimeComponent.KEY.get(player.level());
+    //             boolean payoutTime = timeComponent.time % TIMER_TICKS == 0;
 
-                PlayerShopComponent shop = PlayerShopComponent.KEY.get(player);
+    //             PlayerShopComponent shop = PlayerShopComponent.KEY.get(player);
 
-                if (payoutTime) {
-                    int nearbyPlayerCount = 0;
-                    double totalDistance = 0.0;
+    //             if (payoutTime) {
+    //                 int nearbyPlayerCount = 0;
+    //                 double totalDistance = 0.0;
 
-                    for (Player playerInWorld : player.level().players()) {
-                        if (playerInWorld != player) {
-                            double distance = playerInWorld.distanceTo(player);
-                            if (distance <= MAX_DISTANCE) {
-                                nearbyPlayerCount++;
-                                totalDistance += distance;
-                            }
-                        }
-                    }
+    //                 for (Player playerInWorld : player.level().players()) {
+    //                     if (playerInWorld != player) {
+    //                         double distance = playerInWorld.distanceTo(player);
+    //                         if (distance <= MAX_DISTANCE) {
+    //                             nearbyPlayerCount++;
+    //                             totalDistance += distance;
+    //                         }
+    //                     }
+    //                 }
 
-                    if (nearbyPlayerCount > 0) {
-                        double avgDistance = totalDistance / nearbyPlayerCount;
-                        int totalPlayers = player.level().players().size();
-                        int basePayout = calculatePayout(totalPlayers, nearbyPlayerCount, avgDistance);
+    //                 if (nearbyPlayerCount > 0) {
+    //                     double avgDistance = totalDistance / nearbyPlayerCount;
+    //                     int totalPlayers = player.level().players().size();
+    //                     int basePayout = calculatePayout(totalPlayers, nearbyPlayerCount, avgDistance);
 
-                        // 应用距离奖励（越近奖励越高）
-                        double distanceMultiplier = 1 + (MAX_DISTANCE - avgDistance) / MAX_DISTANCE * (DISTANCE_MULTIPLIER - 1);
-                        int distanceAdjustedPayout = (int)(basePayout * distanceMultiplier);
+    //                     // 应用距离奖励（越近奖励越高）
+    //                     double distanceMultiplier = 1 + (MAX_DISTANCE - avgDistance) / MAX_DISTANCE * (DISTANCE_MULTIPLIER - 1);
+    //                     int distanceAdjustedPayout = (int)(basePayout * distanceMultiplier);
 
-                        // 连续触发奖励
-                        int consecutiveCount = playerBonusMap.getOrDefault(player.getUUID(), 0) + 1;
-                        int finalPayout = distanceAdjustedPayout;
+    //                     // 连续触发奖励
+    //                     int consecutiveCount = playerBonusMap.getOrDefault(player.getUUID(), 0) + 1;
+    //                     int finalPayout = distanceAdjustedPayout;
 
-                        if (consecutiveCount >= BONUS_THRESHOLD) {
-                            finalPayout *= BONUS_MULTIPLIER;
-                            consecutiveCount = 0; // 重置计数
-                        }
+    //                     if (consecutiveCount >= BONUS_THRESHOLD) {
+    //                         finalPayout *= BONUS_MULTIPLIER;
+    //                         consecutiveCount = 0; // 重置计数
+    //                     }
 
-                        playerBonusMap.put(player.getUUID(), consecutiveCount);
+    //                     playerBonusMap.put(player.getUUID(), consecutiveCount);
 
-                        // 额外奖励：当附近玩家达到一定数量时
-                        if (nearbyPlayerCount >= 5) {
-                            finalPayout += (int)(BASE_PAYOUT_PER_PLAYER * nearbyPlayerCount * 0.5);
-                        }
+    //                     // 额外奖励：当附近玩家达到一定数量时
+    //                     if (nearbyPlayerCount >= 5) {
+    //                         finalPayout += (int)(BASE_PAYOUT_PER_PLAYER * nearbyPlayerCount * 0.5);
+    //                     }
 
-                        // 确保不超过150金币上限
-                        finalPayout = Math.min(finalPayout, 150);
-                        shop.addToBalance(finalPayout);
+    //                     // 确保不超过150金币上限
+    //                     finalPayout = Math.min(finalPayout, 150);
+    //                     shop.addToBalance(finalPayout);
 
-                        // 调试信息（可移除）
-                        System.out.println("[Avaricious] Payout: " + finalPayout +
-                                " | Nearby: " + nearbyPlayerCount +
-                                " | AvgDist: " + String.format("%.1f", avgDistance));
-                    }
-                }
-            }
-        }));
-    }
+    //                     // 调试信息（可移除）
+    //                     System.out.println("[Avaricious] Payout: " + finalPayout +
+    //                             " | Nearby: " + nearbyPlayerCount +
+    //                             " | AvgDist: " + String.format("%.1f", avgDistance));
+    //                 }
+    //             }
+    //         }
+    //     }));
+    // }
 }

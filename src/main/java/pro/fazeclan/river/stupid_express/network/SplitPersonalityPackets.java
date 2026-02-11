@@ -1,5 +1,7 @@
 package pro.fazeclan.river.stupid_express.network;
 
+import java.util.UUID;
+
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
@@ -9,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
-import pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler;
 
 public class SplitPersonalityPackets {
     
@@ -59,6 +60,7 @@ public class SplitPersonalityPackets {
     public static void registerPackets() {
         // 注册选择payload
         PayloadTypeRegistry.playC2S().register(SplitPersonalityChoicePayload.ID, SplitPersonalityChoicePayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(SplitPersonalityChoicePayload.ID, SplitPersonalityChoicePayload.CODEC);
 
         // 处理选择payload
         ServerPlayNetworking.registerGlobalReceiver(SplitPersonalityChoicePayload.ID, (payload, context) -> {
@@ -70,7 +72,12 @@ public class SplitPersonalityPackets {
                 if (component == null || component.getMainPersonality() == null || component.isDeath()) {
                     return;
                 }
-
+                UUID mainU = component.getMainPersonality();
+                UUID secondU = component.getSecondPersonality();
+                var mainPlayer = player.level().getPlayerByUUID(mainU);
+                var secondPlayer = player.level().getPlayerByUUID(secondU);
+                var mainC = SplitPersonalityComponent.KEY.get(mainPlayer);
+                var secondC = SplitPersonalityComponent.KEY.get(secondPlayer);
                 // 解析选择类型
                 SplitPersonalityComponent.ChoiceType choice = (payload.getChoice() == 0) ? 
                     SplitPersonalityComponent.ChoiceType.SACRIFICE : 
@@ -78,16 +85,12 @@ public class SplitPersonalityPackets {
 
                 // 设置当前玩家的选择
                 if (component.isMainPersonality()) {
-                    component.setMainPersonalityChoice(choice);
+                    mainC.setMainPersonalityChoice(choice);
+                    secondC.setMainPersonalityChoice(choice);
                 } else {
-                    component.setSecondPersonalityChoice(choice);
+                    mainC.setSecondPersonalityChoice(choice);
+                    secondC.setSecondPersonalityChoice(choice);
                 }
-                component.sync();
-                
-//                // 检查是否两个人都已选择，如果是则处理结果
-//                if (component.bothMadeChoice()) {
-//                    SplitPersonalityHandler.handleDeathChoicesPublic(player, component);
-//                }
             });
         });
     }

@@ -49,24 +49,13 @@ public class SplitPersonalityHandler {
             }
             component.setDeath(true);
             // 直接处理死亡选择逻辑
-            handleDeathChoices(serverVictim, component);
-
-            // 保存当前库存
             ItemStack[] inventory = new ItemStack[36]; // 标准库存大小
             for (int i = 0; i < 36; i++) {
                 inventory[i] = serverVictim.getInventory().getItem(i).copy();
             }
             personalityInventories.put(serverVictim.getUUID(), inventory);
 
-            // 保存ender箱
-            PlayerEnderChestContainer enderChest = serverVictim.getEnderChestInventory();
-            ItemStack[] enderChestItems = new ItemStack[27];
-            for (int i = 0; i < 27; i++) {
-                enderChestItems[i] = enderChest.getItem(i).copy();
-            }
-            personalityEnderChests.put(serverVictim.getUUID(), enderChestItems);
-
-            return false;
+            return handleDeathChoicesPublic(serverVictim, component);
         });
 
         // 监听选择逻辑
@@ -106,118 +95,93 @@ public class SplitPersonalityHandler {
     /**
      * 处理死亡选择的结果
      */
-    public static void handleDeathChoicesPublic(ServerPlayer player, SplitPersonalityComponent component) {
-        handleDeathChoices(player, component);
+    public static boolean handleDeathChoicesPublic(ServerPlayer player, SplitPersonalityComponent component) {
+        return handleDeathChoices(player, component);
     }
 
-    private static void handleDeathChoices(ServerPlayer player, SplitPersonalityComponent component) {
+    private static boolean handleDeathChoices(ServerPlayer player, SplitPersonalityComponent component) {
         var mainChoice = component.getMainPersonalityChoice();
         var secondChoice = component.getSecondPersonalityChoice();
-
-        // 获取两个人格的玩家对象
-        Player mainPlayer = player.level().getPlayerByUUID(component.getMainPersonality());
-        Player secondPlayer = player.level().getPlayerByUUID(component.getSecondPersonality());
-
-        if (mainPlayer == null || secondPlayer == null || !(mainPlayer instanceof ServerPlayer)
-                || !(secondPlayer instanceof ServerPlayer)) {
-            return;
+        UUID p_a = component.getMainPersonality();
+        UUID p_b = component.getSecondPersonality();
+        int playerType = 0;
+        if (p_a.equals(player.getUUID())) {
+            playerType = 1; // 主人格
+        } else if (p_b.equals(player.getUUID())) {
+            playerType = 2; // 副人格
         }
         final var worldModifierComponent = WorldModifierComponent.KEY.get(player.serverLevel());
-
-        ServerPlayer mainServerPlayer = (ServerPlayer) mainPlayer;
-        ServerPlayer secondServerPlayer = (ServerPlayer) secondPlayer;
-        ServerPlayNetworking.send(mainServerPlayer, new SplitBackCamera());
-
-        ServerPlayNetworking.send(secondServerPlayer, new SplitBackCamera());
-        // 情况1：两个都选择欺骗 -> 直接死亡
-        if (mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY &&
-                secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
-            // 双双死亡，不需要做任何操作 (已经死了)
-            GameFunctions.killPlayer(mainServerPlayer, true, null);
-            GameFunctions.killPlayer(secondServerPlayer, true, null);
-            component.reset();
-            SplitPersonalityComponent.KEY.get(secondServerPlayer).reset();
-            worldModifierComponent.removeModifier(mainServerPlayer.getUUID(), SEModifiers.SPLIT_PERSONALITY);
-            worldModifierComponent.removeModifier(secondServerPlayer.getUUID(), SEModifiers.SPLIT_PERSONALITY);
-
-            // 添加消息提示
-            MutableComponent deathMessage = net.minecraft.network.chat.Component
-                    .translatable("msg.stupid_express.split_personality.liebothdie").withStyle(ChatFormatting.RED);
-            mainServerPlayer.displayClientMessage(deathMessage,
-                    true);
-            secondServerPlayer.displayClientMessage(deathMessage,
-                    true);
-            return;
-        }
-
-        // 情况2：一个欺骗一个奉献
-        if ((mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY
-                && secondChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE) ||
-                (mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE
-                        && secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY)) {
-
-            ServerPlayer betrayerPlayer = mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY ? mainServerPlayer
-                    : secondServerPlayer;
-            ServerPlayer sacrificePlayer = mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE
-                    ? mainServerPlayer
-                    : secondServerPlayer;
-
-            // 欺骗者复活，奉献者保持死亡
-            revivePlayer(betrayerPlayer, component);
-            if (GameFunctions.isPlayerAliveAndSurvival(sacrificePlayer)) {
-                GameFunctions.killPlayer(sacrificePlayer, true, null);
-
-                SplitPersonalityComponent.KEY.get(secondServerPlayer).reset();
-                component.reset();
-            }
-            if (component.getPlayer() == betrayerPlayer) {
-                SplitPersonalityComponent.KEY.get(secondServerPlayer).reset();
-                component.setDeath(false);
-                component.reset();
-
-            }
-            worldModifierComponent.removeModifier(mainServerPlayer.getUUID(), SEModifiers.SPLIT_PERSONALITY);
-            worldModifierComponent.removeModifier(secondServerPlayer.getUUID(), SEModifiers.SPLIT_PERSONALITY);
-            // 添加消息提示
-            betrayerPlayer.displayClientMessage(net.minecraft.network.chat.Component
-                    .translatable("msg.stupid_express.split_personality.revive").withStyle(ChatFormatting.GREEN), true);
-            sacrificePlayer.displayClientMessage(net.minecraft.network.chat.Component
-                    .translatable("msg.stupid_express.split_personality.donatedied").withStyle(ChatFormatting.RED),
-                    true);
-            return;
-        }
-
+        ServerPlayNetworking.send(player, new SplitBackCamera());
+        // 预留：都复活
         // 情况3：两个都选择奉献 -> 两个都复活，但时间只有60秒
         if (mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE &&
                 secondChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE) {
 
-            revivePlayer(mainServerPlayer, component);
-            revivePlayer(secondServerPlayer, component);
-            if (component.getPlayer() == secondServerPlayer) {
-                component.setDeath(false);
-            }
-            if (component.getPlayer() == mainServerPlayer) {
-                component.setDeath(false);
-            }
+            revivePlayer(player, component);
+            component.setDeath(false);
 
-            // 设置临时复活开始时间（使用自定义tick计数器）
-            var mainComp = SplitPersonalityComponent.KEY.get(mainServerPlayer);
-            var secondComp = SplitPersonalityComponent.KEY.get(secondServerPlayer);
+            component.setTemporaryRevivalStartTick(1200);
 
-            if (mainComp != null)
-                mainComp.setTemporaryRevivalStartTick(1200);
-            if (secondComp != null)
-                secondComp.setTemporaryRevivalStartTick(1200);
-
-            mainServerPlayer.setGameMode(GameType.ADVENTURE);
-            secondServerPlayer.setGameMode(GameType.ADVENTURE);
+            player.setGameMode(GameType.ADVENTURE);
 
             // 添加消息提示
             MutableComponent reviveMessage = Component.translatable("msg.stupid_express.split_personality.reviveboth");
-            mainServerPlayer.displayClientMessage(reviveMessage, true);
-            secondServerPlayer.displayClientMessage(reviveMessage, true);
-            return;
+            player.displayClientMessage(reviveMessage, true);
+            return false;
         }
+
+        // 删除控件
+        worldModifierComponent.removeModifier(player.getUUID(), SEModifiers.SPLIT_PERSONALITY);
+
+        // 情况1：两个都选择欺骗 -> 直接死亡
+        if (mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY &&
+                secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
+            component.reset();
+            // 添加消息提示
+            MutableComponent deathMessage = net.minecraft.network.chat.Component
+                    .translatable("msg.stupid_express.split_personality.liebothdie").withStyle(ChatFormatting.RED);
+            player.displayClientMessage(deathMessage,
+                    true);
+            return true;
+        }
+
+        // 情况2：一个欺骗一个奉献
+        if ((mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY
+                && secondChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE)) {
+            if (playerType == 1) {
+                revivePlayer(player, component);
+                player.displayClientMessage(net.minecraft.network.chat.Component
+                        .translatable("msg.stupid_express.split_personality.revive").withStyle(ChatFormatting.GREEN),
+                        true);
+                return false;
+            } else {
+                player.displayClientMessage(net.minecraft.network.chat.Component
+                        .translatable("msg.stupid_express.split_personality.donatedied").withStyle(ChatFormatting.RED),
+                        true);
+                SplitPersonalityComponent.KEY.get(player).reset();
+                component.reset();
+                return true;
+            }
+
+        }
+        if (mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE
+                && secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
+            if (playerType == 2) {
+                revivePlayer(player, component);
+                player.displayClientMessage(net.minecraft.network.chat.Component
+                        .translatable("msg.stupid_express.split_personality.revive").withStyle(ChatFormatting.GREEN),
+                        true);
+                return false;
+            } else {
+                player.displayClientMessage(net.minecraft.network.chat.Component
+                        .translatable("msg.stupid_express.split_personality.donatedied").withStyle(ChatFormatting.RED),
+                        true);
+                SplitPersonalityComponent.KEY.get(player).reset();
+                component.reset();
+                return true;
+            }
+        }
+        return true;
     }
 
     /**
@@ -229,33 +193,6 @@ public class SplitPersonalityHandler {
 
         // 消除所有负面效果
         player.removeAllEffects();
-
-        // 清空并恢复库存
-//        player.getInventory().clearContent();
-        if (personalityInventories.containsKey(player.getUUID())) {
-            ItemStack[] inventory = personalityInventories.get(player.getUUID());
-            for (int i = 0; i < Math.min(36, inventory.length); i++) {
-                ItemStack item = inventory[i];
-                if (item != null) {
-                    player.getInventory().setItem(i, item.copy());
-                }
-            }
-        }
-
-        // 恢复ender箱
-        if (personalityEnderChests.containsKey(player.getUUID())) {
-            ItemStack[] enderChestItems = personalityEnderChests.get(player.getUUID());
-            PlayerEnderChestContainer enderChest = player.getEnderChestInventory();
-            for (int i = 0; i < Math.min(27, enderChestItems.length); i++) {
-                ItemStack item = enderChestItems[i];
-                if (item != null) {
-                    enderChest.setItem(i, item.copy());
-                }
-            }
-        }
-
-        // 发送重生包到客户端
-        player.setRespawnPosition(player.level().dimension(), player.blockPosition(), 0f, true, false);
     }
 
     /**

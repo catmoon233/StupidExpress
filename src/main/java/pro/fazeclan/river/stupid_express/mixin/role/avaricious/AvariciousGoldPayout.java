@@ -6,6 +6,8 @@ import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import dev.doctor4t.trainmurdermystery.game.MurderGameMode;
 import dev.doctor4t.trainmurdermystery.index.TMMSounds;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -19,13 +21,9 @@ import pro.fazeclan.river.stupid_express.role.avaricious.AvariciousGoldHandler;
 @Mixin(MurderGameMode.class)
 public class AvariciousGoldPayout {
 
-    @Inject(
-            method = "tickServerGameLoop",
-            at = @At("TAIL")
-    )
+    @Inject(method = "tickServerGameLoop", at = @At("TAIL"))
     private void payout(
-            ServerLevel serverWorld, GameWorldComponent gameWorldComponent, CallbackInfo ci
-    ) {
+            ServerLevel serverWorld, GameWorldComponent gameWorldComponent, CallbackInfo ci) {
         GameTimeComponent timeComponent = GameTimeComponent.KEY.get(serverWorld);
         long time = timeComponent.time;
 
@@ -35,16 +33,34 @@ public class AvariciousGoldPayout {
         }
 
         long elapsed = time - AvariciousGoldHandler.gameStartTime;
+        long timeinterval = elapsed % AvariciousGoldHandler.TIMER_TICKS;
 
-        if (elapsed % AvariciousGoldHandler.TIMER_TICKS != 0) return;
+        if (elapsed % AvariciousGoldHandler.TIMER_TICKS != 0) {
+            if (elapsed % 20 == 0) {
+                for (ServerPlayer player : serverWorld.players()) {
+                    if (!gameWorldComponent.isRole(player, SERoles.AVARICIOUS))
+                        continue;
+                    player.sendSystemMessage(
+                            Component.translatable(
+                                    "hud.stupid_express.avaricious.payout_timer",
+                                    ((AvariciousGoldHandler.TIMER_TICKS - timeinterval) / 20))
+                                    .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD),
+                            true);
+                }
+            }
+            return;
+        }
 
         for (ServerPlayer player : serverWorld.players()) {
-            if (!gameWorldComponent.isRole(player, SERoles.AVARICIOUS)) continue;
+            if (!gameWorldComponent.isRole(player, SERoles.AVARICIOUS))
+                continue;
 
             int nearbyPlayers = 0;
             for (ServerPlayer other : serverWorld.players()) {
-                if (GameFunctions.isPlayerEliminated(other)) continue;
-                if (other == player) continue;
+                if (GameFunctions.isPlayerEliminated(other))
+                    continue;
+                if (other == player)
+                    continue;
                 if (other.distanceTo(player) <= AvariciousGoldHandler.MAX_DISTANCE)
                     nearbyPlayers++;
             }
@@ -54,8 +70,10 @@ public class AvariciousGoldPayout {
                 // 计算平均距离
                 double totalDistance = 0.0;
                 for (ServerPlayer other : serverWorld.players()) {
-                    if (GameFunctions.isPlayerEliminated(other)) continue;
-                    if (other == player) continue;
+                    if (GameFunctions.isPlayerEliminated(other))
+                        continue;
+                    if (other == player)
+                        continue;
                     if (other.distanceTo(player) <= AvariciousGoldHandler.MAX_DISTANCE) {
                         totalDistance += other.distanceTo(player);
                     }
