@@ -148,6 +148,7 @@ public class SplitPersonalityHandler {
         // 情况2：一个欺骗一个奉献
         if ((mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY
                 && secondChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE)) {
+            component.reset();
             if (playerType == 1) {
                 revivePlayer(player, component);
                 player.displayClientMessage(net.minecraft.network.chat.Component
@@ -158,14 +159,13 @@ public class SplitPersonalityHandler {
                 player.displayClientMessage(net.minecraft.network.chat.Component
                         .translatable("msg.stupid_express.split_personality.donatedied").withStyle(ChatFormatting.RED),
                         true);
-                SplitPersonalityComponent.KEY.get(player).reset();
-                component.reset();
                 return true;
             }
 
         }
         if (mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE
                 && secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
+            component.reset();
             if (playerType == 2) {
                 revivePlayer(player, component);
                 player.displayClientMessage(net.minecraft.network.chat.Component
@@ -176,8 +176,6 @@ public class SplitPersonalityHandler {
                 player.displayClientMessage(net.minecraft.network.chat.Component
                         .translatable("msg.stupid_express.split_personality.donatedied").withStyle(ChatFormatting.RED),
                         true);
-                SplitPersonalityComponent.KEY.get(player).reset();
-                component.reset();
                 return true;
             }
         }
