@@ -9,10 +9,11 @@ import net.minecraft.network.chat.MutableComponent;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
+
+import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.network.SplitBackCamera;
@@ -70,7 +71,6 @@ public class SplitPersonalityHandler {
 
                 // 检查临时复活是否超时 (60秒 = 1200刻)
                 if (component.getTemporaryRevivalStartTick() > 0 && player.level() != null) {
-
                     if (component.getTemporaryRevivalStartTick() == 1) {
                         // 超时，强制死亡
                         component.setTemporaryRevivalStartTick(-1); // 防止重复杀死
@@ -96,6 +96,50 @@ public class SplitPersonalityHandler {
      * 处理死亡选择的结果
      */
     public static boolean handleDeathChoicesPublic(ServerPlayer player, SplitPersonalityComponent component) {
+        var mainChoice = component.getMainPersonalityChoice();
+        var secondChoice = component.getSecondPersonalityChoice();
+        UUID p_au = component.getMainPersonality();
+        UUID p_bu = component.getSecondPersonality();
+        Player p_a = player.level().getPlayerByUUID(p_au);
+        Player p_b = player.level().getPlayerByUUID(p_bu);
+        if (!(p_a instanceof ServerPlayer p_sa))
+            return true;
+        if (!(p_b instanceof ServerPlayer p_sb))
+            return true;
+        int playerType = 0;
+        if (p_au.equals(player.getUUID())) {
+            playerType = 1; // 主人格
+        } else if (p_bu.equals(player.getUUID())) {
+            playerType = 2; // 副人格
+        }
+        if (playerType == 1) {
+            var nComp = SplitPersonalityComponent.KEY.get(p_sb);
+            boolean needDeath = handleDeathChoices(p_sb, nComp);
+            if (needDeath) {
+                p_sb.setGameMode(GameType.ADVENTURE);
+                nComp.reset();
+                GameFunctions.killPlayer(p_sb, false, player, StupidExpress.id("split_personality"));
+            }else{
+                p_sb.teleportTo(player.getX(), player.getY(), player.getZ());
+                p_sb.setGameMode(GameType.ADVENTURE);
+                revivePlayer(p_sb, nComp);
+                // 复活
+            }
+        } else {
+            var nComp = SplitPersonalityComponent.KEY.get(p_sa);
+            boolean needDeath = handleDeathChoices(p_sa, nComp);
+            if (needDeath) {
+                p_sb.setGameMode(GameType.ADVENTURE);
+                nComp.reset();
+                GameFunctions.killPlayer(p_sa, false, player, StupidExpress.id("split_personality"));
+            }else{
+                p_sa.teleportTo(player.getX(), player.getY(), player.getZ());
+                p_sa.setGameMode(GameType.ADVENTURE);
+                revivePlayer(p_sa, nComp);
+                // 复活
+            }
+        }
+
         return handleDeathChoices(player, component);
     }
 
