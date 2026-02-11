@@ -70,7 +70,11 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         }
 
         long currentTime = level.getGameTime();
-
+        pendingRevivals.removeIf((data) -> {
+            if (data.isDead)
+                return true;
+            return false;
+        });
         for (RefugeeData data : pendingRevivals) {
             if (!data.isRevive && currentTime >= data.revivalTime) {
                 revivePlayer(data);
@@ -263,6 +267,11 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             return;
         }
         StupidExpress.LOGGER.info("Try to restore player's stat");
+        for (var rev : this.pendingRevivals) {
+            if (rev.uuid.equals(who.getUUID())) {
+                rev.isDead = true;
+            }
+        }
 
         isAnyRevivals = false;
         LoadPlayersStats();
