@@ -1,9 +1,11 @@
 package pro.fazeclan.river.stupid_express.client;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import dev.doctor4t.ratatouille.util.TextUtils;
 import dev.doctor4t.trainmurdermystery.client.StatusInit;
+import dev.doctor4t.trainmurdermystery.client.StatusInit.StatusBar;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import dev.doctor4t.trainmurdermystery.event.AllowOtherCameraType;
 import net.fabricmc.api.ClientModInitializer;
@@ -13,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
+import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.client.keybinds.SplitPersonalityKeybinds;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
@@ -26,7 +29,6 @@ public class StupidExpressClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-
         ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipFlag, list) -> {
             if (itemStack.is(SEItems.JERRY_CAN))
                 list.addAll(TextUtils.getTooltipForItem(itemStack.getItem(), Style.EMPTY.withColor(8421504)));
@@ -71,24 +73,6 @@ public class StupidExpressClient implements ClientModInitializer {
             }
             return AllowOtherCameraType.ReturnCameraType.NO_CHANGE;
         });
-
-        String loose_end_bar_name = Component.translatable("gui.stupid_express.refugee.loose_end_time").getString();
-        StatusInit.statusBars.put(
-                "loose_end",
-                new StatusInit.StatusBar(
-                        "loose_end",
-                        loose_end_bar_name,
-                        () -> {
-                            final var level = Minecraft.getInstance().player.level();
-                            var refugeeC = RefugeeComponent.KEY.get(level);
-                            var refugeeList = refugeeC.getPendingRevivals();
-                            if (refugeeList.size() > 0) {
-                                var data = refugeeList.get(0);
-                                return (float) (level.getGameTime() - data.getRevivalTime()) / 2000f;
-                            } else {
-                                return 0f;
-                            }
-                        }));
     }
 
     static {
@@ -97,17 +81,39 @@ public class StupidExpressClient implements ClientModInitializer {
 
     private static void registerKeyEvents() {
         // 使用 Fabric Events 来处理按键按下事件
-        net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            var player = client.player;
+        final ArrayList<StatusBar> LOOSE_END_BARs = new ArrayList<>();
+        net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_WORLD_TICK.register(clientWorld -> {
+            var instance = Minecraft.getInstance();
+            if (instance == null)
+                return;
+            var player = instance.player;
             if (player == null)
                 return;
+            if (LOOSE_END_BARs.size() == 0) {
+                String loose_end_bar_name = Component.translatable("gui.stupid_express.refugee.loose_end_time")
+                        .getString();
+                // StupidExpress.LOGGER.info(loose_end_bar_name);
+                LOOSE_END_BARs.add(StatusInit.statusBars.put(
+                        "loose_end",
+                        new StatusInit.StatusBar(
+                                "loose_end",
+                                loose_end_bar_name,
+                                () -> {
+                                    final var level = Minecraft.getInstance().player.level();
+                                    var refugeeC = RefugeeComponent.KEY.get(level);
+                                    var refugeeList = refugeeC.getPendingRevivals();
+                                    if (refugeeList.size() > 0) {
+                                        var data = refugeeList.get(0);
+                                        return (float) (level.getGameTime() - data.getRevivalTime()) / 2000f;
+                                    } else {
+                                        return 0f;
+                                    }
+                                })));
+            }
 
             // 处理人格切换按键
             while (SplitPersonalityKeybinds.SWITCH_PERSONALITY_KEY.consumeClick()) {
-                client.execute(() -> {
-
-                    SplitPersonalityKeybinds.handleSwitchPersonalityKey(player);
-                });
+                SplitPersonalityKeybinds.handleSwitchPersonalityKey(player);
             }
 
             // 检查是否需要打开选择界面
