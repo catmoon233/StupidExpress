@@ -34,13 +34,13 @@ import static dev.doctor4t.trainmurdermystery.compat.TrainVoicePlugin.*;
 
 public class RevivalSelectionHandler {
     public static void removeVoice(@NotNull UUID player) {
-            VoicechatConnection connection = SERVER_API.getConnectionOf(player);
-            if (connection != null) {
-                    connection.setGroup(null);
-                }
-
+        VoicechatConnection connection = SERVER_API.getConnectionOf(player);
+        if (connection != null) {
+            connection.setGroup(null);
+        }
 
     }
+
     public static void init() {
         UseEntityCallback.EVENT.register(((player, level, interactionHand, entity, entityHitResult) -> {
             if (!(player instanceof ServerPlayer interacting)) {
@@ -98,7 +98,7 @@ public class RevivalSelectionHandler {
             body.remove(Entity.RemovalReason.DISCARDED); // like it never existed
 
             RoleUtils.changeRole(revived, selectedRole);
-
+            TMM.REPLAY_MANAGER.recordPlayerRevival(revived.getUUID(), selectedRole);
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(revived);
             playerShopComponent.setBalance(200);
 
