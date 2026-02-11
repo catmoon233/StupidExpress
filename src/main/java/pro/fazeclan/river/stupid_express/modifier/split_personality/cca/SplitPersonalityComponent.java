@@ -31,12 +31,10 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
     @Override
     public void clientTick() {
         if (!isDeath) {
-            clientDo();
+            if (temporaryRevivalStartTick > 1) {
+                temporaryRevivalStartTick--;
+            }
         }
-    }
-
-    private void clientDo() {
-        // 预留客户端逻辑
     }
 
     private final Player player;
@@ -56,7 +54,7 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
 
     // 上次同步的tick值，用于控制同步频率
     private int lastSyncTick = 0;
-    
+
     // 标记是否有待同步的重要变更
     private boolean pendingImportantSync = false;
 
@@ -93,7 +91,8 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
     public void setTemporaryRevivalStartTick(int temporaryRevivalStartTick) {
         this.temporaryRevivalStartTick = temporaryRevivalStartTick;
         // 标记需要同步
-        pendingImportantSync = true;
+        // pendingImportantSync = true;
+        this.sync();
     }
 
     public boolean isDeath() {
@@ -185,7 +184,9 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
         if (mainPersonality == null || secondPersonality == null) {
             return false; // 两个人格都初始化才能切换
         }
-
+        if (this.temporaryRevivalStartTick > 0) {
+            return false;
+        }
         // 使用自定义tick计数器进行时间检查
         // int ticksElapsed = baseTickCounter - lastSwitchTick;
         return isCurrentlyActive(); // 60秒 = 1200刻 (20刻/秒)
@@ -313,7 +314,6 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
         return mainPersonalityChoice != ChoiceType.NONE && secondPersonalityChoice != ChoiceType.NONE;
     }
 
-
     // ========== 重置 ==========
     public void reset() {
         this.mainPersonality = null;
@@ -407,15 +407,15 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
             reset();
             return;
         }
-        
+
         boolean needsSync = false;
-        
+
         // 检查是否有重要的状态变更需要同步
         if (pendingImportantSync) {
             needsSync = true;
             pendingImportantSync = false;
         }
-        
+
         if (getTemporaryRevivalStartTick() > 0) {
             temporaryRevivalStartTick = temporaryRevivalStartTick - 1;
             // 临时复活倒计时每秒同步一次
@@ -433,7 +433,7 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
 
         // 每tick递增基础计数器
         baseTickCounter++;
-        
+
         // 检查是否需要自动切换 (60秒 = 1200刻)
         if (mainPersonality != null && secondPersonality != null) {
             int ticksSinceLastSwitch = baseTickCounter - lastSwitchTick;
@@ -449,10 +449,10 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
         if (currentActivePerson != null && player instanceof ServerPlayer serverPlayer) {
             handleNormalMode(serverPlayer);
         }
-        
+
         // 控制同步频率：每5秒同步一次，或者有重要状态变化时同步
         int ticksSinceLastSync = baseTickCounter - lastSyncTick;
-        if (needsSync || ticksSinceLastSync >= 20) { // 100 ticks = 5 seconds
+        if (needsSync || ticksSinceLastSync >= 100) { // 100 ticks = 5 seconds
             sync();
             lastSyncTick = baseTickCounter;
         }

@@ -1,6 +1,7 @@
 package pro.fazeclan.river.stupid_express;
 
 import dev.doctor4t.ratatouille.util.registrar.SoundEventRegistrar;
+import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
@@ -100,11 +101,12 @@ public class StupidExpress implements ModInitializer {
             }
         });
 
-        GameReplayManager.cantSeeEvent.add(
+        TMM.cantSendReplay.add(
                 (player -> {
                     WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.level());
                     return modifierComponent.isModifier(player, SEModifiers.SPLIT_PERSONALITY);
                 }));
+                
         PlayerStatsBeforeRefugee.RegisterDeathEvent();
     }
 

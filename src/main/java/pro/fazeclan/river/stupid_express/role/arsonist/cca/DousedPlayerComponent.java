@@ -47,7 +47,7 @@ public class DousedPlayerComponent implements ServerTickingComponent, ClientTick
 
     @Override
     public boolean shouldSyncWith(ServerPlayer player) {
-        return this.player == player;
+        return true;
     }
 
     @Override

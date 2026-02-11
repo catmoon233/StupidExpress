@@ -115,12 +115,6 @@ public class StupidExpressClient implements ClientModInitializer {
             while (SplitPersonalityKeybinds.SWITCH_PERSONALITY_KEY.consumeClick()) {
                 SplitPersonalityKeybinds.handleSwitchPersonalityKey(player);
             }
-
-            // 检查是否需要打开选择界面
-            var component = SplitPersonalityComponent.KEY.get(player);
-            if (component != null && component.getMainPersonality() != null) {
-                // 可以在这里添加其他条件来触发选择界面
-            }
         });
     }
 
@@ -130,68 +124,6 @@ public class StupidExpressClient implements ClientModInitializer {
     }
 
     private static void registerInventoryEvents() {
-        // 监听背包打开事件，根据CCA状态决定是否显示选择功能
-        // net.fabricmc.fabric.api.client.screen.v1.ScreenEvents.AFTER_INIT.register((client,
-        // screen, scaledWidth, scaledHeight) -> {
-        // if (screen instanceof
-        // net.minecraft.client.gui.screens.inventory.InventoryScreen) {
-        // var player = client.player;
-        // if (player == null) return;
-        //
-        // var component = SplitPersonalityComponent.KEY.get(player);
-        // // 只有在是双重人格且未死亡时才添加选择功能
-        // if (component != null && component.getMainPersonality() != null &&
-        // !component.isDeath()) {
-        // // 创建选择Widget
-        // int buttonX = scaledWidth / 2 - 110;
-        // int buttonY = scaledHeight / 2 + 60;
-        //
-        // var choiceWidget = new SplitPersonalityChoiceWidget(player, buttonX,
-        // buttonY);
-        //
-        // // 使用反射添加widget
-        // try {
-        // // 添加两个按钮到界面
-        // java.lang.reflect.Method addRenderableWidgetMethod =
-        // screen.getClass().getMethod("addRenderableWidget",
-        // net.minecraft.client.gui.components.Button.class);
-        // for (var button : choiceWidget.getButtons()) {
-        // addRenderableWidgetMethod.invoke(screen, button);
-        // }
-        // } catch (Exception e) {
-        // // 如果失败就忽略
-        // player.displayClientMessage(
-        // net.minecraft.network.chat.Component.literal("§c无法添加按钮: " + e.getMessage()),
-        // true);
-        // }
-        // }
-        // }
-        // });
-        //
-        // 监听背包渲染事件，添加选择提示信息
-        // net.fabricmc.fabric.api.client.screen.v1.ScreenEvents.AFTER_RENDER.register((client,
-        // screen, matrices, mouseX, mouseY) -> {
-        // if (screen instanceof
-        // net.minecraft.client.gui.screens.inventory.InventoryScreen) {
-        // var player = client.player;
-        // if (player == null) return;
-        //
-        // var component = SplitPersonalityComponent.KEY.get(player);
-        // // 显示选择提示文本
-        // if (component != null && component.getMainPersonality() != null &&
-        // !component.isDeath()) {
-        // int centerX = screen.width / 2;
-        // int centerY = screen.height / 2;
-        //
-        // String titleText = "§6双重人格选择";
-        // String hintText = "§e选择你的立场: 奉献(绿色) 或 欺骗(橙色)";
-        //
-        // matrices.drawCenteredString(client.font, titleText, centerX, centerY + 35,
-        // 0xFFFF00);
-        // matrices.drawCenteredString(client.font, hintText, centerX, centerY + 48,
-        // 0xAAAAAA);
-        // }
-        // }
-        // });
+        
     }
 }

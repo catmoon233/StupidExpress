@@ -91,12 +91,10 @@ public class SERoles {
     public static void init() {
 
         /// AMNESIAC
-
         Harpymodloader.setRoleMaximum(AMNESIAC.getIdentifier(), 1);
         RoleSelectionHandler.init();
 
         /// ARSONIST
-
         Harpymodloader.setRoleMaximum(ARSONIST.getIdentifier(), 1);
         OilDousingHandler.init();
 
@@ -105,7 +103,6 @@ public class SERoles {
             dousedComponent.reset();
             dousedComponent.sync();
         });
-
         /// NECROMANCER
 
         RevivalSelectionHandler.init();

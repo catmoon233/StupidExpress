@@ -96,8 +96,6 @@ public class SplitPersonalityHandler {
      * 处理死亡选择的结果
      */
     public static boolean handleDeathChoicesPublic(ServerPlayer player, SplitPersonalityComponent component) {
-        var mainChoice = component.getMainPersonalityChoice();
-        var secondChoice = component.getSecondPersonalityChoice();
         UUID p_au = component.getMainPersonality();
         UUID p_bu = component.getSecondPersonality();
         Player p_a = player.level().getPlayerByUUID(p_au);
@@ -122,7 +120,7 @@ public class SplitPersonalityHandler {
             }else{
                 p_sb.teleportTo(player.getX(), player.getY(), player.getZ());
                 p_sb.setGameMode(GameType.ADVENTURE);
-                revivePlayer(p_sb, nComp);
+                // revivePlayer(p_sb, nComp);
                 // 复活
             }
         } else {
@@ -135,7 +133,7 @@ public class SplitPersonalityHandler {
             }else{
                 p_sa.teleportTo(player.getX(), player.getY(), player.getZ());
                 p_sa.setGameMode(GameType.ADVENTURE);
-                revivePlayer(p_sa, nComp);
+                // revivePlayer(p_sa, nComp);
                 // 复活
             }
         }
