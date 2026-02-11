@@ -13,8 +13,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
-import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.client.keybinds.SplitPersonalityKeybinds;
+import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.network.SplitBackCamera;
@@ -80,10 +80,14 @@ public class StupidExpressClient implements ClientModInitializer {
                         loose_end_bar_name,
                         () -> {
                             final var level = Minecraft.getInstance().player.level();
-                            return Float
-                                    .valueOf(RefugeeComponent.KEY.get(level).getPendingRevivals().stream().map(data -> {
-                                        return (data.getRevivalTime() + 2000 - level.getGameTime() / 2000);
-                                    }).findFirst().orElse(-1L));
+                            var refugeeC = RefugeeComponent.KEY.get(level);
+                            var refugeeList = refugeeC.getPendingRevivals();
+                            if (refugeeList.size() > 0) {
+                                var data = refugeeList.get(0);
+                                return (float) (level.getGameTime() - data.getRevivalTime()) / 2000f;
+                            } else {
+                                return 0f;
+                            }
                         }));
     }
 

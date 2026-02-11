@@ -1,24 +1,23 @@
 package pro.fazeclan.river.stupid_express.modifier.split_personality.cca;
 
-import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
-import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import org.ladysnake.cca.api.v3.component.tick.ClientTickingComponent;
 import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
+
+import dev.doctor4t.trainmurdermystery.api.RoleComponent;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 
 import java.util.UUID;
 
-public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTickingComponent, ClientTickingComponent {
+public class SplitPersonalityComponent implements RoleComponent, ServerTickingComponent, ClientTickingComponent {
 
     public static final ComponentKey<SplitPersonalityComponent> KEY = ComponentRegistry
             .getOrCreate(StupidExpress.id("split_personality"), SplitPersonalityComponent.class);
@@ -480,5 +479,10 @@ public class SplitPersonalityComponent implements AutoSyncedComponent, ServerTic
                 serverPlayer.setCamera(serverPlayer);
             }
         }
+    }
+
+    @Override
+    public void clear() {
+        this.reset();
     }
 }

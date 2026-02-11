@@ -193,6 +193,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             SavePlayersStats();
         }
         isAnyRevivals = true;
+        this.sync();
     }
 
     public void SavePlayersStats() {
