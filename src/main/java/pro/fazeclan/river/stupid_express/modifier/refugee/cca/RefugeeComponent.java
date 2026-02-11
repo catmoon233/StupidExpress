@@ -252,7 +252,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         }
         var gameWorldComponent = GameWorldComponent.KEY.get(sp.level());
         var a = sp.getServer().getPlayerList().getPlayers().stream().anyMatch((p) -> {
-            if (GameFunctions.isPlayerAliveAndSurvival(p) || p.getUUID().equals(who.getUUID())) {
+            if (!GameFunctions.isPlayerAliveAndSurvival(p) || p.getUUID().equals(who.getUUID())) {
                 return false;
             }
             var r = gameWorldComponent.getRole(p);
