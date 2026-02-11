@@ -37,6 +37,9 @@
   "announcement.role.avaricious": "扒手",
   "announcement.role.stupid_express.avaricious": "扒手",
   "hud.stupid_express.avaricious.payout_timer": "偷取倒計時 %s 秒",
+  "announcement.goal.loose_end": "在被解決之前解決所有麻煩。祝你好運",
+  "announcement.goals.loose_end": "在被解決之前解決所有麻煩。祝你好運",
+  "announcement.roles.loose_ends": "亡命徒",
 
   "announcement.modifier.stupid_express.refugee": "難民",
   "announcement.modifier.stupid_express.lovers": "戀人",
