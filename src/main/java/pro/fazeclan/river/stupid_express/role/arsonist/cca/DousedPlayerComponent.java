@@ -1,5 +1,6 @@
 package pro.fazeclan.river.stupid_express.role.arsonist.cca;
 
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.HolderLookup;
