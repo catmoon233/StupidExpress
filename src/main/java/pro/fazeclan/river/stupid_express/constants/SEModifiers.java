@@ -246,7 +246,23 @@ public class SEModifiers {
 
             var level = person.serverLevel();
             var gameComponent = GameWorldComponent.KEY.get(level);
-            // 选择另一个平民作为第二人格
+            // 选择另一个同阵营作为第二人格
+            var fatherRole = gameComponent.getRole(player);
+            /**
+             * 0:平民,
+             * 1:中立
+             * 2:杀手
+             */
+            int fatherRoleType = 0;
+            if (fatherRole != null) {
+                if (fatherRole.isInnocent()) {
+                    fatherRoleType = 0;
+                } else if (!fatherRole.canUseKiller() || fatherRole.isNeutrals()) {
+                    fatherRoleType = 1;
+                } else {
+                    fatherRoleType = 2;
+                }
+            }
             ServerPlayer secondPersonality = null;
             var arrs = new ArrayList<>(level.players());
             Collections.shuffle(arrs);
@@ -256,10 +272,23 @@ public class SEModifiers {
                         if (gameComponent != null) {
                             var role = gameComponent.getRole(candidate);
                             if (role != null) {
-                                if (role.isInnocent()) {
-                                    secondPersonality = candidate;
-                                    break;
+                                if (fatherRoleType == 0) {
+                                    if (role.isInnocent()) {
+                                        secondPersonality = candidate;
+                                        break;
+                                    }
+                                } else if (fatherRoleType == 1) {
+                                    if ((!role.isInnocent() && !role.canUseKiller()) || role.isNeutrals()) {
+                                        secondPersonality = candidate;
+                                        break;
+                                    }
+                                } else {
+                                    if (!role.isInnocent() && role.canUseKiller() && !role.isNeutrals()) {
+                                        secondPersonality = candidate;
+                                        break;
+                                    }
                                 }
+
                             }
                         }
                     }
@@ -296,8 +325,7 @@ public class SEModifiers {
         }));
 
         /// TINY & TALL & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT &
-        /// SPLIT_PERSONALITY
-        /// TINY & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT &
+        /// SPLIT_PERSONALITY TINY & FEATHER & ALLERGIST & CURSED & SECRETIVE & KNIGHT &
         ModifierAssigned.EVENT.register(((player, modifier) -> {
             var worldModifierComponent = WorldModifierComponent.KEY.get(player.level());
             if (modifier.equals(TINY)) {
