@@ -3,6 +3,7 @@ package pro.fazeclan.river.stupid_express.role.arsonist.item;
 import dev.doctor4t.trainmurdermystery.cca.GameRoundEndComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -49,7 +50,7 @@ public class LighterItem extends Item {
                 DousedPlayerComponent.KEY.get(doused).reset();
             }
             player.playNotifySound(SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
-
+            player.displayClientMessage(Component.translatable("item.stupid_express.lighter.used"), true);
             var playersLeft = players.stream().filter(GameFunctions::isPlayerAliveAndSurvival).count();
             if (playersLeft == 1) {
                 var nrwc = CustomWinnerComponent.KEY.get(serverLevel);
@@ -57,7 +58,8 @@ public class LighterItem extends Item {
                 nrwc.setWinners(List.of(player));
                 nrwc.setColor(SERoles.ARSONIST.color());
                 nrwc.sync();
-                GameRoundEndComponent.KEY.get(serverLevel).setRoundEndData(serverLevel.players(), GameFunctions.WinStatus.KILLERS);
+                GameRoundEndComponent.KEY.get(serverLevel).setRoundEndData(serverLevel.players(),
+                        GameFunctions.WinStatus.KILLERS);
 
                 GameFunctions.stopGame(serverLevel);
             }

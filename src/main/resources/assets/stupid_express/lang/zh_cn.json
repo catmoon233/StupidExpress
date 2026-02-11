@@ -19,6 +19,7 @@
   "item.stupid_express.jerry_can.tooltip": "与玩家互动，将其浇上油",
   "item.stupid_express.lighter": "打火机",
   "item.stupid_express.lighter.tooltip": "当此技能进入冷却时，表示是点燃的时机\n交互即可点燃所有已被浇湿的玩家",
+  "item.stupid_express.lighter.used": "你点燃了列车上的一些人",
   "death_reason.stupid_express.failed_ignite": "点火失败",
   "death_reason.trainmurdermystery.failed_ignite": "点火失败",
   "death_reason.stupid_express.ignited": "欲火焚身",
