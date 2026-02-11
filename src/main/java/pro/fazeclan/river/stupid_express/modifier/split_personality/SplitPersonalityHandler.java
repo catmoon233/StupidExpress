@@ -55,7 +55,6 @@ public class SplitPersonalityHandler {
                 inventory[i] = serverVictim.getInventory().getItem(i).copy();
             }
             personalityInventories.put(serverVictim.getUUID(), inventory);
-
             return handleDeathChoicesPublic(serverVictim, component);
         });
 
@@ -78,7 +77,7 @@ public class SplitPersonalityHandler {
                             component.reset();
                             WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.level());
                             modifierComponent.removeModifier(player.getUUID(), SEModifiers.SPLIT_PERSONALITY);
-                            GameFunctions.killPlayer(player, true, null);
+                            GameFunctions.killPlayer(player, true, null,StupidExpress.id(""));
                             player.displayClientMessage(
                                     net.minecraft.network.chat.Component
                                             .translatable("msg.stupid_express.split_personality.almostdead")

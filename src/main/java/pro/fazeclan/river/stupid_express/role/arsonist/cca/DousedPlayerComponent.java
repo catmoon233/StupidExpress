@@ -11,7 +11,10 @@ import org.ladysnake.cca.api.v3.component.ComponentRegistry;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import org.ladysnake.cca.api.v3.component.tick.ClientTickingComponent;
 import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
+
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.constants.SERoles;
 
 public class DousedPlayerComponent implements ServerTickingComponent, ClientTickingComponent, AutoSyncedComponent {
 
@@ -47,7 +50,11 @@ public class DousedPlayerComponent implements ServerTickingComponent, ClientTick
 
     @Override
     public boolean shouldSyncWith(ServerPlayer player) {
-        return true;
+        GameWorldComponent gamep = GameWorldComponent.KEY.get(player.level());
+        if (gamep != null && gamep.isRole(player, SERoles.ARSONIST))
+            return true;
+        return false;
+        // return true;
     }
 
     @Override
@@ -58,8 +65,8 @@ public class DousedPlayerComponent implements ServerTickingComponent, ClientTick
     public void serverTick() {
         // syncDelay++;
         // if (syncDelay >= 200) {
-        //     syncDelay = 0;
-        //     sync();
+        // syncDelay = 0;
+        // sync();
         // }
     }
 

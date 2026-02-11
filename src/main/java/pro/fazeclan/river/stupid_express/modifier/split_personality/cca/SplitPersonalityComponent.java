@@ -39,6 +39,8 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
         if (!isDeath) {
             if (temporaryRevivalStartTick > 1) {
                 temporaryRevivalStartTick--;
+            } else {
+                baseTickCounter++;
             }
         }
     }
@@ -433,7 +435,7 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
                     this.reset();
                     WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.level());
                     modifierComponent.removeModifier(player.getUUID(), SEModifiers.SPLIT_PERSONALITY);
-                    GameFunctions.killPlayer(player, true, null);
+                    GameFunctions.killPlayer(player, true, null, StupidExpress.id("split_personality"));
                     player.displayClientMessage(
                             net.minecraft.network.chat.Component
                                     .translatable("msg.stupid_express.split_personality.almostdead")
@@ -446,7 +448,7 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
             if (temporaryRevivalStartTick % 60 == 0) {
                 needsSync = true;
             }
-            if(needsSync){
+            if (needsSync) {
                 this.sync();
             }
             return;
