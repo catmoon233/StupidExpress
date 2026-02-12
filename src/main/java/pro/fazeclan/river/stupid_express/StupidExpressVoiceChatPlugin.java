@@ -6,9 +6,7 @@ import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatServerApi;
 import de.maxhenkel.voicechat.api.events.EventRegistration;
 import de.maxhenkel.voicechat.api.events.MicrophonePacketEvent;
-import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
@@ -35,12 +33,10 @@ public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
         ServerPlayer sender = ((ServerPlayer) connection_s.getPlayer().getPlayer());
         WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(sender.serverLevel());
         final var senderSpc = SplitPersonalityComponent.KEY.get(sender);
-        boolean isSenderSplit = false;
-        boolean isReceiverSplit = false;
+
         if (senderSpc.getMainPersonality() != null
                 && senderSpc.getSecondPersonality() != null) {
             if (modifierComponent.isModifier(sender, SEModifiers.SPLIT_PERSONALITY)) {
-                isSenderSplit = true;
                 if (!senderSpc.isDeath() && sender.isSpectator()) {
                     // sender 旁观，给双重人格发语音
                     sender.level().players().forEach((p) -> {
@@ -71,7 +67,6 @@ public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
                     && receiverSpc.getSecondPersonality() != null) {
                 if (modifierComponent.isModifier(receiver, SEModifiers.SPLIT_PERSONALITY)) {
                     // 如果接收的是双重人格
-                    isReceiverSplit = true;
                     if (receiver.isSpectator()) {
                         // 如果此人还没死，且在旁观（等待切换）
                         if (!receiverSpc.isDeath() && sender.isSpectator()) {
