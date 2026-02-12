@@ -6,16 +6,11 @@ import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatServerApi;
 import de.maxhenkel.voicechat.api.events.EventRegistration;
 import de.maxhenkel.voicechat.api.events.MicrophonePacketEvent;
-import dev.doctor4t.trainmurdermystery.api.Role;
-import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
-import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
-
 
 public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
     @Override
@@ -34,43 +29,44 @@ public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
         ServerPlayer players = ((ServerPlayer) event.getSenderConnection().getPlayer().getPlayer());
         WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(players.serverLevel());
         final var splitPersonalityComponent = SplitPersonalityComponent.KEY.get(players);
-        if (splitPersonalityComponent.getMainPersonality() ==null || splitPersonalityComponent.getSecondPersonality() ==null)return;
-
+        if (splitPersonalityComponent.getMainPersonality() == null
+                || splitPersonalityComponent.getSecondPersonality() == null)
+            return;
 
         // if (players.interactionManager.getGameMode().equals(GameMode.SPECTATOR)) {
         players.level().players().forEach((p) -> {
-                    if (p != players ) {
-                        if (modifierComponent.isModifier(p, SEModifiers.SPLIT_PERSONALITY)) {
-                            if (modifierComponent.isModifier(players, SEModifiers.SPLIT_PERSONALITY)) {
-                                VoicechatConnection con = api.getConnectionOf(p.getUUID());
-                                api.sendLocationalSoundPacketTo(con, event.getPacket().locationalSoundPacketBuilder()
-                                        .position(api.createPosition(p.getX(), p.getY(), p.getZ()))
-                                        .distance((float) api.getVoiceChatDistance())
-                                        .build());
-                            }
-                    }else {
-                        if (p instanceof ServerPlayer serverPlayer){
-                            if (serverPlayer.gameMode.getGameModeForPlayer() == GameType.SPECTATOR){
-                                event.cancel();
-                            }
+            if (p != players) {
+                if (modifierComponent.isModifier(p, SEModifiers.SPLIT_PERSONALITY)) {
+                    if (modifierComponent.isModifier(players, SEModifiers.SPLIT_PERSONALITY)) {
+                        VoicechatConnection con = api.getConnectionOf(p.getUUID());
+                        api.sendLocationalSoundPacketTo(con, event.getPacket().locationalSoundPacketBuilder()
+                                .position(api.createPosition(p.getX(), p.getY(), p.getZ()))
+                                .distance((float) api.getVoiceChatDistance())
+                                .build());
+                    }
+                } else {
+                    if (p instanceof ServerPlayer serverPlayer) {
+                        if (serverPlayer.gameMode.getGameModeForPlayer() == GameType.SPECTATOR) {
+                            event.cancel();
                         }
                     }
-                        }
+                }
+            }
 
-                } );
-            // if (gameWorldComponent.isRole(p,
-            // Noellesroles.THE_INSANE_DAMNED_PARANOID_KILLER_OF_DOOM_DEATH_DESTRUCTION_AND_WAFFLES)
-            // && GameFunctions.isPlayerAliveAndSurvival(p)) {
-            // if (players.distanceTo(p) <= api.getVoiceChatDistance()) {
-            // VoicechatConnection con = api.getConnectionOf(p.getUuid());
-            // api.sendLocationalSoundPacketTo(con,
-            // event.getPacket().locationalSoundPacketBuilder()
-            // .position(api.createPosition(p.getX(), p.getY(), p.getZ()))
-            // .distance((float)api.getVoiceChatDistance())
-            // .build());
-            // }
-            // }
-//        });
+        });
+        // if (gameWorldComponent.isRole(p,
+        // Noellesroles.THE_INSANE_DAMNED_PARANOID_KILLER_OF_DOOM_DEATH_DESTRUCTION_AND_WAFFLES)
+        // && GameFunctions.isPlayerAliveAndSurvival(p)) {
+        // if (players.distanceTo(p) <= api.getVoiceChatDistance()) {
+        // VoicechatConnection con = api.getConnectionOf(p.getUuid());
+        // api.sendLocationalSoundPacketTo(con,
+        // event.getPacket().locationalSoundPacketBuilder()
+        // .position(api.createPosition(p.getX(), p.getY(), p.getZ()))
+        // .distance((float)api.getVoiceChatDistance())
+        // .build());
+        // }
+        // }
+        // });
         // }
     }
 
