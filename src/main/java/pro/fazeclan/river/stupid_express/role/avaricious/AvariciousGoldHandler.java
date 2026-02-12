@@ -1,9 +1,7 @@
 package pro.fazeclan.river.stupid_express.role.avaricious;
 
-import dev.doctor4t.trainmurdermystery.cca.GameTimeComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
 import dev.doctor4t.trainmurdermystery.game.GameConstants;
-import net.minecraft.world.entity.player.Player;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 
@@ -21,9 +19,6 @@ public class AvariciousGoldHandler {
     public static double DISTANCE_MULTIPLIER = 1.5; // 距离奖励系数
 
     private static final Map<UUID, Integer> playerBonusMap = new HashMap<>();
-    private static final int BONUS_THRESHOLD = 3; // 连续触发奖励的阈值
-    private static final int BONUS_MULTIPLIER = 2; // 连续触发时的倍率
-
     public static int calculatePayout(int totalPlayerCount, int nearbyPlayers, double avgDistance) {
         double originalResult = 0;
         if (totalPlayerCount <= 6) {
@@ -38,7 +33,7 @@ public class AvariciousGoldHandler {
 
             originalResult = (base * nearbyBonus * distanceBonus);
         }
-        return (int) Math.round((originalResult * 0.4));
+        return (int) Math.round((originalResult * 0.8));
     }
 
     public static void onGameStart() {
