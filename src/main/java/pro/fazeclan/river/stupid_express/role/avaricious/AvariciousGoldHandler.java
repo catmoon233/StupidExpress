@@ -33,7 +33,7 @@ public class AvariciousGoldHandler {
 
             originalResult = (base * nearbyBonus * distanceBonus);
         }
-        return (int) Math.round((originalResult * 0.8));
+        return (int) Math.round((originalResult));
     }
 
     public static void onGameStart() {
