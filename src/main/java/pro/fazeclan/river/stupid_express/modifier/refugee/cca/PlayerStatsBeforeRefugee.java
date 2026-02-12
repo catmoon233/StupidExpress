@@ -33,7 +33,6 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
                     refugeeComponent.addPendingRevival(victim.getUUID(), pos.x(), pos.y() + 1, pos.z());
                 } else {
                     refugeeComponent.addPendingRevival(victim.getUUID(), victim.getX(), victim.getY(), victim.getZ());
-
                 }
             }
         });

@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import dev.doctor4t.trainmurdermystery.TMM;
+import dev.doctor4t.trainmurdermystery.client.TMMClient;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
 
@@ -32,10 +33,12 @@ public abstract class RefugeeHudMixin {
         // 检查玩家是否有难民modifier
         WorldModifierComponent worldModifierComponent = WorldModifierComponent.KEY.get(client.level);
         if (!worldModifierComponent.isModifier(client.player.getUUID(), SEModifiers.REFUGEE)) {
-            TMM.LOGGER.error("NO REFUGEE");
+            // if (TMMClient.gameComponent != null)
+                // if (TMMClient.gameComponent.isRunning())
+                    // TMM.LOGGER.error("NO REFUGEE");
             return;
         }
-        
+
         // 检查玩家是否为旁观者模式
         if (!client.player.isSpectator()) {
             return;
@@ -50,17 +53,17 @@ public abstract class RefugeeHudMixin {
         // 计算剩余时间
         long currentTime = client.level.getGameTime();
         long revivalTime = refugeeComponent.getRevivalTime(client.player.getUUID());
-        
+
         if (revivalTime == -1) {
             return;
         }
-        
+
         long ticksRemaining = revivalTime - currentTime;
         int secondsRemaining = (int) ((ticksRemaining + 19) / 20);
-        
+
         Component text = Component.translatable("gui.stupid_express.refugee.revival", secondsRemaining);
         int color = 0x55ff55; // 绿色
-        
+
         int screenWidth = client.getWindow().getGuiScaledWidth();
         int screenHeight = client.getWindow().getGuiScaledHeight();
         int textWidth = getFont().width(text);
