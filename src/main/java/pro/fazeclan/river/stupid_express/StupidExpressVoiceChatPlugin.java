@@ -6,6 +6,7 @@ import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatServerApi;
 import de.maxhenkel.voicechat.api.events.EventRegistration;
 import de.maxhenkel.voicechat.api.events.MicrophonePacketEvent;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
@@ -24,36 +25,68 @@ public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
     }
 
     public void paranoidEvent(MicrophonePacketEvent event) {
-
         VoicechatServerApi api = event.getVoicechat();
-        ServerPlayer players = ((ServerPlayer) event.getSenderConnection().getPlayer().getPlayer());
-        WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(players.serverLevel());
-        final var splitPersonalityComponent = SplitPersonalityComponent.KEY.get(players);
-        if (splitPersonalityComponent.getMainPersonality() == null
-                || splitPersonalityComponent.getSecondPersonality() == null)
+        VoicechatConnection connection_s = event.getSenderConnection();
+        VoicechatConnection connection_r = event.getReceiverConnection();
+        if (connection_s == null || connection_s.getPlayer() == null) {
             return;
+        }
 
-        // if (players.interactionManager.getGameMode().equals(GameMode.SPECTATOR)) {
-        players.level().players().forEach((p) -> {
-            if (p != players) {
-                if (modifierComponent.isModifier(p, SEModifiers.SPLIT_PERSONALITY)) {
-                    if (modifierComponent.isModifier(players, SEModifiers.SPLIT_PERSONALITY)) {
-                        VoicechatConnection con = api.getConnectionOf(p.getUUID());
-                        api.sendLocationalSoundPacketTo(con, event.getPacket().locationalSoundPacketBuilder()
-                                .position(api.createPosition(p.getX(), p.getY(), p.getZ()))
-                                .distance((float) api.getVoiceChatDistance())
-                                .build());
-                    }
-                } else {
-                    if (p instanceof ServerPlayer serverPlayer) {
-                        if (serverPlayer.gameMode.getGameModeForPlayer() == GameType.SPECTATOR) {
+        ServerPlayer sender = ((ServerPlayer) connection_s.getPlayer().getPlayer());
+        WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(sender.serverLevel());
+        final var senderSpc = SplitPersonalityComponent.KEY.get(sender);
+        boolean isSenderSplit = false;
+        boolean isReceiverSplit = false;
+        if (senderSpc.getMainPersonality() != null
+                && senderSpc.getSecondPersonality() != null) {
+            if (modifierComponent.isModifier(sender, SEModifiers.SPLIT_PERSONALITY)) {
+                isSenderSplit = true;
+                if (!senderSpc.isDeath() && sender.isSpectator()) {
+                    // sender 旁观，给双重人格发语音
+                    sender.level().players().forEach((p) -> {
+                        if (p != sender) {
+                            if (modifierComponent.isModifier(p, SEModifiers.SPLIT_PERSONALITY)) {
+                                {
+                                    VoicechatConnection con = api.getConnectionOf(p.getUUID());
+                                    api.sendLocationalSoundPacketTo(con,
+                                            event.getPacket().locationalSoundPacketBuilder()
+                                                    .position(api.createPosition(p.getX(), p.getY(), p.getZ()))
+                                                    .distance((float) api.getVoiceChatDistance())
+                                                    .build());
+                                }
+                            }
+                        }
+                    });
+                    return;
+                }
+                // sender 非旁观，该咋处理咋处理
+            }
+        }
+
+        if (connection_r != null && connection_r.getPlayer() != null) {
+            // 有接收者
+            ServerPlayer receiver = ((ServerPlayer) connection_r.getPlayer().getPlayer());
+            final var receiverSpc = SplitPersonalityComponent.KEY.get(receiver);
+            if (receiverSpc.getMainPersonality() != null
+                    && receiverSpc.getSecondPersonality() != null) {
+                if (modifierComponent.isModifier(receiver, SEModifiers.SPLIT_PERSONALITY)) {
+                    // 如果接收的是双重人格
+                    isReceiverSplit = true;
+                    if (receiver.isSpectator()) {
+                        // 如果此人还没死，且在旁观（等待切换）
+                        if (!receiverSpc.isDeath() && sender.isSpectator()) {
+                            // 拒绝来自旁观 sender 的语音
                             event.cancel();
+                            return;
                         }
                     }
+
                 }
             }
+        }
 
-        });
+        // if (players.interactionManager.getGameMode().equals(GameMode.SPECTATOR)) {
+
         // if (gameWorldComponent.isRole(p,
         // Noellesroles.THE_INSANE_DAMNED_PARANOID_KILLER_OF_DOOM_DEATH_DESTRUCTION_AND_WAFFLES)
         // && GameFunctions.isPlayerAliveAndSurvival(p)) {
