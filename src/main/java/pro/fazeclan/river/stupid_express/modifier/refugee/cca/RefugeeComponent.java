@@ -52,6 +52,11 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
 
     private final Level level;
 
+    @Override
+    public boolean shouldSyncWith(ServerPlayer sp) {
+        return true;
+    }
+
     public List<RefugeeData> getPendingRevivals() {
         return pendingRevivals;
     }
@@ -80,7 +85,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
                 revivePlayer(data);
                 data.isRevive = true;
             }
-            if (data.isRevive && !data.isDead && currentTime >= data.revivalTime + 2400) {
+            if (data.isRevive && !data.isDead && currentTime >= data.revivalTime + 3000) {
                 data.isDead = true;
                 for (var player : level.players()) {
                     if (player.getUUID().equals(data.uuid)) {

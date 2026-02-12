@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import dev.doctor4t.trainmurdermystery.TMM;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
 
@@ -30,6 +32,7 @@ public abstract class RefugeeHudMixin {
         // 检查玩家是否有难民modifier
         WorldModifierComponent worldModifierComponent = WorldModifierComponent.KEY.get(client.level);
         if (!worldModifierComponent.isModifier(client.player.getUUID(), SEModifiers.REFUGEE)) {
+            TMM.LOGGER.error("NO REFUGEE");
             return;
         }
         

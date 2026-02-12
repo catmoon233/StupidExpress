@@ -104,7 +104,7 @@ public class StupidExpressClient implements ClientModInitializer {
                                     var refugeeList = refugeeC.getPendingRevivals();
                                     if (refugeeList.size() > 0) {
                                         var data = refugeeList.get(0);
-                                        return (float) (level.getGameTime() - data.getRevivalTime()) / 2000f;
+                                        return (float) (level.getGameTime() - data.getRevivalTime()) / 3000f;
                                     } else {
                                         return 0f;
                                     }
