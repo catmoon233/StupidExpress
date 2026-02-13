@@ -12,7 +12,7 @@ import java.util.UUID;
 public class AvariciousGoldHandler {
 
     public static long gameStartTime = -1; // 添加游戏开始时间字段
-    public static int TIMER_TICKS = GameConstants.getInTicks(0, 45); // 改为45秒一次，频率加倍
+    public static int TIMER_TICKS = GameConstants.getInTicks(0, 60); // 改为45秒一次，频率加倍
     public static double MAX_DISTANCE = 8.0; // 扩大距离范围
     public static int STARTING_BALANCE = 100; // 初始金币翻倍
     public static int BASE_PAYOUT_PER_PLAYER = 25; // 基础金币提高
@@ -33,7 +33,7 @@ public class AvariciousGoldHandler {
 
             originalResult = (base * nearbyBonus * distanceBonus);
         }
-        return (int) Math.round((originalResult));
+        return (int) Math.round((originalResult) * 0.5);
     }
 
     public static void onGameStart() {
