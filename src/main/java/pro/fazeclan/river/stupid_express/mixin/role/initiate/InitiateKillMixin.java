@@ -137,8 +137,8 @@ public abstract class InitiateKillMixin {
             }
             GameFunctions.killPlayer(killer, true, null, StupidExpress.id("failed_initiation"));
             ci.cancel();
-        } else if (gameWorldComponent.isRole(victim, SERoles.INITIATE) && killer != null
-                && !gameWorldComponent.isRole(killer, SERoles.INITIATE)) {
+        } else if (gameWorldComponent.isRole(victim, SERoles.INITIATE) && (killer == null || !gameWorldComponent.isRole(killer, SERoles.INITIATE))) {
+            // 初学者被杀死（包括被炸弹炸死、摔死等非玩家攻击，以及被非初学者玩家杀死）
             Role newInitiateRole;
             switch (StupidExpress.CONFIG.rolesSection.initiateSection.initiateFallbackRole) {
                 case KILLER -> {
