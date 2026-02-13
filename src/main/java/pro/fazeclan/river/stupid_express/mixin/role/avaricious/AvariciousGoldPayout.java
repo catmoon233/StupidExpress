@@ -24,8 +24,8 @@ public class AvariciousGoldPayout {
     @Inject(method = "tickServerGameLoop", at = @At("TAIL"))
     private void payout(
             ServerLevel serverWorld, GameWorldComponent gameWorldComponent, CallbackInfo ci) {
-        GameTimeComponent timeComponent = GameTimeComponent.KEY.get(serverWorld);
-        long time = timeComponent.time;
+        
+        long time = serverWorld.getGameTime();
 
         if (AvariciousGoldHandler.gameStartTime == -1) {
             AvariciousGoldHandler.gameStartTime = time;
@@ -33,9 +33,7 @@ public class AvariciousGoldPayout {
         }
 
         long elapsed = time - AvariciousGoldHandler.gameStartTime;
-        long timeinterval = elapsed % (long) AvariciousGoldHandler.TIMER_TICKS;
-        if (timeinterval < 0)
-            timeinterval = -timeinterval;
+        long timeinterval = elapsed % AvariciousGoldHandler.TIMER_TICKS;
 
         if (elapsed % AvariciousGoldHandler.TIMER_TICKS != 0) {
             if (elapsed % 20 == 0) {

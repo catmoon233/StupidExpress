@@ -1,6 +1,7 @@
 package pro.fazeclan.river.stupid_express.role.avaricious;
 
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
+import dev.doctor4t.trainmurdermystery.event.OnGameTrueStarted;
 import dev.doctor4t.trainmurdermystery.game.GameConstants;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
@@ -19,6 +20,7 @@ public class AvariciousGoldHandler {
     public static double DISTANCE_MULTIPLIER = 1.5; // 距离奖励系数
 
     private static final Map<UUID, Integer> playerBonusMap = new HashMap<>();
+
     public static int calculatePayout(int totalPlayerCount, int nearbyPlayers, double avgDistance) {
         double originalResult = 0;
         if (totalPlayerCount <= 6) {
@@ -37,6 +39,9 @@ public class AvariciousGoldHandler {
     }
 
     public static void onGameStart() {
+        OnGameTrueStarted.EVENT.register((ServerLevel) -> {
+            AvariciousGoldHandler.gameStartTime = -1;
+        });
         ModdedRoleAssigned.EVENT.register(((player, role) -> {
             if (role.equals(SERoles.AVARICIOUS)) {
                 PlayerShopComponent shop = PlayerShopComponent.KEY.get(player);
