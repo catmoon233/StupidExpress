@@ -436,7 +436,7 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
                     WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.level());
                     modifierComponent.removeModifier(player.getUUID(), SEModifiers.SPLIT_PERSONALITY);
                     var deathReason = StupidExpress.id("split_personality");
-                    StupidExpress.LOGGER.info("From:" + deathReason.toString());
+                    // StupidExpress.LOGGER.info("From:" + deathReason.toString());
                     GameFunctions.killPlayer(player, true, null, deathReason);
                     player.displayClientMessage(
                             net.minecraft.network.chat.Component
