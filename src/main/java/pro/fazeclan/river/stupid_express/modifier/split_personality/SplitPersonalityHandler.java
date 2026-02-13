@@ -57,37 +57,6 @@ public class SplitPersonalityHandler {
             personalityInventories.put(serverVictim.getUUID(), inventory);
             return handleDeathChoicesPublic(serverVictim, component);
         });
-
-        // 监听选择逻辑
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
-            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                var component = SplitPersonalityComponent.KEY.get(player);
-                if (component == null || component.getMainPersonality() == null)
-                    continue;
-
-                // 移除倒计时检查逻辑
-
-                // 检查临时复活是否超时 (60秒 = 1200刻)
-                if (component.getTemporaryRevivalStartTick() > 0 && player.level() != null) {
-                    if (component.getTemporaryRevivalStartTick() == 1) {
-                        // 超时，强制死亡
-                        component.setTemporaryRevivalStartTick(-1); // 防止重复杀死
-                        if (GameFunctions.isPlayerAliveAndSurvival(player)) {
-                            ServerPlayNetworking.send(player, new SplitBackCamera());
-                            component.reset();
-                            WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(player.level());
-                            modifierComponent.removeModifier(player.getUUID(), SEModifiers.SPLIT_PERSONALITY);
-                            GameFunctions.killPlayer(player, true, null,StupidExpress.id(""));
-                            player.displayClientMessage(
-                                    net.minecraft.network.chat.Component
-                                            .translatable("msg.stupid_express.split_personality.almostdead")
-                                            .withStyle(ChatFormatting.RED),
-                                    true);
-                        }
-                    }
-                }
-            }
-        });
     }
 
     /**

@@ -33,7 +33,9 @@ public class AvariciousGoldPayout {
         }
 
         long elapsed = time - AvariciousGoldHandler.gameStartTime;
-        long timeinterval = elapsed % AvariciousGoldHandler.TIMER_TICKS;
+        long timeinterval = elapsed % (long) AvariciousGoldHandler.TIMER_TICKS;
+        if (timeinterval < 0)
+            timeinterval = -timeinterval;
 
         if (elapsed % AvariciousGoldHandler.TIMER_TICKS != 0) {
             if (elapsed % 20 == 0) {
