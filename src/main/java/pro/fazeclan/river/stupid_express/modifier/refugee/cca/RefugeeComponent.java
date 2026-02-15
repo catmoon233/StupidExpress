@@ -294,6 +294,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             p.displayClientMessage(Component.translatable("gui.stupid_express.refugee.all_death"), true);
             StopSound(p, StupidExpress.SOUND_REGUGEE.getLocation(), SoundSource.AMBIENT);
         });
+        this.sync();
     }
 
     public static void StopSound(ServerPlayer serverPlayer, ResourceLocation resourceLocation,
