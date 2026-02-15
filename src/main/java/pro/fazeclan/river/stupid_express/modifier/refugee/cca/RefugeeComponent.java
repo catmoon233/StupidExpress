@@ -332,6 +332,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
                         item.getBoolean("is_revive")));
             }
         }
+        isAnyRevivals = tag.getBoolean("isAnyRevivals");
     }
 
     @Override
@@ -346,6 +347,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             list.add(item);
         }
         tag.put("pending_revivals", list);
+        tag.putBoolean("isAnyRevivals", isAnyRevivals);
     }
 
     public static class RefugeeData {
