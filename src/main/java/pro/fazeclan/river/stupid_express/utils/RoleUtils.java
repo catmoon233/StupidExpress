@@ -1,28 +1,90 @@
 package pro.fazeclan.river.stupid_express.utils;
 
+import java.util.OptionalInt;
+
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import org.agmas.harpymodloader.events.ModdedRoleRemoved;
+import org.agmas.harpymodloader.modifiers.Modifier;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
+import dev.doctor4t.trainmurdermystery.cca.GameRoundEndComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
+import dev.doctor4t.trainmurdermystery.index.tag.TMMItemTags;
 import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import pro.fazeclan.river.stupid_express.StupidExpress;
-
+import java.awt.Color;
+/**
+ * 角色相关工具
+ */
 /**
  * 角色相关工具
  */
 public class RoleUtils {
+    public static void customWinnerWin(ServerLevel serverWorld, GameFunctions.WinStatus WinStatus,
+            @Nullable String winnerId, @Nullable OptionalInt winnerColor) {
+        var roundComponent = GameRoundEndComponent.KEY.get(serverWorld);
+        if (winnerId != null) {
+            if (roundComponent != null) {
+                roundComponent.CustomWinnerID = winnerId;
+            }
+        }
+        if (winnerColor != null) {
+            if (!winnerColor.isEmpty()) {
+                if (roundComponent != null) {
+                    roundComponent.CustomWinnerColor = winnerColor.getAsInt();
+                }
+            }
+        }
+        GameRoundEndComponent.KEY.get(serverWorld).setRoundEndData(serverWorld.players(),
+                WinStatus);
+        GameFunctions.stopGame(serverWorld);
+    }
+
+    public static void RemoveAllPlayerAttributes(ServerPlayer serverPlayer) {
+        var attris = serverPlayer.getAttributes();
+        if (attris != null) {
+            var allAttris = attris.getSyncableAttributes();
+            if (allAttris != null && allAttris.size() > 0) {
+                Multimap<Holder<Attribute>, AttributeModifier> multimap1 = ArrayListMultimap.create();
+                for (var attri : allAttris) {
+                    var amodifiers = attri.getModifiers();
+                    if (amodifiers != null) {
+                        for (var mo : amodifiers) {
+                            multimap1.put(attri.getAttribute(), mo);
+                        }
+                    }
+                }
+                attris.removeAttributeModifiers(multimap1);
+            }
+        }
+    }
+
+    public static boolean RemoveAllEffects(Player entity) {
+        return entity.removeAllEffects();
+    }
+
     public static boolean isPlayerHasFreeSlot(@NotNull Player player) {
         for (int i = 0; i < 9; ++i) {
             ItemStack stack = player.getInventory().getItem(i);
@@ -49,20 +111,72 @@ public class RoleUtils {
         player.getInventory().setItem(slot, net.minecraft.world.item.ItemStack.EMPTY);
     }
 
-    public static void clearAllKnives(ServerPlayer player) {
+    public static int dropAndClearAllSatisfiedItems(ServerPlayer player, Item item) {
+        int count = 0;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            if (player.getInventory().getItem(i).is(item)) {
+                player.drop(player.getInventory().getItem(i), false);
+                player.getInventory().setItem(i, net.minecraft.world.item.ItemStack.EMPTY);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static int dropAndClearAllSatisfiedItems(ServerPlayer player, TagKey<Item> tagKey) {
+        int count = 0;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            if (player.getInventory().getItem(i).is(tagKey)) {
+                player.drop(player.getInventory().getItem(i), false);
+                player.getInventory().setItem(i, net.minecraft.world.item.ItemStack.EMPTY);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static int clearAllSatisfiedItems(ServerPlayer player, Item item) {
+        int count = 0;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            if (player.getInventory().getItem(i).is(item)) {
+                player.getInventory().setItem(i, net.minecraft.world.item.ItemStack.EMPTY);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static int clearAllSatisfiedItems(ServerPlayer player, TagKey<Item> tagKey) {
+        int count = 0;
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            if (player.getInventory().getItem(i).is(tagKey)) {
+                player.getInventory().setItem(i, net.minecraft.world.item.ItemStack.EMPTY);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static int clearAllKnives(ServerPlayer player) {
+        int count = 0;
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             if (player.getInventory().getItem(i).is(TMMItems.KNIFE)) {
                 player.getInventory().setItem(i, net.minecraft.world.item.ItemStack.EMPTY);
+                count++;
             }
         }
+        return count;
     }
 
-    public static void clearAllRevolver(ServerPlayer player) {
+    public static int clearAllRevolver(ServerPlayer player) {
+        int count = 0;
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            if (player.getInventory().getItem(i).is(TMMItems.REVOLVER)) {
+            if (player.getInventory().getItem(i).is(TMMItemTags.GUNS)) {
                 player.getInventory().setItem(i, net.minecraft.world.item.ItemStack.EMPTY);
+                count++;
             }
         }
+        return count;
     }
 
     public static void sendWelcomeAnnouncement(ServerPlayer player) {
@@ -124,5 +238,61 @@ public class RoleUtils {
 
     public static MutableComponent getRoleDescription(Role selectedRole) {
         return Component.translatable("info.screen.roleid." + selectedRole.getIdentifier().getPath());
+    }
+
+    public static MutableComponent getModifierDescription(Modifier modifier) {
+        return Component
+                .translatable("info.screen.modifier." + modifier.identifier().getPath());
+    }
+
+    public static Component getRoleOrModifierName(Object role) {
+        if (role instanceof Role r) {
+            return getRoleName(r);
+        } else if (role instanceof Modifier m) {
+            return m.getName(false);
+        } else {
+            return Component.literal("Unknown");
+        }
+    }
+
+    public static MutableComponent getRoleOrModifierNameWithColor(Object role) {
+        if (role instanceof Role r) {
+            return getRoleName(r).withColor(r.color());
+        } else if (role instanceof Modifier m) {
+            return m.getName(true);
+        } else {
+            return Component.literal("Unknown");
+        }
+    }
+
+    public static MutableComponent getRoleOrModifierDescription(Object role) {
+        if (role instanceof Role r) {
+            return getRoleDescription(r);
+        } else if (role instanceof Modifier m) {
+            return getModifierDescription(m);
+        } else {
+            return Component.literal("Unknown");
+        }
+    }
+
+    public static int getRoleOrModifierColor(Object role) {
+        if (role instanceof Role r) {
+            return r.color();
+        } else if (role instanceof Modifier m) {
+            return m.color();
+        } else {
+            return Color.WHITE.getRGB();
+        }
+    }
+
+    public static MutableComponent getRoleOrModifierTypeName(Object role) {
+        if (role instanceof Role) {
+            return Component.translatable("display.type.role");
+        } else if (role instanceof Modifier) {
+            return Component.translatable("display.type.modifier");
+        } else {
+            return Component.translatable("display.type.unknown");
+        }
+        //
     }
 }

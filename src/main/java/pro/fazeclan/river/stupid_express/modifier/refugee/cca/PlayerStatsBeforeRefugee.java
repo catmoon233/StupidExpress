@@ -10,12 +10,14 @@ import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
 import dev.doctor4t.trainmurdermystery.compat.TrainVoicePlugin;
 import dev.doctor4t.trainmurdermystery.event.OnPlayerDeath;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
+import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
+import pro.fazeclan.river.stupid_express.utils.RoleUtils;
 
 public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, Vec2 rotation, boolean isAlive,
         float mood) {
@@ -45,7 +47,8 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
             return;
         player.getInventory().clearContent();
         player.getInventory().load(playerStats.inventory());
-
+        RoleUtils.clearAllSatisfiedItems(player, TMMItems.BAT);
+        
         player.teleportTo(playerStats.pos().x, playerStats.pos().y, playerStats.pos().z);
         player.setXRot(playerStats.rotation().x);
         player.setYRot(playerStats.rotation().y);
@@ -55,7 +58,6 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
             player.setGameMode(GameType.ADVENTURE);
         }
         TrainVoicePlugin.resetPlayer(player.getUUID());
-
         var shopComponent = PlayerShopComponent.KEY.get(player);
         var moodComponent = PlayerMoodComponent.KEY.get(player);
         shopComponent.balance = playerStats.money();
