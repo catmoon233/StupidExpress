@@ -92,6 +92,7 @@ public class RevivalSelectionHandler {
                         a.sendSystemMessage(Component.translatable("hud.stupid_express.necromancer.revived_player")
                                 .append(Harpymodloader.getRoleName(selectedRole)), true);
                     });
+            revived.getInventory().clearContent();
             revived.teleportTo(body.getX(), body.getY(), body.getZ());
             revived.setGameMode(GameType.ADVENTURE);
             removeVoice(revived.getUUID());
