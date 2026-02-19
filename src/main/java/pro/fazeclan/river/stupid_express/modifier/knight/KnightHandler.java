@@ -49,7 +49,7 @@ public class KnightHandler {
                 // 10% chance per second
                 if (random.nextDouble() <= 0.1) {
                     ServerPlayer target = targets.get(random.nextInt(targets.size()));
-                    if (target == knight)
+                    if (target.getUUID() == knight.getUUID())
                         continue;
                     knight.stopRiding();
                     target.stopRiding();
