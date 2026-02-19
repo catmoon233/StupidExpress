@@ -63,6 +63,8 @@ public class KnightHandler {
                     if (target == knight)
                         continue;
 
+                    knight.stopRiding();
+
                     double kx = knight.getX();
                     double ky = knight.getY();
                     double kz = knight.getZ();
