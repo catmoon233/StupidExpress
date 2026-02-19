@@ -32,15 +32,10 @@ public class KnightHandler {
                 if (component.isKnight()) {
                     int light = player.level().getBrightness(LightLayer.BLOCK, player.blockPosition());
                     if (light < 2) {
-                        var motion = player.getDeltaMovement();
-                        // 必须走路
-                        if (motion.length() > 0.1) {
-                            // 侠客也必须是冒险模式才能使用交换能力
-                            if (GameFunctions.isPlayerAliveAndSurvival(player)) {
-                                knights.add(player);
-                            }
+                        // 侠客也必须是冒险模式才能使用交换能力
+                        if (GameFunctions.isPlayerAliveAndSurvival(player)) {
+                            knights.add(player);
                         }
-
                     }
                 }
             }
