@@ -41,8 +41,8 @@ public class KnightHandler {
                         var motion = player.getDeltaMovement();
                         // 必须走路
                         if (motion.length() > 0.05) {
-                            // 侠客也必须是冒险模式才能使用交换能力
-                            if (player.gameMode.getGameModeForPlayer() == GameType.ADVENTURE) {
+                            // 侠客也必须是冒险模式才能使用交换能力，并且不能坐着
+                            if (player.gameMode.getGameModeForPlayer() == GameType.ADVENTURE && !player.isPassenger()) {
                                 knights.add(player);
                             }
                         }
