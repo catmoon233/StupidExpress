@@ -2,7 +2,6 @@ package pro.fazeclan.river.stupid_express.modifier.knight;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LightLayer;
 import pro.fazeclan.river.stupid_express.modifier.knight.cca.KnightComponent;
 import java.util.ArrayList;
