@@ -34,6 +34,9 @@ import static dev.doctor4t.trainmurdermystery.compat.TrainVoicePlugin.*;
 
 public class RevivalSelectionHandler {
     public static void removeVoice(@NotNull UUID player) {
+        if (SERVER_API == null) {
+            return;
+        }
         VoicechatConnection connection = SERVER_API.getConnectionOf(player);
         if (connection != null) {
             connection.setGroup(null);
