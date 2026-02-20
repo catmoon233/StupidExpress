@@ -49,7 +49,7 @@ public class StupidExpressConfig
         public AmnesiacSection amnesiacSection = new AmnesiacSection();
         public static class AmnesiacSection  {
             public boolean bodiesGlowToAmnesiac = true;
-            public boolean amnesiacGlowsDifferently = true;
+            public boolean amnesiacGlowsDifferently = false;
         }
 
     }
