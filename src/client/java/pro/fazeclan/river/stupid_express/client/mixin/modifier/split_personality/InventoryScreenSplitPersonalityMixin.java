@@ -68,7 +68,7 @@ public abstract class InventoryScreenSplitPersonalityMixin extends LimitedHandle
                         this.betrayButton.visible = false;
                         this.sacrificeButton.visible = false;
                         this.hiddenButton.visible = false;
-                    }).bounds(self.width / 2 - 50, buttonY + 24, 100, 20).build();
+                    }).bounds(self.width / 2 - 50, buttonY + 44, 100, 20).build();
 
             self.addRenderableWidget(this.sacrificeButton);
             self.addRenderableWidget(this.betrayButton);
