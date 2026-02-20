@@ -29,9 +29,13 @@ public abstract class InventoryScreenSplitPersonalityMixin extends LimitedHandle
     private Button sacrificeButton;
     @Unique
     private Button betrayButton;
+    @Unique
+    private Button hiddenButton;
 
     @Unique
     private SplitPersonalityComponent component;
+    @Unique
+    private boolean hiddenText = false;
 
     public InventoryScreenSplitPersonalityMixin(InventoryMenu handler, Inventory inventory, Component title) {
         super(handler, inventory, title);
@@ -41,7 +45,7 @@ public abstract class InventoryScreenSplitPersonalityMixin extends LimitedHandle
      * 初始化时创建双重人格选择Widget
      */
     @Inject(method = "init", at = @At("HEAD"))
-    private void stupid_express$onInit(CallbackInfo ci) {
+    private void stupid_express(CallbackInfo ci) {
         LimitedInventoryScreen self = (LimitedInventoryScreen) (Object) this;
 
         Player player = this.minecraft.player;
@@ -58,9 +62,17 @@ public abstract class InventoryScreenSplitPersonalityMixin extends LimitedHandle
             // 创建并添加两个独立的按钮
             this.sacrificeButton = widgetFactory.createSacrificeButton(buttonX, buttonY);
             this.betrayButton = widgetFactory.createBetrayButton(buttonX + 110, buttonY);
+            this.hiddenButton = Button
+                    .builder(Component.translatable("hud.stupid_express.split_personality.hidden"), (b) -> {
+                        this.hiddenText = true;
+                        this.betrayButton.visible = false;
+                        this.sacrificeButton.visible = false;
+                        this.hiddenButton.visible = false;
+                    }).bounds(self.width / 2 - 50, buttonY + 24, 100, 20).build();
 
             self.addRenderableWidget(this.sacrificeButton);
             self.addRenderableWidget(this.betrayButton);
+            self.addRenderableWidget(this.hiddenButton);
         }
     }
 
@@ -70,8 +82,9 @@ public abstract class InventoryScreenSplitPersonalityMixin extends LimitedHandle
     @Inject(method = "render", at = @At("TAIL"))
     private void stupid_express$onRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick,
             CallbackInfo ci) {
+        if (this.hiddenText)
+            return;
         LimitedInventoryScreen self = (LimitedInventoryScreen) (Object) this;
-
         Player player = this.minecraft.player;
         if (component == null) {
             component = SplitPersonalityComponent.KEY.get(player);

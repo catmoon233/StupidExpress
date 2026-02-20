@@ -59,6 +59,7 @@
   "hud.stupid_express.split_personality.death_timer": "§c死亡倒计时: §f%ss",
   "hud.stupid_express.split_personality.choice_prompt": "§e按 [B] 选择奉献, [V] 选择欺骗",
   "hud.stupid_express.split_personality.sacrifice": "奉献",
+  "hud.stupid_express.split_personality.hidden": "隐藏界面",
   "hud.stupid_express.split_personality.betray": "欺骗",
   "announcement.win.stupid_express.split_personality": "双重人格胜利",
   "announcement.win.stupid_express.lovers": "恋人胜利",
