@@ -92,44 +92,16 @@ public abstract class InitiateKillMixin {
         if (!gameWorldComponent.isRole(victim, SERoles.INITIATE) && killer != null
                 && gameWorldComponent.isRole(killer, SERoles.INITIATE)) {
             Role newInitiateRole;
-            switch (StupidExpress.CONFIG.rolesSection.initiateSection.initiateFallbackRole) {
-                case KILLER -> {
-                    var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
-                    shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role)
-                            || !role.canUseKiller()
-                            || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath())
-                            || role.identifier().equals(fromNamespaceAndPath("noellesroles", "poisoner")));
-                    if (shuffledKillerRoles.isEmpty())
-                        shuffledKillerRoles.add(TMMRoles.KILLER);
-                    Collections.shuffle(shuffledKillerRoles);
+            newInitiateRole = SERoles.AMNESIAC;
 
-                    newInitiateRole = shuffledKillerRoles.getFirst();
-                }
-                case NEUTRAL -> {
-                    var shuffledNeutralRoles = new ArrayList<>(StupidExpress.getEnableRoles());
-                    shuffledNeutralRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role)
-                            || role.canUseKiller() || role.isInnocent() || role.equals(SERoles.AMNESIAC)
-                            || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
-                    if (shuffledNeutralRoles.isEmpty())
-                        shuffledNeutralRoles.add(SERoles.AMNESIAC);
-                    Collections.shuffle(shuffledNeutralRoles);
-
-                    newInitiateRole = shuffledNeutralRoles.getFirst();
-                }
-                case null, default -> newInitiateRole = SERoles.AMNESIAC;
-            }
             for (ServerPlayer player : level.getPlayers(p -> gameWorldComponent.isRole(p, SERoles.INITIATE))) {
                 // 清除物品栏中的所有刀
                 clearAllKnives(player);
                 RoleUtils.changeRole(player, newInitiateRole);
-                // ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
-
-                // TMM.REPLAY_MANAGER.recordPlayerRoleChange(player.getUUID(), SERoles.INITIATE, newInitiateRole);
 
                 ServerPlayNetworking.send(player,
                         new AnnounceWelcomePayload(gameWorldComponent.getRole(player).getIdentifier().toString(),
                                 gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
-
             }
             if (!spawnBody) {
                 victim.teleportTo(killer.getX(), killer.getY(), killer.getZ());
@@ -137,35 +109,61 @@ public abstract class InitiateKillMixin {
             }
             GameFunctions.killPlayer(killer, true, null, StupidExpress.id("failed_initiation"));
             ci.cancel();
-        } else if (gameWorldComponent.isRole(victim, SERoles.INITIATE) && (killer == null || !gameWorldComponent.isRole(killer, SERoles.INITIATE))) {
+        } else if (gameWorldComponent.isRole(victim, SERoles.INITIATE)
+                && (killer == null || !gameWorldComponent.isRole(killer, SERoles.INITIATE))) {
             // 初学者被杀死（包括被炸弹炸死、摔死等非玩家攻击，以及被非初学者玩家杀死）
             Role newInitiateRole;
-            switch (StupidExpress.CONFIG.rolesSection.initiateSection.initiateFallbackRole) {
-                case KILLER -> {
+            if (killer == null) {
+                newInitiateRole = SERoles.AMNESIAC;
+            } else {
+                Role killerRole = gameWorldComponent.getRole(killer);
+                if (killerRole == null) {
+                    newInitiateRole = SERoles.INITIATE;
+                } else if (gameWorldComponent.isKillerTeamRole(killerRole)) {
+                    // 狼杀死
                     var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
-                    shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role)
-                            || !role.canUseKiller()
-                            || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath())
-                            || role.identifier().equals(fromNamespaceAndPath("noellesroles", "poisoner")));
+                    shuffledKillerRoles.removeIf(role -> {
+                        if (gameWorldComponent.isKillerTeamRole(role))
+                            return true;
+                        if (role.isNeutrals())
+                            return true;
+                        return false;
+                    });
+                    if (shuffledKillerRoles.isEmpty())
+                        shuffledKillerRoles.add(TMMRoles.CIVILIAN);
+                    Collections.shuffle(shuffledKillerRoles);
+
+                    newInitiateRole = shuffledKillerRoles.getFirst();
+                } else if (killerRole.isNeutrals()) {
+                    // 中立杀死
+                    var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
+                    shuffledKillerRoles.removeIf(role -> {
+                        if (role.isNeutralForKiller())
+                            return true;
+                        if (role.isNeutrals())
+                            return false;
+                        return true;
+                    });
+                    if (shuffledKillerRoles.isEmpty())
+                        shuffledKillerRoles.add(SERoles.AMNESIAC);
+                    Collections.shuffle(shuffledKillerRoles);
+                    newInitiateRole = shuffledKillerRoles.getFirst();
+                } else {
+                    // 好人杀死
+                    var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
+                    shuffledKillerRoles.removeIf(role -> {
+                        if (gameWorldComponent.isKillerTeamRole(role))
+                            return false;
+                        return true;
+                    });
                     if (shuffledKillerRoles.isEmpty())
                         shuffledKillerRoles.add(TMMRoles.KILLER);
                     Collections.shuffle(shuffledKillerRoles);
 
                     newInitiateRole = shuffledKillerRoles.getFirst();
                 }
-                case NEUTRAL -> {
-                    var shuffledNeutralRoles = new ArrayList<>(StupidExpress.getEnableRoles());
-                    shuffledNeutralRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role)
-                            || role.canUseKiller() || role.isInnocent() || role.equals(SERoles.AMNESIAC)
-                            || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
-                    if (shuffledNeutralRoles.isEmpty())
-                        shuffledNeutralRoles.add(SERoles.AMNESIAC);
-                    Collections.shuffle(shuffledNeutralRoles);
-
-                    newInitiateRole = shuffledNeutralRoles.getFirst();
-                }
-                case null, default -> newInitiateRole = SERoles.AMNESIAC;
             }
+
             for (ServerPlayer player : level.getPlayers(p -> gameWorldComponent.isRole(p, SERoles.INITIATE))) {
                 // 清除物品栏中的所有刀
                 clearAllKnives(player);
@@ -174,7 +172,8 @@ public abstract class InitiateKillMixin {
 
                 // ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
 
-                // TMM.REPLAY_MANAGER.recordPlayerRoleChange(player.getUUID(), SERoles.INITIATE, newInitiateRole);
+                // TMM.REPLAY_MANAGER.recordPlayerRoleChange(player.getUUID(), SERoles.INITIATE,
+                // newInitiateRole);
 
                 ServerPlayNetworking.send(player,
                         new AnnounceWelcomePayload(gameWorldComponent.getRole(player).getIdentifier().toString(),
