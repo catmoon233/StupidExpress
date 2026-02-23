@@ -51,7 +51,6 @@ public class AvariciousGoldHandler {
         }));
     }
 
-    // @Deprecated
     // public static void payout() {
     // ModdedRoleAssigned.EVENT.register(((player, role) -> {
     // if (role.equals(SERoles.AVARICIOUS)) {
