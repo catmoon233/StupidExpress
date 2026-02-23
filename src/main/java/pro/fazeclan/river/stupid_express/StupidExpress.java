@@ -57,7 +57,6 @@ public class StupidExpress implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        EventRegister.register();
         SERoles.init();
 
         // mod stuff
@@ -77,6 +76,7 @@ public class StupidExpress implements ModInitializer {
                 refugeeC.reset();
             }
         });
+        EventRegister.register();
 
         OnPlayerDeath.EVENT.register((victim, deathReason) -> {
             var gameWorldComponent = GameWorldComponent.KEY.get(victim.level());
