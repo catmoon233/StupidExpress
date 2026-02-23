@@ -6,7 +6,6 @@ import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.event.OnPlayerDeath;
-import dev.doctor4t.trainmurdermystery.game.GameReplayManager;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -58,7 +57,7 @@ public class StupidExpress implements ModInitializer {
 
     @Override
     public void onInitialize() {
-
+        EventRegister.register();
         SERoles.init();
 
         // mod stuff
