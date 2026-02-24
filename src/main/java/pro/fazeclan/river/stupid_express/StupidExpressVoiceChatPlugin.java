@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatServerApi;
 import de.maxhenkel.voicechat.api.events.EventRegistration;
+import de.maxhenkel.voicechat.api.events.LocationalSoundPacketEvent;
 import de.maxhenkel.voicechat.api.events.MicrophonePacketEvent;
 import net.minecraft.server.level.ServerPlayer;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
@@ -25,7 +26,6 @@ public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
     public void paranoidEvent(MicrophonePacketEvent event) {
         VoicechatServerApi api = event.getVoicechat();
         VoicechatConnection connection_s = event.getSenderConnection();
-        VoicechatConnection connection_r = event.getReceiverConnection();
         if (connection_s == null || connection_s.getPlayer() == null) {
             return;
         }
@@ -59,6 +59,31 @@ public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
             }
         }
 
+        // if (players.interactionManager.getGameMode().equals(GameMode.SPECTATOR)) {
+
+        // if (gameWorldComponent.isRole(p,
+        // Noellesroles.THE_INSANE_DAMNED_PARANOID_KILLER_OF_DOOM_DEATH_DESTRUCTION_AND_WAFFLES)
+        // && GameFunctions.isPlayerAliveAndSurvival(p)) {
+        // if (players.distanceTo(p) <= api.getVoiceChatDistance()) {
+        // VoicechatConnection con = api.getConnectionOf(p.getUuid());
+        // api.sendLocationalSoundPacketTo(con,
+        // event.getPacket().locationalSoundPacketBuilder()
+        // .position(api.createPosition(p.getX(), p.getY(), p.getZ()))
+        // .distance((float)api.getVoiceChatDistance())
+        // .build());
+        // }
+        // }
+        // });
+        // }
+    }
+    public void preventSplitSound(LocationalSoundPacketEvent event){
+        VoicechatConnection connection_s = event.getSenderConnection();
+        VoicechatConnection connection_r = event.getReceiverConnection();
+        if (connection_s == null || connection_s.getPlayer() == null) {
+            return;
+        }
+        ServerPlayer sender = ((ServerPlayer) connection_s.getPlayer().getPlayer());
+        WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(sender.serverLevel());
         if (connection_r != null && connection_r.getPlayer() != null) {
             // 有接收者
             ServerPlayer receiver = ((ServerPlayer) connection_r.getPlayer().getPlayer());
@@ -79,28 +104,13 @@ public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
                 }
             }
         }
-
-        // if (players.interactionManager.getGameMode().equals(GameMode.SPECTATOR)) {
-
-        // if (gameWorldComponent.isRole(p,
-        // Noellesroles.THE_INSANE_DAMNED_PARANOID_KILLER_OF_DOOM_DEATH_DESTRUCTION_AND_WAFFLES)
-        // && GameFunctions.isPlayerAliveAndSurvival(p)) {
-        // if (players.distanceTo(p) <= api.getVoiceChatDistance()) {
-        // VoicechatConnection con = api.getConnectionOf(p.getUuid());
-        // api.sendLocationalSoundPacketTo(con,
-        // event.getPacket().locationalSoundPacketBuilder()
-        // .position(api.createPosition(p.getX(), p.getY(), p.getZ()))
-        // .distance((float)api.getVoiceChatDistance())
-        // .build());
-        // }
-        // }
-        // });
-        // }
     }
 
     @Override
     public void registerEvents(EventRegistration registration) {
         registration.registerEvent(MicrophonePacketEvent.class, this::paranoidEvent);
+        registration.registerEvent(LocationalSoundPacketEvent.class, this::preventSplitSound);
+
         VoicechatPlugin.super.registerEvents(registration);
     }
 }
