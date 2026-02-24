@@ -8,6 +8,8 @@ import de.maxhenkel.voicechat.api.events.EventRegistration;
 import de.maxhenkel.voicechat.api.events.LocationalSoundPacketEvent;
 import de.maxhenkel.voicechat.api.events.MicrophonePacketEvent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
@@ -76,31 +78,33 @@ public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
         // });
         // }
     }
-    public void preventSplitSound(LocationalSoundPacketEvent event){
-        VoicechatConnection connection_s = event.getSenderConnection();
-        VoicechatConnection connection_r = event.getReceiverConnection();
-        if (connection_s == null || connection_s.getPlayer() == null) {
+
+    public void preventSplitSound(LocationalSoundPacketEvent event) {
+        VoicechatConnection senderConnection = event.getSenderConnection();
+        VoicechatConnection receiverConnection = event.getReceiverConnection();
+
+        if (senderConnection == null || receiverConnection == null)
             return;
-        }
-        ServerPlayer sender = ((ServerPlayer) connection_s.getPlayer().getPlayer());
-        WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(sender.serverLevel());
-        if (connection_r != null && connection_r.getPlayer() != null) {
-            // 有接收者
-            ServerPlayer receiver = ((ServerPlayer) connection_r.getPlayer().getPlayer());
-            final var receiverSpc = SplitPersonalityComponent.KEY.get(receiver);
+
+        if (!(senderConnection.getPlayer().getPlayer() instanceof Player senderPlayer))
+            return;
+        if (!(receiverConnection.getPlayer().getPlayer() instanceof Player receiverPlayer))
+            return;
+
+        WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(senderPlayer.level());
+
+        if (modifierComponent.isModifier(receiverPlayer, SEModifiers.SPLIT_PERSONALITY)) {
+            final var receiverSpc = SplitPersonalityComponent.KEY.get(receiverPlayer);
             if (receiverSpc.getMainPersonality() != null
                     && receiverSpc.getSecondPersonality() != null) {
-                if (modifierComponent.isModifier(receiver, SEModifiers.SPLIT_PERSONALITY)) {
-                    // 如果接收的是双重人格
-                    if (receiver.isSpectator()) {
-                        // 如果此人还没死，且在旁观（等待切换）
-                        if (!receiverSpc.isDeath() && sender.isSpectator()) {
-                            // 拒绝来自旁观 sender 的语音
-                            event.cancel();
-                            return;
-                        }
+                // 如果接收的是双重人格
+                if (receiverPlayer.isSpectator()) {
+                    // 如果此人还没死，且在旁观（等待切换）
+                    if (!receiverSpc.isDeath() && senderPlayer.isSpectator()) {
+                        // 拒绝来自旁观 sender 的语音
+                        event.cancel();
+                        return;
                     }
-
                 }
             }
         }
