@@ -70,7 +70,7 @@ public class SERoles {
             true
     ));
 
-    public static Role INITIATE = registerRole(new NoramlRole(
+    public static Role INITIATE = registerRole(new NormalRole(
             StupidExpress.id("initiate"),
             0xffd154,
             false,

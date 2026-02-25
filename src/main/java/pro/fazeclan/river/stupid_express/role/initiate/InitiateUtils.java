@@ -1,9 +1,9 @@
 package pro.fazeclan.river.stupid_express.role.initiate;
 
-import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.cca.GameTimeComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameConstants;
+import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
 
 import net.minecraft.server.level.ServerPlayer;
-import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
@@ -60,7 +59,8 @@ public class InitiateUtils {
 
             // 检查是否有初学者
             List<ServerPlayer> initiates = playerList.stream()
-                    .filter(p -> gameWorldComponent.isRole(p, SERoles.INITIATE))
+                    .filter(p -> GameFunctions.isPlayerAliveAndSurvival(p)
+                            && (gameWorldComponent.isRole(p, SERoles.INITIATE)))
                     .collect(Collectors.toList());
 
             int initiateCount = initiates.size();
@@ -84,8 +84,10 @@ public class InitiateUtils {
                     ServerPlayer initiate = initiates.get(0);
                     clearModItems(initiate);
                     StupidRoleUtils.changeRole(initiate, SERoles.AMNESIAC);
-                    // ModdedRoleAssigned.EVENT.invoker().assignModdedRole(initiate, SERoles.AMNESIAC);
-                    // TMM.REPLAY_MANAGER.recordPlayerRoleChange(initiate.getUUID(), SERoles.INITIATE, SERoles.AMNESIAC);
+                    // ModdedRoleAssigned.EVENT.invoker().assignModdedRole(initiate,
+                    // SERoles.AMNESIAC);
+                    // TMM.REPLAY_MANAGER.recordPlayerRoleChange(initiate.getUUID(),
+                    // SERoles.INITIATE, SERoles.AMNESIAC);
                     ServerPlayNetworking.send(initiate,
                             new AnnounceWelcomePayload(gameWorldComponent.getRole(initiate).getIdentifier().toString(),
                                     gameWorldComponent.getAllKillerTeamPlayers().size(), 0));

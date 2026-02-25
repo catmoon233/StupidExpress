@@ -18,6 +18,7 @@
     "role.CustomWinnerTextRendering",
     "role.amnesiac.AmnesiacHudMixin",
     "role.arsonist.ArsonistHudMixin",
+    "role.arsonist.ArsonistInstinctMixin",
     "role.initiate.InitiateCoinMixin",
     "role.initiate.InitiateShopMixin",
     "role.necromancer.NecromancerHudMixin"
