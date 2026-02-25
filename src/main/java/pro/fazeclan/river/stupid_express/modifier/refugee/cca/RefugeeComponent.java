@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import dev.doctor4t.trainmurdermystery.cca.BartenderPlayerComponent;
 import dev.doctor4t.trainmurdermystery.cca.WorldBlackoutComponent;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
@@ -157,6 +158,9 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         // Teleport to death location
         player.teleportTo(serverLevel, roomPosition.x, roomPosition.y, roomPosition.z, player.getYRot(),
                 player.getXRot());
+        BartenderPlayerComponent bartenderPlayerComponent = BartenderPlayerComponent.KEY.get(player);
+        int size = serverLevel.getPlayers(GameFunctions::isPlayerAliveAndSurvival).size();
+        bartenderPlayerComponent.removeArmor(-1*(Math.clamp(1, size/6,3)));
         player.setGameMode(GameType.ADVENTURE);
         WorldBlackoutComponent.KEY.get(player.level()).triggerBlackout();
         // Remove body entity
