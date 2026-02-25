@@ -4,9 +4,12 @@ import de.maxhenkel.voicechat.api.VoicechatApi;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
 import de.maxhenkel.voicechat.api.VoicechatServerApi;
+import de.maxhenkel.voicechat.api.events.EntitySoundPacketEvent;
 import de.maxhenkel.voicechat.api.events.EventRegistration;
 import de.maxhenkel.voicechat.api.events.LocationalSoundPacketEvent;
 import de.maxhenkel.voicechat.api.events.MicrophonePacketEvent;
+import de.maxhenkel.voicechat.api.events.SoundPacketEvent;
+import de.maxhenkel.voicechat.api.events.StaticSoundPacketEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -79,7 +82,69 @@ public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
         // }
     }
 
-    public void preventSplitSound(LocationalSoundPacketEvent event) {
+    public void preventSplitSound_Entity(EntitySoundPacketEvent event) {
+        VoicechatConnection senderConnection = event.getSenderConnection();
+        VoicechatConnection receiverConnection = event.getReceiverConnection();
+
+        if (senderConnection == null || receiverConnection == null)
+            return;
+
+        if (!(senderConnection.getPlayer().getPlayer() instanceof Player senderPlayer))
+            return;
+        if (!(receiverConnection.getPlayer().getPlayer() instanceof Player receiverPlayer))
+            return;
+
+        WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(senderPlayer.level());
+
+        if (modifierComponent.isModifier(receiverPlayer, SEModifiers.SPLIT_PERSONALITY)) {
+            final var receiverSpc = SplitPersonalityComponent.KEY.get(receiverPlayer);
+            if (receiverSpc.getMainPersonality() != null
+                    && receiverSpc.getSecondPersonality() != null) {
+                // 如果接收的是双重人格
+                if (receiverPlayer.isSpectator()) {
+                    // 如果此人还没死，且在旁观（等待切换）
+                    if (!receiverSpc.isDeath() && senderPlayer.isSpectator()) {
+                        // 拒绝来自旁观 sender 的语音
+                        event.cancel();
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public void preventSplitSound_Static(StaticSoundPacketEvent event) {
+        VoicechatConnection senderConnection = event.getSenderConnection();
+        VoicechatConnection receiverConnection = event.getReceiverConnection();
+
+        if (senderConnection == null || receiverConnection == null)
+            return;
+
+        if (!(senderConnection.getPlayer().getPlayer() instanceof Player senderPlayer))
+            return;
+        if (!(receiverConnection.getPlayer().getPlayer() instanceof Player receiverPlayer))
+            return;
+
+        WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(senderPlayer.level());
+
+        if (modifierComponent.isModifier(receiverPlayer, SEModifiers.SPLIT_PERSONALITY)) {
+            final var receiverSpc = SplitPersonalityComponent.KEY.get(receiverPlayer);
+            if (receiverSpc.getMainPersonality() != null
+                    && receiverSpc.getSecondPersonality() != null) {
+                // 如果接收的是双重人格
+                if (receiverPlayer.isSpectator()) {
+                    // 如果此人还没死，且在旁观（等待切换）
+                    if (!receiverSpc.isDeath() && senderPlayer.isSpectator()) {
+                        // 拒绝来自旁观 sender 的语音
+                        event.cancel();
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public void preventSplitSound_Locational(LocationalSoundPacketEvent event) {
         VoicechatConnection senderConnection = event.getSenderConnection();
         VoicechatConnection receiverConnection = event.getReceiverConnection();
 
@@ -113,7 +178,9 @@ public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
     @Override
     public void registerEvents(EventRegistration registration) {
         registration.registerEvent(MicrophonePacketEvent.class, this::paranoidEvent);
-        registration.registerEvent(LocationalSoundPacketEvent.class, this::preventSplitSound);
+        registration.registerEvent(LocationalSoundPacketEvent.class, this::preventSplitSound_Locational);
+        registration.registerEvent(StaticSoundPacketEvent.class, this::preventSplitSound_Static);
+        registration.registerEvent(EntitySoundPacketEvent.class, this::preventSplitSound_Entity);
 
         VoicechatPlugin.super.registerEvents(registration);
     }
