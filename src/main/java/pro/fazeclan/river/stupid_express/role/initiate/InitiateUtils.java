@@ -14,7 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
-import pro.fazeclan.river.stupid_express.utils.RoleUtils;
+import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -83,7 +83,7 @@ public class InitiateUtils {
                 if (gameTime % FIVE_SECONDS_TICKS == 0) {
                     ServerPlayer initiate = initiates.get(0);
                     clearModItems(initiate);
-                    RoleUtils.changeRole(initiate, SERoles.AMNESIAC);
+                    StupidRoleUtils.changeRole(initiate, SERoles.AMNESIAC);
                     // ModdedRoleAssigned.EVENT.invoker().assignModdedRole(initiate, SERoles.AMNESIAC);
                     // TMM.REPLAY_MANAGER.recordPlayerRoleChange(initiate.getUUID(), SERoles.INITIATE, SERoles.AMNESIAC);
                     ServerPlayNetworking.send(initiate,

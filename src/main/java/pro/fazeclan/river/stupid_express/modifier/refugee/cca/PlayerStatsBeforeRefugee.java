@@ -17,7 +17,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
-import pro.fazeclan.river.stupid_express.utils.RoleUtils;
+import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
 public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, Vec2 rotation, boolean isAlive,
         float mood) {
@@ -47,7 +47,7 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
             return;
         player.getInventory().clearContent();
         player.getInventory().load(playerStats.inventory());
-        RoleUtils.clearAllSatisfiedItems(player, TMMItems.BAT);
+        StupidRoleUtils.clearAllSatisfiedItems(player, TMMItems.BAT);
         
         player.teleportTo(playerStats.pos().x, playerStats.pos().y, playerStats.pos().z);
         player.setXRot(playerStats.rotation().x);

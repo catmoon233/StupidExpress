@@ -41,7 +41,7 @@ import java.awt.Color;
 /**
  * 角色相关工具
  */
-public class RoleUtils {
+public class StupidRoleUtils {
     public static void customWinnerWin(ServerLevel serverWorld, GameFunctions.WinStatus WinStatus,
             @Nullable String winnerId, @Nullable OptionalInt winnerColor) {
         var roundComponent = GameRoundEndComponent.KEY.get(serverWorld);
