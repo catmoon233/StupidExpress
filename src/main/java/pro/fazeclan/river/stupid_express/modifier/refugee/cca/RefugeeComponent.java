@@ -41,7 +41,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
-import pro.fazeclan.river.stupid_express.utils.RoleUtils;
+import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
 public class RefugeeComponent implements AutoSyncedComponent, ServerTickingComponent {
 
@@ -175,9 +175,9 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         player.getInventory().clearContent();
 
         // Change role to LOOSE_END and remove REFUGEE modifier
-        RoleUtils.changeRole(player, TMMRoles.LOOSE_END, false);
+        StupidRoleUtils.changeRole(player, TMMRoles.LOOSE_END, false);
         TMM.REPLAY_MANAGER.recordPlayerRevival(player.getUUID(), TMMRoles.LOOSE_END);
-        RoleUtils.sendWelcomeAnnouncement(player);
+        StupidRoleUtils.sendWelcomeAnnouncement(player);
 
         TrainVoicePlugin.resetPlayer(player.getUUID());
 

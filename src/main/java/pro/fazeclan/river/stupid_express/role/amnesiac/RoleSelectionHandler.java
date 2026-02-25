@@ -15,7 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
-import pro.fazeclan.river.stupid_express.utils.RoleUtils;
+import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
 public class RoleSelectionHandler {
 
@@ -60,7 +60,7 @@ public class RoleSelectionHandler {
             clearAllKnives(interacting);
 
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(interacting);
-            RoleUtils.changeRole(interacting, role);
+            StupidRoleUtils.changeRole(interacting, role);
 
             // TMM.REPLAY_MANAGER.recordPlayerRoleChange(interacting.getUUID(),
             // SERoles.AMNESIAC, role);

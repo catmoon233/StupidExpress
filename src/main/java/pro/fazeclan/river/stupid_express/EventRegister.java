@@ -28,7 +28,7 @@ import pro.fazeclan.river.stupid_express.modifier.cursed.cca.CursedComponent;
 import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
-import pro.fazeclan.river.stupid_express.utils.RoleUtils;
+import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
 public class EventRegister {
     private static void clearAllKnives(Player player) {
@@ -61,7 +61,7 @@ public class EventRegister {
                 Collections.shuffle(shuffledKillerRoles);
 
                 var role = shuffledKillerRoles.getFirst();
-                RoleUtils.changeRole(killer, role, false);
+                StupidRoleUtils.changeRole(killer, role, false);
                 TMM.REPLAY_MANAGER.recordPlayerRevival(killer.getUUID(), role);
 
                 // 清除物品栏中的所有刀
@@ -86,7 +86,7 @@ public class EventRegister {
                 for (ServerPlayer player : level.getPlayers(p -> gameWorldComponent.isRole(p, SERoles.INITIATE))) {
                     // 清除物品栏中的所有刀
                     clearAllKnives(player);
-                    RoleUtils.changeRole(player, newInitiateRole);
+                    StupidRoleUtils.changeRole(player, newInitiateRole);
 
                     ServerPlayNetworking.send(player,
                             new AnnounceWelcomePayload(gameWorldComponent.getRole(player).getIdentifier().toString(),
@@ -153,7 +153,7 @@ public class EventRegister {
                     // 清除物品栏中的所有刀
                     clearAllKnives(player);
 
-                    RoleUtils.changeRole(player, newInitiateRole);
+                    StupidRoleUtils.changeRole(player, newInitiateRole);
 
                     // ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
 

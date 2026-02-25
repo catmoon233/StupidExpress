@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
-import pro.fazeclan.river.stupid_express.utils.RoleUtils;
+import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -101,7 +101,7 @@ public class RevivalSelectionHandler {
             removeVoice(revived.getUUID());
             body.remove(Entity.RemovalReason.DISCARDED); // like it never existed
 
-            RoleUtils.changeRole(revived, selectedRole);
+            StupidRoleUtils.changeRole(revived, selectedRole);
             TMM.REPLAY_MANAGER.recordPlayerRevival(revived.getUUID(), selectedRole);
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(revived);
             playerShopComponent.setBalance(200);
