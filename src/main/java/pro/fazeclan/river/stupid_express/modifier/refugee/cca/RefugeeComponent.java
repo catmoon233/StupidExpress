@@ -196,12 +196,11 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         serverLevel.players().forEach(p -> {
             ServerPlayNetworking.send(p, new TriggerStatusBarPayload("loose_end"));
             p.playNotifySound(SoundEvents.WITHER_DEATH, SoundSource.PLAYERS, 1.0f, 1.0f);
-            p.addEffect(new MobEffectInstance(MobEffects.WEAVING, 120 * 20, 0, false, false));
+            p.addEffect(new MobEffectInstance(MobEffects.WEAVING, 150 * 20, 0, false, false));
             p.playNotifySound(SoundEvents.WITHER_SPAWN, SoundSource.PLAYERS, 1.0f, 1.0f);
 
             p.sendSystemMessage(Component.translatable("hud.stupid_express.refugee.revived", player.getDisplayName()),
                     true);
-            p.playNotifySound(StupidExpress.SOUND_REGUGEE, SoundSource.AMBIENT, 0.5f, 1.0f);
         });
         if (!isAnyRevivals) {
             SavePlayersStats();

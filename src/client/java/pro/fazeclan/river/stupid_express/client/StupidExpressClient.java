@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
 
+import dev.doctor4t.ratatouille.client.util.ambience.AmbienceUtil;
+import dev.doctor4t.ratatouille.client.util.ambience.BackgroundAmbience;
 import dev.doctor4t.ratatouille.util.TextUtils;
 import dev.doctor4t.trainmurdermystery.client.StatusInit;
 import dev.doctor4t.trainmurdermystery.client.StatusInit.StatusBar;
+import dev.doctor4t.trainmurdermystery.client.TMMClient;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import dev.doctor4t.trainmurdermystery.event.AllowOtherCameraType;
 import net.fabricmc.api.ClientModInitializer;
@@ -22,6 +25,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.client.keybinds.SplitPersonalityKeybinds;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
@@ -33,9 +37,25 @@ public class StupidExpressClient implements ClientModInitializer {
     public static Player target;
     public static PlayerBodyEntity targetBody;
 
-    static  boolean isUsedRefugee = false;
+    static boolean isUsedRefugee = false;
+
     @Override
     public void onInitializeClient() {
+        // p.playNotifySound(StupidExpress.SOUND_REGUGEE, SoundSource.AMBIENT, 0.5f,
+        // 1.0f);
+        AmbienceUtil.registerBackgroundAmbience(
+                new BackgroundAmbience(StupidExpress.SOUND_REGUGEE,
+                        player -> {
+                            if (TMMClient.gameComponent == null)
+                                return false;
+                            var refugeeC = RefugeeComponent.KEY.get(player.level());
+                            if (refugeeC.isAnyRevivals) {
+                                return true;
+                            }
+                            return false;
+                        },
+                        1));
+
         ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipFlag, list) -> {
             if (itemStack.is(SEItems.JERRY_CAN))
                 list.addAll(TextUtils.getTooltipForItem(itemStack.getItem(), Style.EMPTY.withColor(8421504)));
@@ -79,7 +99,8 @@ public class StupidExpressClient implements ClientModInitializer {
                                     BlockPos targetPos = playerPos.offset(x, y, z);
 
                                     // 检查方块是否为完整方块（非空气且不透明）
-                                    if (!level.getBlockState(targetPos).isAir() && level.getBlockState(targetPos).isSolidRender(level, targetPos)) {
+                                    if (!level.getBlockState(targetPos).isAir()
+                                            && level.getBlockState(targetPos).isSolidRender(level, targetPos)) {
                                         float rand = random.nextFloat();
                                         // 10%概率替换为下界疣块
                                         if (rand < 0.15f) {
@@ -173,6 +194,6 @@ public class StupidExpressClient implements ClientModInitializer {
     }
 
     private static void registerInventoryEvents() {
-        
+
     }
 }
