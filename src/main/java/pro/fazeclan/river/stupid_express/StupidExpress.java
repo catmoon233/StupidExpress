@@ -7,8 +7,10 @@ import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.event.OnPlayerDeath;
 
+import dev.doctor4t.trainmurdermystery.network.RemoveStatusBarPayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 
@@ -99,6 +101,13 @@ public class StupidExpress implements ModInitializer {
                 }
             }
         });
+        GameInitializeEvent.EVENT.register((ServerLevel, gameWorldComponent, serverPlayers) -> {
+            serverPlayers.forEach(serverPlayer -> {
+                RemoveStatusBarPayload payload = new RemoveStatusBarPayload("loose_end");
+                ServerPlayNetworking.send(serverPlayer, payload);
+            });
+        });
+
 
         TMM.cantSendReplay.add(
                 (player -> {

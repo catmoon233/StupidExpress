@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import dev.doctor4t.trainmurdermystery.cca.WorldBlackoutComponent;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
@@ -157,7 +158,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         player.teleportTo(serverLevel, roomPosition.x, roomPosition.y, roomPosition.z, player.getYRot(),
                 player.getXRot());
         player.setGameMode(GameType.ADVENTURE);
-
+        WorldBlackoutComponent.KEY.get(player.level()).triggerBlackout();
         // Remove body entity
         var bodies = serverLevel.getAllEntities();
 

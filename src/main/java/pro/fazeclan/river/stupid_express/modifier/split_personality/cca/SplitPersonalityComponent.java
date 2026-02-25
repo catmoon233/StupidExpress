@@ -34,6 +34,7 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
         SACRIFICE // 奉献
     }
 
+
     @Override
     public void clientTick() {
         if (!isDeath) {

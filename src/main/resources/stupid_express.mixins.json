@@ -6,6 +6,7 @@
   "mixins": [
     "accessor.PlayerPoisonComponentAccessor",
     "modifier.allergist.AllergistEatMixin",
+    "modifier.loose_end.LooseEndBarClearMixin",
     "modifier.lovers.LoversWinConditionMixin",
     "modifier.secretive.SecretiveDeathMixin",
     "modifier.split_personality.QuitVoiceMixin",
