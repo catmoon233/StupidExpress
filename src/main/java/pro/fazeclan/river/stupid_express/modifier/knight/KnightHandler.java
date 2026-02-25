@@ -52,17 +52,12 @@ public class KnightHandler {
                     if (target.getUUID().equals(knight.getUUID()))
                         continue;
                     knight.stopRiding();
-                    target.stopRiding();
-                    double kx = knight.getX();
-                    double ky = knight.getY();
-                    double kz = knight.getZ();
 
                     double tx = target.getX();
                     double ty = target.getY();
                     double tz = target.getZ();
 
                     knight.teleportTo(tx, ty, tz);
-                    target.teleportTo(kx, ky, kz);
                 }
             }
         });
