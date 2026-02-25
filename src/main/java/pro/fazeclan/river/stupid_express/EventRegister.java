@@ -73,6 +73,8 @@ public class EventRegister {
         OnPlayerDeathWithKiller.EVENT.register((victim, killer, deathReason) -> {
             var level = (ServerLevel) victim.level();
             var gameWorldComponent = GameWorldComponent.KEY.get(level);
+            if (killer == null)
+                return;
             if (!gameWorldComponent.isRole(killer, SERoles.INITIATE))
                 return;
             if (!gameWorldComponent.isRole(victim, SERoles.INITIATE)) {
@@ -91,7 +93,8 @@ public class EventRegister {
         });
         // 初学被杀
         OnPlayerDeathWithKiller.EVENT.register((victim, killer, deathReason) -> {
-            // StupidExpress.LOGGER.info(victim.getDisplayName().getString()+" Dead, by "+killer.getDispla);
+            // StupidExpress.LOGGER.info(victim.getDisplayName().getString()+" Dead, by
+            // "+killer.getDispla);
             var level = (ServerLevel) victim.level();
             var gameWorldComponent = GameWorldComponent.KEY.get(level);
             if (!gameWorldComponent.isRole(victim, SERoles.INITIATE))
