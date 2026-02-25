@@ -34,7 +34,6 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
         SACRIFICE // 奉献
     }
 
-
     @Override
     public void clientTick() {
         if (!isDeath) {
@@ -419,6 +418,9 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
         if (!(this.player instanceof ServerPlayer sp))
             return;
 
+        if (!WorldModifierComponent.KEY.get(player.level()).isModifier(player, SEModifiers.SPLIT_PERSONALITY)) {
+            return;
+        }
         boolean needsSync = false;
 
         // 检查是否有重要的状态变更需要同步
