@@ -12,11 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.StupidExpress;
-import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
-
-import java.util.List;
 
 @Mixin(MurderGameMode.class)
 public class ArsonistKeepAliveMixin {
@@ -36,11 +33,6 @@ public class ArsonistKeepAliveMixin {
             }
 
             if (players.size() == 1 && arsonistAlive) {
-                var nrwc = CustomWinnerComponent.KEY.get(serverWorld);
-                nrwc.setWinningTextId(SERoles.ARSONIST.identifier().getPath());
-                nrwc.setWinners(List.of(players.getFirst()));
-                nrwc.setColor(SERoles.ARSONIST.color());
-                nrwc.sync();
                 // 纵火犯独立胜利统计：使用 RoleUtils.customWinnerWin
                 StupidRoleUtils.customWinnerWin(serverWorld, GameFunctions.WinStatus.CUSTOM,
                         SERoles.ARSONIST.identifier().getPath(),

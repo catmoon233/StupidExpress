@@ -9,7 +9,6 @@ import net.minecraft.server.level.ServerPlayer;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
-import pro.fazeclan.river.stupid_express.constants.SERoles;
 
 public class MagnatePassiveIncomeHandler {
 

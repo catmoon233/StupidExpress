@@ -1,8 +1,6 @@
 package pro.fazeclan.river.stupid_express.role.arsonist.cca;
 
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,7 +11,6 @@ import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import org.ladysnake.cca.api.v3.component.tick.ClientTickingComponent;
 import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
 
-import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 

@@ -3,7 +3,6 @@ package pro.fazeclan.river.stupid_express.client.mixin.modifier.split_personalit
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 
 import dev.doctor4t.trainmurdermystery.TMM;
-import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.client.TMMClient;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;

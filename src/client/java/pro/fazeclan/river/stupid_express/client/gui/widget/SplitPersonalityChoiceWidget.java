@@ -19,7 +19,7 @@ public class SplitPersonalityChoiceWidget {
 
     private Button betrayButton;
     private Button sacrificeButton;
-    private final Player player;
+    public final Player player;
     private final SplitPersonalityComponent component;
 
     public SplitPersonalityChoiceWidget(Player player) {

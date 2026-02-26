@@ -3,12 +3,9 @@ package pro.fazeclan.river.stupid_express.client.keybinds;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-
 import org.lwjgl.glfw.GLFW;
 
 import dev.doctor4t.trainmurdermystery.event.OnOpenInventory;

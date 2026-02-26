@@ -1,7 +1,6 @@
 package pro.fazeclan.river.stupid_express.client.mixin.modifier.split_personality;
 
 import dev.doctor4t.trainmurdermystery.TMM;
-import dev.doctor4t.trainmurdermystery.TMMConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.spectator.SpectatorGui;
 import org.agmas.harpymodloader.component.WorldModifierComponent;

@@ -7,7 +7,6 @@ import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 import org.ladysnake.cca.api.v3.world.WorldComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.world.WorldComponentInitializer;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
-import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.modifier.allergist.cca.AllergistComponent;
 import pro.fazeclan.river.stupid_express.modifier.cursed.cca.CursedComponent;
 import pro.fazeclan.river.stupid_express.modifier.knight.cca.KnightComponent;
@@ -57,7 +56,6 @@ public class SEComponents implements EntityComponentInitializer, WorldComponentI
 
     @Override
     public void registerWorldComponentFactories(WorldComponentFactoryRegistry registry) {
-        registry.register(CustomWinnerComponent.KEY, CustomWinnerComponent::new);
         registry.register(NecromancerComponent.KEY, NecromancerComponent::new);
         registry.register(RefugeeComponent.KEY, RefugeeComponent::new);
     }

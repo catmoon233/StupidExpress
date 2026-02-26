@@ -15,11 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.StupidExpress;
-import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
 import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
-
-import java.util.List;
 
 public class LighterItem extends Item {
 
@@ -54,11 +51,6 @@ public class LighterItem extends Item {
             player.playNotifySound(SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 1f, 1f);
             var playersLeft = players.stream().filter(GameFunctions::isPlayerAliveAndSurvival).count();
             if (playersLeft == 1) {
-                var nrwc = CustomWinnerComponent.KEY.get(serverLevel);
-                nrwc.setWinningTextId(SERoles.ARSONIST.identifier().getPath());
-                nrwc.setWinners(List.of(player));
-                nrwc.setColor(SERoles.ARSONIST.color());
-                nrwc.sync();
                 // 纵火犯独立胜利统计：使用 RoleUtils.customWinnerWin
                 StupidRoleUtils.customWinnerWin(serverLevel, GameFunctions.WinStatus.CUSTOM,
                         SERoles.ARSONIST.identifier().getPath(),

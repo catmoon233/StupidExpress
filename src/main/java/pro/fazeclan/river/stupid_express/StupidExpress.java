@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.modifier.lovers.LoversWinCheckEvent;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.PlayerStatsBeforeRefugee;
 import pro.fazeclan.river.stupid_express.modifier.refugee.cca.RefugeeComponent;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
@@ -79,7 +80,7 @@ public class StupidExpress implements ModInitializer {
             }
         });
         EventRegister.register();
-
+        LoversWinCheckEvent.register();
         OnPlayerDeath.EVENT.register((victim, deathReason) -> {
             var gameWorldComponent = GameWorldComponent.KEY.get(victim.level());
             var modifierComponent = WorldModifierComponent.KEY.get(victim.level());
