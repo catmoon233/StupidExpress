@@ -34,13 +34,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
@@ -52,6 +52,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             RefugeeComponent.class);
 
     public HashMap<UUID, PlayerStatsBeforeRefugee> players_stats = new HashMap<>();
+    public HashMap<UUID, Vec3> tpLater = new HashMap<>();
 
     private final Level level;
 
@@ -73,6 +74,17 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
 
     @Override
     public void serverTick() {
+        if (!this.tpLater.isEmpty()) {
+            this.tpLater.forEach((puid, pos) -> {
+                Player p = this.level.getPlayerByUUID(puid);
+                if (p != null) {
+                    if (p instanceof ServerPlayer sp) {
+                        sp.teleportTo(pos.x, pos.y, pos.z);
+                    }
+                }
+            });
+            this.tpLater.clear();
+        }
         if (pendingRevivals.isEmpty()) {
             return;
         }
@@ -245,7 +257,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             var data = players_stats.get(player.getUUID());
 
             if (data != null) {
-                PlayerStatsBeforeRefugee.LoadToPlayer(player, data, r);
+                PlayerStatsBeforeRefugee.LoadToPlayer(player, data, r, this);
                 // 删除玩家尸体
                 // List<PlayerBodyEntity> bodies
                 var body = bodies.get(player.getUUID());
@@ -284,8 +296,6 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         }
 
         isAnyRevivals = false;
-        LoadPlayersStats();
-        players_stats.clear(); // 清空玩家位置信息，避免浪费资源
         sp.getServer().getCommands().performPrefixedCommand(sp.getServer().createCommandSourceStack(),
                 "title @a title {\"translate\":\"title.stupid_express.refugee.died\",\"color\":\"gold\"}");
 
@@ -299,6 +309,11 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             p.displayClientMessage(Component.translatable("gui.stupid_express.refugee.all_death"), true);
             StopSound(p, StupidExpress.SOUND_REGUGEE.getLocation(), SoundSource.AMBIENT);
         });
+        sp.setGameMode(GameType.SPECTATOR);
+
+        LoadPlayersStats();
+        players_stats.clear(); // 清空玩家位置信息，避免浪费资源
+
         this.sync();
     }
 
@@ -388,6 +403,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
     }
 
     public void reset() {
+        this.tpLater.clear();
         this.players_stats.clear();
         this.isAnyRevivals = false;
         this.pendingRevivals.clear();

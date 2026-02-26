@@ -1,5 +1,7 @@
 package pro.fazeclan.river.stupid_express.modifier.refugee.cca;
 
+import java.util.function.Consumer;
+
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 
 import dev.doctor4t.trainmurdermystery.TMM;
@@ -21,6 +23,8 @@ import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
 public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, Vec2 rotation, boolean isAlive,
         float mood) {
+    public static Consumer<ServerPlayer> beforeLoadFunc = null;
+
     // 期间死亡的其它玩家会复活，玩家物品栏、金币、位置重置到亡命徒复活的时刻
     public static void RegisterDeathEvent() {
         (OnPlayerDeath.EVENT).register((victim, deathReason) -> {
@@ -40,23 +44,29 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
         });
     }
 
-    public static void LoadToPlayer(ServerPlayer player, PlayerStatsBeforeRefugee playerStats, Role role) {
+    public static void LoadToPlayer(ServerPlayer player, PlayerStatsBeforeRefugee playerStats, Role role,
+            RefugeeComponent refugeeComponent) {
         if (playerStats == null)
             return;
         if (!playerStats.isAlive())
             return;
+        if (beforeLoadFunc != null) {
+            beforeLoadFunc.accept(player);
+        }
         player.getInventory().clearContent();
         player.getInventory().load(playerStats.inventory());
         StupidRoleUtils.clearAllSatisfiedItems(player, TMMItems.BAT);
-        
+        player.setCamera(null);
+
+        if (!GameFunctions.isPlayerAliveAndSurvival(player)) {
+            player.setGameMode(GameType.ADVENTURE);
+            TMM.REPLAY_MANAGER.recordPlayerRevival(player.getUUID(), role);
+        }
         player.teleportTo(playerStats.pos().x, playerStats.pos().y, playerStats.pos().z);
+        player.setPos(playerStats.pos());
         player.setXRot(playerStats.rotation().x);
         player.setYRot(playerStats.rotation().y);
-        player.setPos(playerStats.pos());
-        if (!GameFunctions.isPlayerAliveAndSurvival(player)) {
-            TMM.REPLAY_MANAGER.recordPlayerRevival(player.getUUID(), role);
-            player.setGameMode(GameType.ADVENTURE);
-        }
+        refugeeComponent.tpLater.put(player.getUUID(), playerStats.pos());
         TrainVoicePlugin.resetPlayer(player.getUUID());
         var shopComponent = PlayerShopComponent.KEY.get(player);
         var moodComponent = PlayerMoodComponent.KEY.get(player);
