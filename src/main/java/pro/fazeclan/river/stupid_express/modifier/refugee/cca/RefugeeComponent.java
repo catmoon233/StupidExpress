@@ -40,7 +40,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
@@ -52,7 +51,6 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             RefugeeComponent.class);
 
     public HashMap<UUID, PlayerStatsBeforeRefugee> players_stats = new HashMap<>();
-    public HashMap<UUID, Vec3> tpLater = new HashMap<>();
 
     private final Level level;
 
@@ -74,17 +72,6 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
 
     @Override
     public void serverTick() {
-        if (!this.tpLater.isEmpty()) {
-            this.tpLater.forEach((puid, pos) -> {
-                Player p = this.level.getPlayerByUUID(puid);
-                if (p != null) {
-                    if (p instanceof ServerPlayer sp) {
-                        sp.teleportTo(pos.x, pos.y, pos.z);
-                    }
-                }
-            });
-            this.tpLater.clear();
-        }
         if (pendingRevivals.isEmpty()) {
             return;
         }
@@ -403,7 +390,6 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
     }
 
     public void reset() {
-        this.tpLater.clear();
         this.players_stats.clear();
         this.isAnyRevivals = false;
         this.pendingRevivals.clear();

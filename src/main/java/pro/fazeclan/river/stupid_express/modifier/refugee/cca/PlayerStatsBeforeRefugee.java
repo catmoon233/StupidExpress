@@ -66,7 +66,6 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
         player.setPos(playerStats.pos());
         player.setXRot(playerStats.rotation().x);
         player.setYRot(playerStats.rotation().y);
-        refugeeComponent.tpLater.put(player.getUUID(), playerStats.pos());
         TrainVoicePlugin.resetPlayer(player.getUUID());
         var shopComponent = PlayerShopComponent.KEY.get(player);
         var moodComponent = PlayerMoodComponent.KEY.get(player);
