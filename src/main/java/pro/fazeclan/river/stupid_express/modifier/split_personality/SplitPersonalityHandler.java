@@ -115,6 +115,8 @@ public class SplitPersonalityHandler {
         var secondChoice = component.getSecondPersonalityChoice();
         UUID p_a = component.getMainPersonality();
         UUID p_b = component.getSecondPersonality();
+        if (p_a == null || p_b == null)
+            return true;
         int playerType = 0;
         if (p_a.equals(player.getUUID())) {
             playerType = 1; // 主人格
