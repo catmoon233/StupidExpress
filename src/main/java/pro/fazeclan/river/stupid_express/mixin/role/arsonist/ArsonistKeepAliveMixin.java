@@ -5,6 +5,7 @@ import dev.doctor4t.trainmurdermystery.cca.GameRoundEndComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import dev.doctor4t.trainmurdermystery.game.MurderGameMode;
+import org.agmas.noellesroles.utils.RoleUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.objectweb.asm.Opcodes;
@@ -50,9 +51,10 @@ public class ArsonistKeepAliveMixin {
                 nrwc.setWinners(List.of(players.getFirst()));
                 nrwc.setColor(SERoles.ARSONIST.color());
                 nrwc.sync();
-                GameRoundEndComponent.KEY.get(serverWorld).setRoundEndData(serverWorld.players(), GameFunctions.WinStatus.KILLERS);
-
-                GameFunctions.stopGame(serverWorld);
+                // 纵火犯独立胜利统计：使用 RoleUtils.customWinnerWin
+                RoleUtils.customWinnerWin(serverWorld, GameFunctions.WinStatus.ARSONIST,
+                        SERoles.ARSONIST.identifier().getPath(),
+                        java.util.OptionalInt.of(SERoles.ARSONIST.color()));
             }
 
             if (arsonistAlive && (winStatus == GameFunctions.WinStatus.KILLERS || winStatus == GameFunctions.WinStatus.PASSENGERS)) {

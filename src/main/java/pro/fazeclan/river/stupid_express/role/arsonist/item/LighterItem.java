@@ -4,6 +4,7 @@ import dev.doctor4t.trainmurdermystery.cca.GameRoundEndComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.network.chat.Component;
+import org.agmas.noellesroles.utils.RoleUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -60,10 +61,10 @@ public class LighterItem extends Item {
                 nrwc.setWinners(List.of(player));
                 nrwc.setColor(SERoles.ARSONIST.color());
                 nrwc.sync();
-                GameRoundEndComponent.KEY.get(serverLevel).setRoundEndData(serverLevel.players(),
-                        GameFunctions.WinStatus.KILLERS);
-
-                GameFunctions.stopGame(serverLevel);
+                // 纵火犯独立胜利统计：使用 RoleUtils.customWinnerWin
+                RoleUtils.customWinnerWin(serverLevel, GameFunctions.WinStatus.ARSONIST,
+                        SERoles.ARSONIST.identifier().getPath(),
+                        java.util.OptionalInt.of(SERoles.ARSONIST.color()));
             }
         } else {
             player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1.0f, 1.0f);
