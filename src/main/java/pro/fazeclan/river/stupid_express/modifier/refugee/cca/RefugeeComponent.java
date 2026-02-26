@@ -34,7 +34,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -245,7 +244,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             var data = players_stats.get(player.getUUID());
 
             if (data != null) {
-                PlayerStatsBeforeRefugee.LoadToPlayer(player, data, r);
+                PlayerStatsBeforeRefugee.LoadToPlayer(player, data, r, this);
                 // 删除玩家尸体
                 // List<PlayerBodyEntity> bodies
                 var body = bodies.get(player.getUUID());
@@ -284,8 +283,6 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         }
 
         isAnyRevivals = false;
-        LoadPlayersStats();
-        players_stats.clear(); // 清空玩家位置信息，避免浪费资源
         sp.getServer().getCommands().performPrefixedCommand(sp.getServer().createCommandSourceStack(),
                 "title @a title {\"translate\":\"title.stupid_express.refugee.died\",\"color\":\"gold\"}");
 
@@ -299,6 +296,11 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             p.displayClientMessage(Component.translatable("gui.stupid_express.refugee.all_death"), true);
             StopSound(p, StupidExpress.SOUND_REGUGEE.getLocation(), SoundSource.AMBIENT);
         });
+        sp.setGameMode(GameType.SPECTATOR);
+
+        LoadPlayersStats();
+        players_stats.clear(); // 清空玩家位置信息，避免浪费资源
+
         this.sync();
     }
 
