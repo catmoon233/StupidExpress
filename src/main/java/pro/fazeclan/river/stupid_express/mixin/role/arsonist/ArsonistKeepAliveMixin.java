@@ -1,11 +1,9 @@
 package pro.fazeclan.river.stupid_express.mixin.role.arsonist;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.doctor4t.trainmurdermystery.cca.GameRoundEndComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import dev.doctor4t.trainmurdermystery.game.MurderGameMode;
-import org.agmas.noellesroles.utils.RoleUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.objectweb.asm.Opcodes;
@@ -16,25 +14,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
 import java.util.List;
 
 @Mixin(MurderGameMode.class)
 public class ArsonistKeepAliveMixin {
 
-    @Inject(
-            method = "tickServerGameLoop",
-            at = @At(
-                    value = "FIELD",
-                    target = "Ldev/doctor4t/trainmurdermystery/game/GameFunctions$WinStatus;NONE:Ldev/doctor4t/trainmurdermystery/game/GameFunctions$WinStatus;",
-                    ordinal = 3,
-                    opcode = Opcodes.GETSTATIC
-            ),
-            cancellable = true
-    )
+    @Inject(method = "tickServerGameLoop", at = @At(value = "FIELD", target = "Ldev/doctor4t/trainmurdermystery/game/GameFunctions$WinStatus;NONE:Ldev/doctor4t/trainmurdermystery/game/GameFunctions$WinStatus;", ordinal = 3, opcode = Opcodes.GETSTATIC), cancellable = true)
     private void keepAlive(
-            ServerLevel serverWorld, GameWorldComponent gameWorldComponent, CallbackInfo ci, @Local(name = "winStatus") GameFunctions.WinStatus winStatus
-    ) {
+            ServerLevel serverWorld, GameWorldComponent gameWorldComponent, CallbackInfo ci,
+            @Local(name = "winStatus") GameFunctions.WinStatus winStatus) {
         var config = StupidExpress.CONFIG;
         if (config.rolesSection.arsonistSection.arsonistKeepsGameGoing) {
             var players = serverWorld.getPlayers(GameFunctions::isPlayerAliveAndSurvival);
@@ -52,12 +42,13 @@ public class ArsonistKeepAliveMixin {
                 nrwc.setColor(SERoles.ARSONIST.color());
                 nrwc.sync();
                 // 纵火犯独立胜利统计：使用 RoleUtils.customWinnerWin
-                RoleUtils.customWinnerWin(serverWorld, GameFunctions.WinStatus.ARSONIST,
+                StupidRoleUtils.customWinnerWin(serverWorld, GameFunctions.WinStatus.CUSTOM,
                         SERoles.ARSONIST.identifier().getPath(),
                         java.util.OptionalInt.of(SERoles.ARSONIST.color()));
             }
 
-            if (arsonistAlive && (winStatus == GameFunctions.WinStatus.KILLERS || winStatus == GameFunctions.WinStatus.PASSENGERS)) {
+            if (arsonistAlive && (winStatus == GameFunctions.WinStatus.KILLERS
+                    || winStatus == GameFunctions.WinStatus.PASSENGERS)) {
                 ci.cancel();
             }
         }

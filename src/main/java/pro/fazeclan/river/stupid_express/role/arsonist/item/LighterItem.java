@@ -1,13 +1,10 @@
 package pro.fazeclan.river.stupid_express.role.arsonist.item;
 
-import dev.doctor4t.trainmurdermystery.cca.GameRoundEndComponent;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.minecraft.network.chat.Component;
-import org.agmas.noellesroles.utils.RoleUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -20,6 +17,7 @@ import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
+import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
 import java.util.List;
 
@@ -62,7 +60,7 @@ public class LighterItem extends Item {
                 nrwc.setColor(SERoles.ARSONIST.color());
                 nrwc.sync();
                 // 纵火犯独立胜利统计：使用 RoleUtils.customWinnerWin
-                RoleUtils.customWinnerWin(serverLevel, GameFunctions.WinStatus.ARSONIST,
+                StupidRoleUtils.customWinnerWin(serverLevel, GameFunctions.WinStatus.CUSTOM,
                         SERoles.ARSONIST.identifier().getPath(),
                         java.util.OptionalInt.of(SERoles.ARSONIST.color()));
             }
