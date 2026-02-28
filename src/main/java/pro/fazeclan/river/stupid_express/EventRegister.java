@@ -54,7 +54,10 @@ public class EventRegister {
                 var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
                 shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || !role.canUseKiller()
                         || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath())
-                        || role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "poisoner")));
+                        || role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "poisoner"))
+                        || role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "doctor"))
+                        || role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "best_vigilante"))
+                        || role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "better_vigilante")));
                 if (shuffledKillerRoles.isEmpty())
                     shuffledKillerRoles.add(TMMRoles.KILLER);
                 Collections.shuffle(shuffledKillerRoles);
@@ -143,9 +146,17 @@ public class EventRegister {
                     // 好人杀死
                     var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
                     shuffledKillerRoles.removeIf(role -> {
-                        if (gameWorldComponent.isKillerTeamRole(role))
-                            return false;
-                        return true;
+                        if (!gameWorldComponent.isKillerTeamRole(role))
+                            return true;
+                        if (role.isNeutrals())
+                            return true;
+                        if (role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "doctor")))
+                            return true;
+                        if (role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "best_vigilante")))
+                            return true;
+                        if (role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "better_vigilante")))
+                            return true;
+                        return false;
                     });
                     if (shuffledKillerRoles.isEmpty())
                         shuffledKillerRoles.add(TMMRoles.KILLER);
