@@ -265,6 +265,8 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
 
     private void updateGameModes(ServerPlayer thisPlayer, ServerPlayer otherPlayer, UUID newActivePerson) {
         // 更新当前玩家的游戏模式
+        thisPlayer.stopRiding(); 
+        otherPlayer.stopRiding();
         if (newActivePerson.equals(thisPlayer.getUUID())) {
             // 当前玩家成为活跃人格
             thisPlayer.setGameMode(GameType.ADVENTURE);
