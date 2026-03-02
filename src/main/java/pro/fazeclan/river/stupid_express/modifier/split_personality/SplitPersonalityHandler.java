@@ -82,6 +82,8 @@ public class SplitPersonalityHandler {
             if (needDeath) {
                 p_sb.setGameMode(GameType.ADVENTURE);
                 nComp.reset();
+                WorldModifierComponent.KEY.get(player.level()).removeModifier(p_sb.getUUID(),
+                        SEModifiers.SPLIT_PERSONALITY);
                 GameFunctions.killPlayer(p_sb, false, player, StupidExpress.id("split_personality"));
             } else {
                 p_sb.teleportTo(player.getX(), player.getY(), player.getZ());
@@ -96,6 +98,9 @@ public class SplitPersonalityHandler {
             if (needDeath) {
                 p_sb.setGameMode(GameType.ADVENTURE);
                 nComp.reset();
+                
+                WorldModifierComponent.KEY.get(player.level()).removeModifier(p_sa.getUUID(),
+                        SEModifiers.SPLIT_PERSONALITY);
                 GameFunctions.killPlayer(p_sa, false, player, StupidExpress.id("split_personality"));
             } else {
                 p_sa.teleportTo(player.getX(), player.getY(), player.getZ());
@@ -150,6 +155,8 @@ public class SplitPersonalityHandler {
                 secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
             component.reset();
             // 添加消息提示
+            WorldModifierComponent.KEY.get(player.level()).removeModifier(player.getUUID(),
+                        SEModifiers.SPLIT_PERSONALITY);
             MutableComponent deathMessage = net.minecraft.network.chat.Component
                     .translatable("msg.stupid_express.split_personality.liebothdie").withStyle(ChatFormatting.RED);
             player.displayClientMessage(deathMessage,
@@ -161,6 +168,8 @@ public class SplitPersonalityHandler {
         if ((mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY
                 && secondChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE)) {
             component.reset();
+            WorldModifierComponent.KEY.get(player.level()).removeModifier(player.getUUID(),
+                        SEModifiers.SPLIT_PERSONALITY);
             if (playerType == 1) {
                 revivePlayer(player, component);
                 player.displayClientMessage(net.minecraft.network.chat.Component
@@ -178,6 +187,8 @@ public class SplitPersonalityHandler {
         if (mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE
                 && secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
             component.reset();
+            WorldModifierComponent.KEY.get(player.level()).removeModifier(player.getUUID(),
+                        SEModifiers.SPLIT_PERSONALITY);
             if (playerType == 2) {
                 revivePlayer(player, component);
                 player.displayClientMessage(net.minecraft.network.chat.Component

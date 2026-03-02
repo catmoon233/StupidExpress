@@ -13,7 +13,9 @@ import dev.doctor4t.trainmurdermystery.compat.TrainVoicePlugin;
 import dev.doctor4t.trainmurdermystery.event.OnPlayerDeath;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec2;
@@ -45,7 +47,7 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
     }
 
     public static void LoadToPlayer(ServerPlayer player, PlayerStatsBeforeRefugee playerStats, Role role,
-            RefugeeComponent refugeeComponent) {
+            RefugeeComponent refugeeComponent,WorldModifierComponent worldModifierComponent) {
         if (playerStats == null)
             return;
         if (!playerStats.isAlive())
@@ -61,6 +63,10 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
         if (!GameFunctions.isPlayerAliveAndSurvival(player)) {
             player.setGameMode(GameType.ADVENTURE);
             TMM.REPLAY_MANAGER.recordPlayerRevival(player.getUUID(), role);
+            if(worldModifierComponent.isModifier(player, SEModifiers.SPLIT_PERSONALITY)){
+                player.displayClientMessage(Component.translatable("message.stupid_express.split_personality.revival").withStyle(ChatFormatting.GREEN), true);
+                worldModifierComponent.removeModifier(player.getUUID(), SEModifiers.SPLIT_PERSONALITY);
+            }
         }
         player.teleportTo(playerStats.pos().x, playerStats.pos().y, playerStats.pos().z);
         player.setPos(playerStats.pos());
@@ -75,16 +81,15 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
         moodComponent.sync();
     }
 
-    public static PlayerStatsBeforeRefugee SaveFromPlayer(ServerPlayer player) {
+    public static PlayerStatsBeforeRefugee SaveFromPlayer(ServerPlayer player, boolean isAlive) {
         var inventory = player.getInventory();
         ListTag listTag = new ListTag();
         inventory.save(listTag);
-
         var shopComponent = PlayerShopComponent.KEY.get(player);
         var moodComponent = PlayerMoodComponent.KEY.get(player);
         var playerStats = new PlayerStatsBeforeRefugee(player.position(),
                 shopComponent.balance, listTag.copy(), player.getRotationVector(),
-                GameFunctions.isPlayerAliveAndSurvival(player), moodComponent.getMood());
+                isAlive, moodComponent.getMood());
         return playerStats;
     }
 }

@@ -117,6 +117,7 @@
   "key.stupid_express.choice_sacrifice": "选择奉献（双重人格）",
   "key.stupid_express.choice_betray": "选择欺骗（双重人格）",
   "category.stupid_express": "StupidExpress mod",
+  "message.stupid_express.split_personality.revival": "由于你们在对抗亡命徒中死去，你们得以分开，全部复活。",
   "hud.stupid_express.split_personality.controlling": "控制身体",
   "hud.stupid_express.split_personality.observing": "旁观中",
   "hud.stupid_express.split_personality.partner": "配对",
