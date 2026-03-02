@@ -121,6 +121,12 @@ public class EventRegister {
                             return true;
                         if (role.isNeutrals())
                             return true;
+                        if (role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "doctor")))
+                            return true;
+                        if (role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "best_vigilante")))
+                            return true;
+                        if (role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "better_vigilante")))
+                            return true;
                         return false;
                     });
                     if (shuffledKillerRoles.isEmpty())
@@ -149,6 +155,8 @@ public class EventRegister {
                         if (!gameWorldComponent.isKillerTeamRole(role))
                             return true;
                         if (role.isNeutrals())
+                            return true;
+                        if (role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "poisoner")))
                             return true;
                         if (role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "doctor")))
                             return true;
