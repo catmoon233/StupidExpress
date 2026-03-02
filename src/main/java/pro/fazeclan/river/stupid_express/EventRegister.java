@@ -156,6 +156,8 @@ public class EventRegister {
                             return true;
                         if (role.isNeutrals())
                             return true;
+                        if (role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "poisoner")))
+                            return true;
                         if (role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "doctor")))
                             return true;
                         if (role.identifier().equals(ResourceLocation.fromNamespaceAndPath("noellesroles", "best_vigilante")))
