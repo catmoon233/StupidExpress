@@ -42,7 +42,6 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
-import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
 public class RefugeeComponent implements AutoSyncedComponent, ServerTickingComponent {
@@ -215,15 +214,9 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             return;
         }
         List<ServerPlayer> players = serverLevel.getServer().getPlayerList().getPlayers();
-        WorldModifierComponent worldModifierComponent = WorldModifierComponent.KEY.get(serverLevel);
         players_stats.clear();
         for (var player : players) {
             boolean isAlive = GameFunctions.isPlayerAliveAndSurvival(player);
-            if (!isAlive && worldModifierComponent.isModifier(player, SEModifiers.SPLIT_PERSONALITY)) {
-                if (!SplitPersonalityComponent.KEY.get(player).isDeath()) {
-                    isAlive = true;
-                }
-            }
             if (isAlive) {
                 players_stats.put(player.getUUID(), PlayerStatsBeforeRefugee.SaveFromPlayer(player, true));
             }
