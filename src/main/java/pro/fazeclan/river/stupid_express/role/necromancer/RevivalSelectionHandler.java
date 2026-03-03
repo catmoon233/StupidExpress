@@ -7,9 +7,7 @@ import dev.doctor4t.trainmurdermystery.api.TMMRoles;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
-import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -104,21 +102,7 @@ public class RevivalSelectionHandler {
             PlayerShopComponent playerShopComponent = PlayerShopComponent.KEY.get(revived);
             playerShopComponent.setBalance(200);
 
-            if (Harpymodloader.VANNILA_ROLES.contains(selectedRole)) {
-                ServerPlayNetworking.send(
-                        revived,
-                        new AnnounceWelcomePayload(
-                                TMMRoles.KILLER.identifier().getPath(),
-                                gameWorldComponent.getAllKillerTeamPlayers().size(),
-                                0));
-            } else {
-                ServerPlayNetworking.send(
-                        revived,
-                        new AnnounceWelcomePayload(
-                                selectedRole.identifier().getPath(),
-                                gameWorldComponent.getAllKillerTeamPlayers().size(),
-                                0));
-            }
+            StupidRoleUtils.sendWelcomeAnnouncement(revived);
 
             return InteractionResult.CONSUME;
         }));

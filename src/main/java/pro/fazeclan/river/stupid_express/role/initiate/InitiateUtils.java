@@ -5,9 +5,7 @@ import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameConstants;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
-import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -88,9 +86,7 @@ public class InitiateUtils {
                     // SERoles.AMNESIAC);
                     // TMM.REPLAY_MANAGER.recordPlayerRoleChange(initiate.getUUID(),
                     // SERoles.INITIATE, SERoles.AMNESIAC);
-                    ServerPlayNetworking.send(initiate,
-                            new AnnounceWelcomePayload(gameWorldComponent.getRole(initiate).getIdentifier().toString(),
-                                    gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
+                    StupidRoleUtils.sendWelcomeAnnouncement(initiate);
                 }
             }
         });

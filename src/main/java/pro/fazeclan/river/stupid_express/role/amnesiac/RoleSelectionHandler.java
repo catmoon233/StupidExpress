@@ -5,9 +5,7 @@ import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
-import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -65,9 +63,7 @@ public class RoleSelectionHandler {
 
             // ModdedRoleAssigned.EVENT.invoker().assignModdedRole(interacting, role);
             playerShopComponent.setBalance(200);
-            ServerPlayNetworking.send(interacting,
-                    new AnnounceWelcomePayload(gameWorldComponent.getRole(interacting).getIdentifier().toString(),
-                            gameWorldComponent.getAllKillerTeamPlayers().size(), 0));
+            StupidRoleUtils.sendWelcomeAnnouncement(interacting);
 
             return InteractionResult.CONSUME;
         }));

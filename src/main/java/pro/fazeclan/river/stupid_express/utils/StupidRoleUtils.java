@@ -19,7 +19,7 @@ import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import dev.doctor4t.trainmurdermystery.index.tag.TMMItemTags;
-import dev.doctor4t.trainmurdermystery.util.AnnounceWelcomePayload;
+import dev.doctor4t.trainmurdermystery.network.tmm.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
