@@ -12,6 +12,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.StupidExpress;
@@ -37,10 +38,14 @@ public class LighterItem extends Item {
         if (player.getCooldowns().isOnCooldown(this)) {
             return InteractionResultHolder.pass(player.getItemInHand(interactionHand));
         }
+        if (player.getCooldowns().isOnCooldown(Items.COMMAND_BLOCK_MINECART)) {
+            player.displayClientMessage(Component.translatable("item.stupid_express.lighter.unable_cooldown"), true);
+            return InteractionResultHolder.pass(player.getItemInHand(interactionHand));
+        }
         var server = player.getServer();
         var players = server.getPlayerList().getPlayers();
         var alivePlayers = players.stream().filter(GameFunctions::isPlayerAliveAndSurvival).toList();
-        var dousedPlayers = players.stream().filter(p -> DousedPlayerComponent.KEY.get(p).getDoused()).toList();
+        var dousedPlayers = alivePlayers.stream().filter(p -> DousedPlayerComponent.KEY.get(p).getDoused()).toList();
         if (dousedPlayers.size() >= (int) (alivePlayers.size() * 0.3)) {
             for (ServerPlayer doused : dousedPlayers) {
                 GameFunctions.killPlayer(doused, true, player, StupidExpress.id("ignited"));
@@ -60,6 +65,7 @@ public class LighterItem extends Item {
             player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1.0f, 1.0f);
             GameFunctions.killPlayer(player, true, player, StupidExpress.id("failed_ignite"));
         }
+        player.getCooldowns().addCooldown(Items.COMMAND_BLOCK_MINECART, 20 * 20);
         return InteractionResultHolder.pass(player.getItemInHand(interactionHand));
     }
 }
