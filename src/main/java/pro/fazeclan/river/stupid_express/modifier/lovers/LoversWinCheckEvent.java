@@ -1,6 +1,6 @@
 package pro.fazeclan.river.stupid_express.modifier.lovers;
 
-import java.util.ArrayList;
+import java.util.OptionalInt;
 import java.util.UUID;
 
 import org.agmas.harpymodloader.component.WorldModifierComponent;
@@ -12,6 +12,7 @@ import dev.doctor4t.trainmurdermystery.game.GameFunctions.WinStatus;
 import net.minecraft.server.level.ServerPlayer;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
+import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
 public class LoversWinCheckEvent {
     public static void register() {
@@ -29,15 +30,15 @@ public class LoversWinCheckEvent {
 
                     // check for only lovers win condition
                     if (loversComponent.won()) {
-                        ArrayList<UUID> lovers = new ArrayList<>();
-                        lovers.add((loversComponent.getLover()));
-                        lovers.add(player.getUUID());
+                        UUID loverUuid = loversComponent.getLover();
                         var gameRoundEndComponent = GameRoundEndComponent.KEY.get(serverWorld);
-                        gameRoundEndComponent.CustomWinnerColor = SEModifiers.LOVERS.color();
-                        gameRoundEndComponent.CustomWinnerID = SEModifiers.LOVERS.identifier().toLanguageKey();
                         gameRoundEndComponent.CustomWinnerPlayers.clear();
-                        gameRoundEndComponent.CustomWinnerPlayers.addAll(lovers);
-                        return WinStatus.CUSTOM;
+                        gameRoundEndComponent.CustomWinnerPlayers.add(player.getUUID());
+                        gameRoundEndComponent.CustomWinnerPlayers.add(loverUuid);
+                        StupidRoleUtils.customWinnerWin(serverWorld, WinStatus.LOVERS,
+                                SEModifiers.LOVERS.identifier().toLanguageKey(),
+                                OptionalInt.of(SEModifiers.LOVERS.color()));
+                        return WinStatus.LOVERS;
                     }
                 }
             }
