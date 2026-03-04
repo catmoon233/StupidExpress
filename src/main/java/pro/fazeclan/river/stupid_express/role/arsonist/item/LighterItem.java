@@ -49,12 +49,12 @@ public class LighterItem extends Item {
         var dousedCountComponent = ArsonistDousedCountComponent.KEY.get(level);
         var dousedCount = dousedCountComponent.getDousedCount();
         if (dousedCount >= (int) (alivePlayers.size() * 0.3)) {
-            // 杀死所有被泼油的玩家
+            // 杀死所有存活且被泼油的玩家
             for (ServerPlayer target : players) {
-                if (DousedPlayerComponent.KEY.get(target).getDoused()) {
+                if (DousedPlayerComponent.KEY.get(target).getDoused() && GameFunctions.isPlayerAliveAndSurvival(target)) {
                     GameFunctions.killPlayer(target, true, player, StupidExpress.id("ignited"));
-                    DousedPlayerComponent.KEY.get(target).reset();
                 }
+                DousedPlayerComponent.KEY.get(target).reset();
             }
             // 重置计数器
             dousedCountComponent.resetDousedCount();
