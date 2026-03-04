@@ -241,50 +241,26 @@ public class SEModifiers {
 
             var level = person.serverLevel();
             var gameComponent = GameWorldComponent.KEY.get(level);
-            // 选择另一个同阵营作为第二人格
+
+            // 检查主角是否是平民阵营（不包括警长）
             var fatherRole = gameComponent.getRole(player);
-            /**
-             * 0:平民,
-             * 1:中立
-             * 2:杀手
-             */
-            int fatherRoleType = 0;
-            if (fatherRole != null) {
-                if (fatherRole.isInnocent()) {
-                    fatherRoleType = 0;
-                } else if (!fatherRole.canUseKiller() || fatherRole.isNeutrals()) {
-                    fatherRoleType = 1;
-                } else {
-                    fatherRoleType = 2;
-                }
+            if (fatherRole == null || !fatherRole.isInnocent() || fatherRole.isVigilanteTeam()) {
+                // 如果主角不是平民（是警长、中立或杀手），不分配双重人格
+                return;
             }
+
+            // 选择另一个平民作为第二人格
             ServerPlayer secondPersonality = null;
             var arrs = new ArrayList<>(level.players());
             Collections.shuffle(arrs);
             for (var candidate : arrs) {
                 if (GameFunctions.isPlayerAliveAndSurvival(candidate)) {
                     if (!person.equals(candidate)) {
-                        if (gameComponent != null) {
-                            var role = gameComponent.getRole(candidate);
-                            if (role != null) {
-                                if (fatherRoleType == 0) {
-                                    if (role.isInnocent()) {
-                                        secondPersonality = candidate;
-                                        break;
-                                    }
-                                } else if (fatherRoleType == 1) {
-                                    if ((!role.isInnocent() && !role.canUseKiller()) || role.isNeutrals()) {
-                                        secondPersonality = candidate;
-                                        break;
-                                    }
-                                } else {
-                                    if (!role.isInnocent() && role.canUseKiller() && !role.isNeutrals()) {
-                                        secondPersonality = candidate;
-                                        break;
-                                    }
-                                }
-
-                            }
+                        var role = gameComponent.getRole(candidate);
+                        // 只选择平民阵营（不包括警长）
+                        if (role != null && role.isInnocent() && !role.isVigilanteTeam()) {
+                            secondPersonality = candidate;
+                            break;
                         }
                     }
                 }
