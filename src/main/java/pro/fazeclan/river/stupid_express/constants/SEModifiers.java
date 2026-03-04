@@ -134,6 +134,8 @@ public class SEModifiers {
             true));
 
     public static void init() {
+        REFUGEE.civilianOnly = true;
+        SPLIT_PERSONALITY.civilianOnly = true;
         assignModifierComponents();
         pro.fazeclan.river.stupid_express.modifier.magnate.MagnatePassiveIncomeHandler.init();
         pro.fazeclan.river.stupid_express.modifier.cursed.CursedHandler.init();
