@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import pro.fazeclan.river.stupid_express.role.arsonist.cca.ArsonistDousedCountComponent;
 
 @Mixin(GameFunctions.class)
 public class LooseEndBarClearMixin {
@@ -18,5 +19,8 @@ public class LooseEndBarClearMixin {
             ServerPlayNetworking.send(serverPlayer, payload);
         });
 
+        // 重置纵火犯泼油计数器
+        var dousedCountComponent = ArsonistDousedCountComponent.KEY.get(world);
+        dousedCountComponent.resetDousedCount();
     }
 }

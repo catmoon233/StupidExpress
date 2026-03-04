@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.role.arsonist.cca.ArsonistDousedCountComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
 
 public class OilDousingHandler {
@@ -56,6 +57,10 @@ public class OilDousingHandler {
             doused.setDoused(true);
 
             interacting.playNotifySound(SoundEvents.BREWING_STAND_BREW, SoundSource.PLAYERS, 1.0f, 1.0f);
+
+            // 增加纵火犯泼油计数
+            var dousedCountComponent = ArsonistDousedCountComponent.KEY.get(level);
+            dousedCountComponent.incrementDousedCount();
 
             return InteractionResult.CONSUME;
         }));
