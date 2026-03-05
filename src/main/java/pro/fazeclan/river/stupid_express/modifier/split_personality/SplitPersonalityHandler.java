@@ -8,22 +8,18 @@ import net.minecraft.network.chat.MutableComponent;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
+import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SkinSplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.network.SplitBackCamera;
 
 import java.util.*;
 
 public class SplitPersonalityHandler {
-
-    // 存储每对双重人格的库存和ender箱
-    private static final Map<UUID, ItemStack[]> personalityInventories = new HashMap<>();
-    private static final Map<UUID, ItemStack[]> personalityEnderChests = new HashMap<>();
 
     // 监听双重人格的替换者
     // private static final Set<UUID> switchingWatchers = new HashSet<>();
@@ -33,27 +29,23 @@ public class SplitPersonalityHandler {
         AllowPlayerDeath.EVENT.register((victim, deathReason) -> {
             if (!(victim instanceof ServerPlayer serverVictim))
                 return true;
-
+            var worldModifierComponent = WorldModifierComponent.KEY.get(victim.level());
+            if (!worldModifierComponent.isModifier(serverVictim, SEModifiers.SPLIT_PERSONALITY)) {
+                return true;
+            }
             var component = SplitPersonalityComponent.KEY.get(serverVictim);
 
             // 检查是否是双重人格
             if (component.getMainPersonality() == null || component.getSecondPersonality() == null) {
+                resetSplitComponent(serverVictim);
                 return true;
             }
             if (component.getTemporaryRevivalStartTick() > 0) {
                 ServerPlayNetworking.send(serverVictim, new SplitBackCamera());
-                WorldModifierComponent modifierComponent = WorldModifierComponent.KEY.get(serverVictim.level());
-                modifierComponent.removeModifier(serverVictim.getUUID(), SEModifiers.SPLIT_PERSONALITY);
-                component.reset();
+                resetSplitComponent(serverVictim);
                 return true;
             }
             component.setDeath(true);
-            // 直接处理死亡选择逻辑
-            ItemStack[] inventory = new ItemStack[36]; // 标准库存大小
-            for (int i = 0; i < 36; i++) {
-                inventory[i] = serverVictim.getInventory().getItem(i).copy();
-            }
-            personalityInventories.put(serverVictim.getUUID(), inventory);
             return handleDeathChoicesPublic(serverVictim, component);
         });
     }
@@ -82,9 +74,8 @@ public class SplitPersonalityHandler {
             if (needDeath) {
                 p_sb.setGameMode(GameType.ADVENTURE);
                 nComp.reset();
-                WorldModifierComponent.KEY.get(player.level()).removeModifier(p_sb.getUUID(),
-                        SEModifiers.SPLIT_PERSONALITY);
-                GameFunctions.killPlayer(p_sb, false, player, StupidExpress.id("split_personality"));
+                resetSplitComponent(p_sb);
+                GameFunctions.killPlayer(p_sb, false, null, StupidExpress.id("split_personality"));
             } else {
                 p_sb.teleportTo(player.getX(), player.getY(), player.getZ());
                 p_sb.setGameMode(GameType.ADVENTURE);
@@ -96,12 +87,11 @@ public class SplitPersonalityHandler {
             var nComp = SplitPersonalityComponent.KEY.get(p_sa);
             boolean needDeath = handleDeathChoices(p_sa, nComp);
             if (needDeath) {
-                p_sb.setGameMode(GameType.ADVENTURE);
+                p_sa.setGameMode(GameType.ADVENTURE);
                 nComp.reset();
-                
-                WorldModifierComponent.KEY.get(player.level()).removeModifier(p_sa.getUUID(),
-                        SEModifiers.SPLIT_PERSONALITY);
-                GameFunctions.killPlayer(p_sa, false, player, StupidExpress.id("split_personality"));
+                resetSplitComponent(p_sa);
+
+                GameFunctions.killPlayer(p_sa, false, null, StupidExpress.id("split_personality"));
             } else {
                 p_sa.teleportTo(player.getX(), player.getY(), player.getZ());
                 p_sa.setGameMode(GameType.ADVENTURE);
@@ -112,6 +102,13 @@ public class SplitPersonalityHandler {
         }
 
         return handleDeathChoices(player, component);
+    }
+
+    private static void resetSplitComponent(ServerPlayer player) {
+        WorldModifierComponent.KEY.get(player.level()).removeModifier(player.getUUID(),
+                SEModifiers.SPLIT_PERSONALITY);
+        SplitPersonalityComponent.KEY.get(player).reset();
+        SkinSplitPersonalityComponent.KEY.get(player).clear();
     }
 
     private static boolean handleDeathChoices(ServerPlayer player, SplitPersonalityComponent component) {
@@ -127,7 +124,6 @@ public class SplitPersonalityHandler {
         } else if (p_b.equals(player.getUUID())) {
             playerType = 2; // 副人格
         }
-        final var worldModifierComponent = WorldModifierComponent.KEY.get(player.serverLevel());
         ServerPlayNetworking.send(player, new SplitBackCamera());
         // 预留：都复活
         // 情况3：两个都选择奉献 -> 两个都复活，但时间只有60秒
@@ -148,15 +144,11 @@ public class SplitPersonalityHandler {
         }
 
         // 删除控件
-        worldModifierComponent.removeModifier(player.getUUID(), SEModifiers.SPLIT_PERSONALITY);
+        resetSplitComponent(player);
 
         // 情况1：两个都选择欺骗 -> 直接死亡
         if (mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY &&
                 secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
-            component.reset();
-            // 添加消息提示
-            WorldModifierComponent.KEY.get(player.level()).removeModifier(player.getUUID(),
-                        SEModifiers.SPLIT_PERSONALITY);
             MutableComponent deathMessage = net.minecraft.network.chat.Component
                     .translatable("msg.stupid_express.split_personality.liebothdie").withStyle(ChatFormatting.RED);
             player.displayClientMessage(deathMessage,
@@ -167,9 +159,6 @@ public class SplitPersonalityHandler {
         // 情况2：一个欺骗一个奉献
         if ((mainChoice == SplitPersonalityComponent.ChoiceType.BETRAY
                 && secondChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE)) {
-            component.reset();
-            WorldModifierComponent.KEY.get(player.level()).removeModifier(player.getUUID(),
-                        SEModifiers.SPLIT_PERSONALITY);
             if (playerType == 1) {
                 revivePlayer(player, component);
                 player.displayClientMessage(net.minecraft.network.chat.Component
@@ -186,9 +175,6 @@ public class SplitPersonalityHandler {
         }
         if (mainChoice == SplitPersonalityComponent.ChoiceType.SACRIFICE
                 && secondChoice == SplitPersonalityComponent.ChoiceType.BETRAY) {
-            component.reset();
-            WorldModifierComponent.KEY.get(player.level()).removeModifier(player.getUUID(),
-                        SEModifiers.SPLIT_PERSONALITY);
             if (playerType == 2) {
                 revivePlayer(player, component);
                 player.displayClientMessage(net.minecraft.network.chat.Component
@@ -243,13 +229,5 @@ public class SplitPersonalityHandler {
         if (component == null)
             return false;
         return !component.isCurrentlyActive();
-    }
-
-    /**
-     * 清理库存数据
-     */
-    public static void cleanupInventoryData(UUID uuid) {
-        personalityInventories.remove(uuid);
-        personalityEnderChests.remove(uuid);
     }
 }

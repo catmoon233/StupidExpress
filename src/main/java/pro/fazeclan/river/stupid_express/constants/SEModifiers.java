@@ -147,8 +147,6 @@ public class SEModifiers {
                             player -> {
                                 var splitPersonalityComponent2 = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY
                                         .get(player);
-                                pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler
-                                        .cleanupInventoryData(player.getUUID());
                                 splitPersonalityComponent2.reset();
                                 SkinSplitPersonalityComponent skinSplitPersonalityComponent2 = SkinSplitPersonalityComponent.KEY
                                         .get(player);
@@ -158,8 +156,6 @@ public class SEModifiers {
         ResetPlayerEvent.EVENT.register(player -> {
             var splitPersonalityComponent2 = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY
                     .get(player);
-            pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler
-                    .cleanupInventoryData(player.getUUID());
             splitPersonalityComponent2.reset();
             SkinSplitPersonalityComponent skinSplitPersonalityComponent2 = SkinSplitPersonalityComponent.KEY
                     .get(player);
@@ -422,8 +418,6 @@ public class SEModifiers {
             var splitPersonalityComponent = pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent.KEY
                     .get(player);
             // 清理库存数据
-            pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler
-                    .cleanupInventoryData(player.getUUID());
             splitPersonalityComponent.reset();
             SkinSplitPersonalityComponent skinSplitPersonalityComponent = SkinSplitPersonalityComponent.KEY.get(player);
             skinSplitPersonalityComponent.clear();
