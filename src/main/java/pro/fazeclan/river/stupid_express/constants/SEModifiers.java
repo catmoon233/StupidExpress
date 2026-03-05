@@ -213,6 +213,8 @@ public class SEModifiers {
             if (loverTwo == null) {
                 // 没有就不分配啦！
                 WorldModifierComponent.KEY.get(player.level()).removeModifier(player.getUUID(), modifier);
+                StupidExpress.LOGGER.info("{} couldn't find it's lover, remove it's modifier.",
+                        player.getScoreboardName());
                 return;
             }
             // assign both lovers
@@ -301,6 +303,8 @@ public class SEModifiers {
             if (secondPersonality == null) {
                 // 没有就不分配啦！
                 WorldModifierComponent.KEY.get(player.level()).removeModifier(player.getUUID(), modifier);
+                StupidExpress.LOGGER.info("{} couldn't find it's split personality, remove it's modifier.",
+                        player.getScoreboardName());
                 return;
             }
             secondPersonality.setGameMode(GameType.SPECTATOR);
