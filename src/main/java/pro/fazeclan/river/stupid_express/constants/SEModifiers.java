@@ -211,7 +211,9 @@ public class SEModifiers {
                 }
             }
             if (loverTwo == null) {
-                loverTwo = lover;
+                // 没有就不分配啦！
+                WorldModifierComponent.KEY.get(player.level()).removeModifier(player.getUUID(), modifier);
+                return;
             }
             // assign both lovers
             var loverComponentOne = LoversComponent.KEY.get(lover);
@@ -239,31 +241,67 @@ public class SEModifiers {
             var level = person.serverLevel();
             var gameComponent = GameWorldComponent.KEY.get(level);
 
-            // 检查主角是否是平民阵营（不包括警长）
+            // 选择另一个同阵营作为第二人格
             var fatherRole = gameComponent.getRole(player);
-            if (fatherRole == null || !fatherRole.isInnocent() || fatherRole.isVigilanteTeam()) {
-                // 如果主角不是平民（是警长、中立或杀手），不分配双重人格
-                return;
+            /**
+             * 0:平民,
+             * 1:中立
+             * 2:杀手
+             * 3:偏狼中立
+             */
+            int fatherRoleType = 0;
+            if (fatherRole != null) {
+                if (fatherRole.isInnocent()) {
+                    fatherRoleType = 0;
+                } else if (fatherRole.isNeutralForKiller() && fatherRole.isNeutrals()) {
+                    fatherRoleType = 3;
+                } else if (GameWorldComponent.isKillerTeamRoleStatic(fatherRole)) {
+                    fatherRoleType = 2;
+                } else {
+                    fatherRoleType = 1;
+                }
             }
-
-            // 选择另一个平民作为第二人格
             ServerPlayer secondPersonality = null;
             var arrs = new ArrayList<>(level.players());
             Collections.shuffle(arrs);
             for (var candidate : arrs) {
                 if (GameFunctions.isPlayerAliveAndSurvival(candidate)) {
                     if (!person.equals(candidate)) {
-                        var role = gameComponent.getRole(candidate);
-                        // 只选择平民阵营（不包括警长）
-                        if (role != null && role.isInnocent() && !role.isVigilanteTeam()) {
-                            secondPersonality = candidate;
-                            break;
+                        if (gameComponent != null) {
+                            var role = gameComponent.getRole(candidate);
+                            if (role != null) {
+                                if (fatherRoleType == 0) {
+                                    if (role.isInnocent() && !role.isVigilanteTeam()) {
+                                        secondPersonality = candidate;
+                                        break;
+                                    }
+                                } else if (fatherRoleType == 1) {
+                                    if ((!role.isInnocent() && !role.canUseKiller())
+                                            || (role.isNeutrals()) && !role.isNeutralForKiller()) {
+                                        secondPersonality = candidate;
+                                        break;
+                                    }
+                                } else if (fatherRoleType == 3) {
+                                    if ((role.isNeutrals() && role.isNeutralForKiller())) {
+                                        secondPersonality = candidate;
+                                        break;
+                                    }
+                                } else {
+                                    if (!role.isInnocent() && role.canUseKiller() && !role.isNeutrals()) {
+                                        secondPersonality = candidate;
+                                        break;
+                                    }
+                                }
+
+                            }
                         }
                     }
                 }
             }
             if (secondPersonality == null) {
-                secondPersonality = person;
+                // 没有就不分配啦！
+                WorldModifierComponent.KEY.get(player.level()).removeModifier(player.getUUID(), modifier);
+                return;
             }
             secondPersonality.setGameMode(GameType.SPECTATOR);
             secondPersonality.setCamera(person);
