@@ -23,6 +23,9 @@ public class DousedPlayerComponent implements ServerTickingComponent, ClientTick
     private final Player player;
     private boolean doused = false;
 
+    // Only save on server-side
+    public int dousedCount = 0;
+
     public boolean getDoused() {
         return this.doused;
     }
@@ -43,6 +46,7 @@ public class DousedPlayerComponent implements ServerTickingComponent, ClientTick
 
     public void reset() {
         this.doused = false;
+        this.dousedCount = 0;
         sync();
     }
 

@@ -13,7 +13,6 @@ import java.util.Collections;
 import net.minecraft.world.level.GameType;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.agmas.harpymodloader.events.GameInitializeEvent;
-import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import org.agmas.harpymodloader.events.ModifierAssigned;
 import org.agmas.harpymodloader.events.ModifierRemoved;
 import org.agmas.harpymodloader.events.ResetPlayerEvent;
@@ -142,10 +141,6 @@ public class SEModifiers {
         pro.fazeclan.river.stupid_express.modifier.knight.KnightHandler.init();
         pro.fazeclan.river.stupid_express.modifier.split_personality.SplitPersonalityHandler.init();
 
-        ModdedRoleAssigned.EVENT.register(
-                (player, role) -> {
-
-                });
         GameInitializeEvent.EVENT.register(
                 (serverLevel, gameWorldComponent, serverPlayers) -> {
                     serverPlayers.forEach(

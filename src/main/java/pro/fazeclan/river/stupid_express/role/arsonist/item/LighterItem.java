@@ -16,7 +16,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.StupidExpress;
-import pro.fazeclan.river.stupid_express.role.arsonist.cca.ArsonistDousedCountComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
 import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
@@ -46,23 +45,23 @@ public class LighterItem extends Item {
         var server = player.getServer();
         var players = server.getPlayerList().getPlayers();
         var alivePlayers = players.stream().filter(GameFunctions::isPlayerAliveAndSurvival).toList();
-        var dousedCountComponent = ArsonistDousedCountComponent.KEY.get(level);
-        var dousedCount = dousedCountComponent.getDousedCount();
+        var dousedCountComponent = DousedPlayerComponent.KEY.get(player);
+        var dousedCount = dousedCountComponent.dousedCount;
         if (dousedCount >= (int) (alivePlayers.size() * 0.3)) {
             // 杀死所有存活且被泼油的玩家
             for (ServerPlayer target : players) {
-                if (DousedPlayerComponent.KEY.get(target).getDoused() && GameFunctions.isPlayerAliveAndSurvival(target)) {
+                if (DousedPlayerComponent.KEY.get(target).getDoused()
+                        && GameFunctions.isPlayerAliveAndSurvival(target)) {
                     GameFunctions.killPlayer(target, true, player, StupidExpress.id("ignited"));
                 }
                 DousedPlayerComponent.KEY.get(target).reset();
             }
             // 重置计数器
-            dousedCountComponent.resetDousedCount();
             player.playNotifySound(SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
             player.displayClientMessage(Component.translatable("item.stupid_express.lighter.used"), true);
             player.playNotifySound(SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 1f, 1f);
             var playersLeft = players.stream().filter(GameFunctions::isPlayerAliveAndSurvival).count();
-            if (playersLeft == 1) {
+            if (playersLeft <= 1) {
                 // 纵火犯独立胜利统计：使用 RoleUtils.customWinnerWin
                 StupidRoleUtils.customWinnerWin(serverLevel, GameFunctions.WinStatus.CUSTOM,
                         SERoles.ARSONIST.identifier().getPath(),
