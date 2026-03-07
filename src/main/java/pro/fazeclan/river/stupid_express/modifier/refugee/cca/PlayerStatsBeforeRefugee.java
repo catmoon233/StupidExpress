@@ -7,6 +7,7 @@ import org.agmas.harpymodloader.component.WorldModifierComponent;
 import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.Role;
 import dev.doctor4t.trainmurdermystery.cca.AreasWorldComponent;
+import dev.doctor4t.trainmurdermystery.cca.BartenderPlayerComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerMoodComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
 import dev.doctor4t.trainmurdermystery.compat.TrainVoicePlugin;
@@ -22,7 +23,7 @@ import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.utils.StupidRoleUtils;
 
 public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, Vec2 rotation, boolean isAlive,
-        float mood) {
+        float mood, int shieldAmount) {
     public static Consumer<ServerPlayer> beforeLoadFunc = null;
 
     // 期间死亡的其它玩家会复活，玩家物品栏、金币、位置重置到亡命徒复活的时刻
@@ -30,7 +31,6 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
         (OnPlayerDeath.EVENT).register((victim, deathReason) -> {
             var level = victim.level();
             var worldModifierComponent = WorldModifierComponent.KEY.get(level);
-
             if (worldModifierComponent.isModifier(victim.getUUID(), SEModifiers.REFUGEE)) {
                 var refugeeComponent = RefugeeComponent.KEY.get(level);
                 Vec3 pos = GameFunctions.getSpawnPos(AreasWorldComponent.KEY.get(level),
@@ -58,6 +58,9 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
         StupidRoleUtils.clearAllSatisfiedItems(player, TMMItems.BAT);
         player.setCamera(null);
 
+        BartenderPlayerComponent bartenderPlayerComponent = BartenderPlayerComponent.KEY.get(player);
+        
+        bartenderPlayerComponent.armor = playerStats.shieldAmount;
         if (!GameFunctions.isPlayerAliveAndSurvival(player)) {
             TMM.REPLAY_MANAGER.recordPlayerRevival(player.getUUID(), role);
             player.setGameMode(GameType.ADVENTURE);
@@ -81,9 +84,10 @@ public record PlayerStatsBeforeRefugee(Vec3 pos, int money, ListTag inventory, V
         inventory.save(listTag);
         var shopComponent = PlayerShopComponent.KEY.get(player);
         var moodComponent = PlayerMoodComponent.KEY.get(player);
+        int armorAmount = BartenderPlayerComponent.KEY.get(player).getArmor();
         var playerStats = new PlayerStatsBeforeRefugee(player.position(),
                 shopComponent.balance, listTag.copy(), player.getRotationVector(),
-                isAlive, moodComponent.getMood());
+                isAlive, moodComponent.getMood(), armorAmount);
         return playerStats;
     }
 }

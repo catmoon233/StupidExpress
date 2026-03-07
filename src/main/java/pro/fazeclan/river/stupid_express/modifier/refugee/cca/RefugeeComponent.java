@@ -48,7 +48,6 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             RefugeeComponent.class);
 
     public HashMap<UUID, PlayerStatsBeforeRefugee> players_stats = new HashMap<>();
-    public HashMap<UUID, Integer> shieldAmount = new HashMap<>();
     private final Level level;
 
     @Override
@@ -214,11 +213,9 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
-        shieldAmount.clear();
         List<ServerPlayer> players = serverLevel.getServer().getPlayerList().getPlayers();
         players_stats.clear();
         for (var player : players) {
-            shieldAmount.put(player.getUUID(), BartenderPlayerComponent.KEY.get( player).getArmor());
             boolean isAlive = GameFunctions.isPlayerAliveAndSurvival(player);
             if (isAlive) {
                 players_stats.put(player.getUUID(), PlayerStatsBeforeRefugee.SaveFromPlayer(player, true));
@@ -241,8 +238,6 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         }
         WorldModifierComponent worldModifierComponent = WorldModifierComponent.KEY.get(this.level);
         for (var player : players) {
-            BartenderPlayerComponent bartenderPlayerComponent = BartenderPlayerComponent.KEY.get(player);
-            bartenderPlayerComponent.armor = shieldAmount.get(player.getUUID());
             var r = gameWorldComponent.getRole(player);
             if (r != null) {
                 if (r.identifier().getPath().equals(TMMRoles.LOOSE_END.identifier().getPath())) {
