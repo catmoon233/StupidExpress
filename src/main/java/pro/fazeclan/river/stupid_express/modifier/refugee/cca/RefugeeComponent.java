@@ -5,8 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import dev.doctor4t.trainmurdermystery.cca.BartenderPlayerComponent;
-import dev.doctor4t.trainmurdermystery.cca.WorldBlackoutComponent;
+import dev.doctor4t.trainmurdermystery.cca.*;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
@@ -15,8 +14,6 @@ import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
 
 import dev.doctor4t.trainmurdermystery.TMM;
 import dev.doctor4t.trainmurdermystery.api.TMMRoles;
-import dev.doctor4t.trainmurdermystery.cca.AreasWorldComponent;
-import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.compat.TrainVoicePlugin;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
@@ -51,7 +48,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             RefugeeComponent.class);
 
     public HashMap<UUID, PlayerStatsBeforeRefugee> players_stats = new HashMap<>();
-
+    public HashMap<UUID, Integer> shieldAmount = new HashMap<>();
     private final Level level;
 
     @Override
@@ -139,6 +136,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         KEY.sync(this.level);
     }
 
+    private static int lastTime = -1;
     private void revivePlayer(RefugeeData data) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
@@ -178,13 +176,16 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         bodiesToRemove.forEach(Entity::discard);
         player.getInventory().clearContent();
 
+
         // Change role to LOOSE_END and remove REFUGEE modifier
         StupidRoleUtils.changeRole(player, TMMRoles.LOOSE_END, false);
         TMM.REPLAY_MANAGER.recordPlayerRevival(player.getUUID(), TMMRoles.LOOSE_END);
         StupidRoleUtils.sendWelcomeAnnouncement(player);
 
         TrainVoicePlugin.resetPlayer(player.getUUID());
-
+        GameTimeComponent gameTimeComponent = GameTimeComponent.KEY.get(serverLevel);
+        lastTime = gameTimeComponent.getTime();
+        gameTimeComponent.setTime(gameTimeComponent.getTime() + 120 * 20);
         WorldModifierComponent worldModifierComponent = WorldModifierComponent.KEY.get(serverLevel);
         worldModifierComponent.removeModifier(player.getUUID(), SEModifiers.REFUGEE);
 
@@ -213,9 +214,11 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
+        shieldAmount.clear();
         List<ServerPlayer> players = serverLevel.getServer().getPlayerList().getPlayers();
         players_stats.clear();
         for (var player : players) {
+            shieldAmount.put(player.getUUID(), BartenderPlayerComponent.KEY.get( player).getArmor());
             boolean isAlive = GameFunctions.isPlayerAliveAndSurvival(player);
             if (isAlive) {
                 players_stats.put(player.getUUID(), PlayerStatsBeforeRefugee.SaveFromPlayer(player, true));
@@ -238,6 +241,8 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         }
         WorldModifierComponent worldModifierComponent = WorldModifierComponent.KEY.get(this.level);
         for (var player : players) {
+            BartenderPlayerComponent bartenderPlayerComponent = BartenderPlayerComponent.KEY.get(player);
+            bartenderPlayerComponent.armor = shieldAmount.get(player.getUUID());
             var r = gameWorldComponent.getRole(player);
             if (r != null) {
                 if (r.identifier().getPath().equals(TMMRoles.LOOSE_END.identifier().getPath())) {
@@ -262,6 +267,8 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         if (!(who instanceof ServerPlayer sp)) {
             return;
         }
+        GameTimeComponent gameTimeComponent = GameTimeComponent.KEY.get(sp.level());
+        gameTimeComponent.setTime(lastTime);
         var gameWorldComponent = GameWorldComponent.KEY.get(sp.level());
         var a = sp.getServer().getPlayerList().getPlayers().stream().anyMatch((p) -> {
             if (!GameFunctions.isPlayerAliveAndSurvival(p) || p.getUUID().equals(who.getUUID())) {
