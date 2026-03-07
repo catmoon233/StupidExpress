@@ -265,7 +265,7 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
 
     private void updateGameModes(ServerPlayer thisPlayer, ServerPlayer otherPlayer, UUID newActivePerson) {
         // 更新当前玩家的游戏模式
-        thisPlayer.stopRiding(); 
+        thisPlayer.stopRiding();
         otherPlayer.stopRiding();
         if (newActivePerson.equals(thisPlayer.getUUID())) {
             // 当前玩家成为活跃人格
@@ -342,6 +342,7 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
     }
 
     public void sync() {
+        pendingImportantSync = false;
         KEY.sync(this.player);
     }
 
@@ -393,6 +394,8 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
 
     @Override
     public void writeToNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
+        if (this.mainPersonality == null)
+            return;
         if (this.mainPersonality != null) {
             tag.putUUID("main_personality", this.mainPersonality);
         }
