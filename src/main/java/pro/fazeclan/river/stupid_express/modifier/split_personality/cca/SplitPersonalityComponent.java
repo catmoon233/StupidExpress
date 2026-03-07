@@ -394,7 +394,7 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
 
     @Override
     public void writeToNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
-        if (this.mainPersonality == null)
+        if (mainPersonality == null || secondPersonality == null)
             return;
         if (this.mainPersonality != null) {
             tag.putUUID("main_personality", this.mainPersonality);
@@ -417,7 +417,11 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
     @Override
     public void serverTick() {
         if (mainPersonality == null || secondPersonality == null) {
-            reset();
+            if (mainPersonality == null && secondPersonality != null) {
+                reset();
+            } else if (mainPersonality != null && secondPersonality == null) {
+                reset();
+            }
             return;
         }
         if (!(this.player instanceof ServerPlayer sp))
