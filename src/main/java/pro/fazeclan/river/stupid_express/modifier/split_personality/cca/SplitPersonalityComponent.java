@@ -5,6 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.ServerTickRateManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
@@ -195,6 +196,9 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
         if (this.temporaryRevivalStartTick > 0) {
             return false;
         }
+        ServerTickRateManager serverTickRateManager = player.level().getServer().tickRateManager();
+        if (serverTickRateManager.isFrozen())
+            return false;
         // 使用自定义tick计数器进行时间检查
         // int ticksElapsed = baseTickCounter - lastSwitchTick;
         return isCurrentlyActive(); // 60秒 = 1200刻 (20刻/秒)

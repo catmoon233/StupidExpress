@@ -182,7 +182,7 @@ public class StupidExpressClient implements ClientModInitializer {
             }
 
             // 处理人格切换按键
-            while (SplitPersonalityKeybinds.SWITCH_PERSONALITY_KEY.consumeClick()) {
+            if (SplitPersonalityKeybinds.SWITCH_PERSONALITY_KEY.consumeClick()) {
                 SplitPersonalityKeybinds.handleSwitchPersonalityKey(player);
             }
         });
