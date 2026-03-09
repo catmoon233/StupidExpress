@@ -3,6 +3,8 @@ package pro.fazeclan.river.stupid_express.role.arsonist;
 import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -37,11 +39,19 @@ public class OilDousingHandler {
             if (interacting.getCooldowns().isOnCooldown(item.getItem())) {
                 return InteractionResult.PASS;
             }
+
+            if (!gameWorldComponent.isSkillAvailable) {
+                // 技能不可用
+                player.displayClientMessage(
+                        Component.translatable("message.stupid_express.generic.skill_not_available").withStyle(ChatFormatting.RED), true);
+                return InteractionResult.PASS;
+            }
             if (interacting.gameMode.isSurvival()) {
                 var alivePlayers = ((ServerLevel) level).getPlayers(GameFunctions::isPlayerAliveAndSurvival);
                 var playerCount = alivePlayers.size();
-                var dousedPlayers = alivePlayers.stream().filter(p -> DousedPlayerComponent.KEY.get(p).getDoused()).toList();
-                var cd = 45 - (5/3.0) * (double) playerCount;
+                var dousedPlayers = alivePlayers.stream().filter(p -> DousedPlayerComponent.KEY.get(p).getDoused())
+                        .toList();
+                var cd = 45 - (5 / 3.0) * (double) playerCount;
 
                 if (playerCount > 15) {
                     cd = 20;

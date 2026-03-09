@@ -17,6 +17,7 @@ import org.ladysnake.cca.api.v3.component.tick.ClientTickingComponent;
 import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
 
 import dev.doctor4t.trainmurdermystery.api.RoleComponent;
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
@@ -194,6 +195,10 @@ public class SplitPersonalityComponent implements RoleComponent, ServerTickingCo
             return false; // 两个人格都初始化才能切换
         }
         if (this.temporaryRevivalStartTick > 0) {
+            return false;
+        }
+        if (!GameWorldComponent.KEY.get(player.level()).isSkillAvailable) {
+            // 技能不可用
             return false;
         }
         ServerTickRateManager serverTickRateManager = player.level().getServer().tickRateManager();

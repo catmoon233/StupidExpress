@@ -8,6 +8,7 @@ import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.cca.PlayerShopComponent;
 import dev.doctor4t.trainmurdermystery.entity.PlayerBodyEntity;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -42,6 +43,7 @@ public class RevivalSelectionHandler {
 
     public static void init() {
         UseEntityCallback.EVENT.register(((player, level, interactionHand, entity, entityHitResult) -> {
+
             if (!(player instanceof ServerPlayer interacting)) {
                 return InteractionResult.PASS;
             }
@@ -55,7 +57,12 @@ public class RevivalSelectionHandler {
             if (!(entity instanceof PlayerBodyEntity body)) {
                 return InteractionResult.PASS;
             }
-
+            if (!gameWorldComponent.isSkillAvailable) {
+                // 技能不可用
+                player.displayClientMessage(
+                        Component.translatable("message.stupid_express.generic.skill_not_available").withStyle(ChatFormatting.RED), true);
+                return InteractionResult.PASS;
+            }
             var serverLevel = (ServerLevel) level;
 
             // check if the selected body can be revived
@@ -88,7 +95,7 @@ public class RevivalSelectionHandler {
             serverLevel.players().forEach(
                     a -> {
                         a.playNotifySound(SoundEvents.TOTEM_USE, revived.getSoundSource(), 1.2f, 1.5f);
-                        a.sendSystemMessage(Component.translatable("hud.stupid_express.necromancer.revived_player")
+                        a.displayClientMessage(Component.translatable("hud.stupid_express.necromancer.revived_player")
                                 .append(Harpymodloader.getRoleName(selectedRole)), true);
                     });
             revived.getInventory().clearContent();

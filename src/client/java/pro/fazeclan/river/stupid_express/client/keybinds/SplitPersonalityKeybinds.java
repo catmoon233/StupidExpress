@@ -6,11 +6,15 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+
+import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.lwjgl.glfw.GLFW;
 
+import dev.doctor4t.trainmurdermystery.cca.GameWorldComponent;
 import dev.doctor4t.trainmurdermystery.event.OnOpenInventory;
 import pro.fazeclan.river.stupid_express.modifier.split_personality.cca.SplitPersonalityComponent;
 import pro.fazeclan.river.stupid_express.client.network.SplitPersonalityClientPackets;
+import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 
 public class SplitPersonalityKeybinds {
 
@@ -43,7 +47,13 @@ public class SplitPersonalityKeybinds {
     public static void handleSwitchPersonalityKey(LocalPlayer player) {
         if (player == null)
             return;
-
+        if (!WorldModifierComponent.KEY.get(player.level()).isModifier(player, SEModifiers.SPLIT_PERSONALITY))
+            return;
+        if(!GameWorldComponent.KEY.get(player.level()).isSkillAvailable){
+            player.displayClientMessage(Component.translatable("hud.stupid_express.split_personality.not_available")
+                    .withStyle(ChatFormatting.RED), true);
+            return;
+        }
         var component = SplitPersonalityComponent.KEY.get(player);
         if (component == null) {
             player.displayClientMessage(Component.translatable("hud.stupid_express.split_personality.notinit")

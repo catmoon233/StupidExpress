@@ -1,5 +1,6 @@
 {
   "or_2_argu": "%s 或 %s",
+  "message.stupid_express.generic.skill_not_available":"技能暂不可用",
   "announcement.goals.amnesiac": "从尸首上汲取回忆，穿戴其过往经历",
   "announcement.goals.stupid_express.amnesiac": "从尸首上汲取回忆，穿戴其过往经历",
   "announcement.role.stupid_express.amnesiac": "失忆患者",
@@ -55,6 +56,7 @@
   "announcement.modifier.stupid_express.knight": "侠客",
   "announcement.modifier.stupid_express.split_personality": "双重人格",
   "hud.stupid_express.split_personality.active": "§e活跃人格",
+  "hud.stupid_express.split_personality.not_available": "当前暂不可用",
   "hud.stupid_express.split_personality.observer": "§8旁观中",
   "hud.stupid_express.split_personality.switch_timer": "§9切换倒计时: §f%ss",
   "hud.stupid_express.split_personality.death_timer": "§c死亡倒计时: §f%ss",

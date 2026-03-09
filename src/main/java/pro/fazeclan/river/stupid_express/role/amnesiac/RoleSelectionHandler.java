@@ -38,6 +38,11 @@ public class RoleSelectionHandler {
             if (!(entity instanceof PlayerBodyEntity victim)) {
                 return InteractionResult.PASS;
             }
+            if (!gameWorldComponent.isSkillAvailable) {
+                // 技能不可用
+                 player.displayClientMessage(Component.translatable("message.stupid_express.generic.skill_not_available"), true);
+                return InteractionResult.PASS;
+            }
             Role role = gameWorldComponent.getRole(victim.getPlayerUuid());
             if (role.identifier().equals(SERoles.INITIATE.identifier())) {
                 player.displayClientMessage(

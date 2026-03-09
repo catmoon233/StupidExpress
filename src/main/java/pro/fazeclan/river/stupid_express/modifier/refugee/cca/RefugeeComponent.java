@@ -136,6 +136,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
     }
 
     private static int lastTime = -1;
+
     private void revivePlayer(RefugeeData data) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
@@ -175,7 +176,6 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         bodiesToRemove.forEach(Entity::discard);
         player.getInventory().clearContent();
 
-
         // Change role to LOOSE_END and remove REFUGEE modifier
         StupidRoleUtils.changeRole(player, TMMRoles.LOOSE_END, false);
         TMM.REPLAY_MANAGER.recordPlayerRevival(player.getUUID(), TMMRoles.LOOSE_END);
@@ -206,6 +206,8 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
             SavePlayersStats();
         }
         isAnyRevivals = true;
+        var gameWorldComponent = GameWorldComponent.KEY.get(this.level);
+        gameWorldComponent.disableSkillsAndSync();
         this.sync();
     }
 
@@ -288,6 +290,7 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         }
 
         isAnyRevivals = false;
+        gameWorldComponent.enableSkillsAndSync();
         sp.getServer().getCommands().performPrefixedCommand(sp.getServer().createCommandSourceStack(),
                 "title @a title {\"translate\":\"title.stupid_express.refugee.died\",\"color\":\"gold\"}");
 

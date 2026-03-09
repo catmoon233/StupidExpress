@@ -35,14 +35,15 @@ public class InitiateUtils {
     public static void InitiateChange() {
         ServerTickEvents.END_SERVER_TICK.register((MinecraftServer server) -> {
             boolean isGameRuning = false;
-            for (var level : server.getAllLevels()) {
-                var gameWorldComponent = GameWorldComponent.KEY.get(level);
-                if (gameWorldComponent != null) {
-                    if (gameWorldComponent.isRunning()) {
-                        isGameRuning = true;
-                        break;
-                    }
+            var gameWorldComponent = GameWorldComponent.KEY.get(server.overworld());
+            if (gameWorldComponent != null) {
+                if (gameWorldComponent.isRunning()) {
+                    isGameRuning = true;
                 }
+            }
+            if (!gameWorldComponent.isSkillAvailable) {
+                // 技能不可用
+                return;
             }
             if (!isGameRuning)
                 return;
@@ -52,7 +53,6 @@ public class InitiateUtils {
 
             var playerList = server.getPlayerList().getPlayers();
             var level = playerList.getFirst().level();
-            var gameWorldComponent = GameWorldComponent.KEY.get(level);
             var gameTimeComponent = GameTimeComponent.KEY.get(level);
 
             // 检查是否有初学者
