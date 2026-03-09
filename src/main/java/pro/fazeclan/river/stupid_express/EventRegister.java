@@ -13,9 +13,11 @@ import dev.doctor4t.trainmurdermystery.event.OnPlayerDeathWithKiller;
 import dev.doctor4t.trainmurdermystery.game.GameFunctions;
 import dev.doctor4t.trainmurdermystery.index.TMMItems;
 import dev.doctor4t.trainmurdermystery.util.TMMItemUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
@@ -42,6 +44,7 @@ public class EventRegister {
         });
         // 初学被初学杀死
         OnPlayerDeathWithKiller.EVENT.register((victim, killer, deathReason) -> {
+
             var level = (ServerLevel) victim.level();
             var gameWorldComponent = GameWorldComponent.KEY.get(level);
 
@@ -50,6 +53,12 @@ public class EventRegister {
             }
             if (killer == null)
                 return;
+            if (!gameWorldComponent.isSkillAvailable) {
+                // 技能不可用
+                victim.displayClientMessage(
+                        Component.translatable("message.stupid_express.generic.skill_not_available"), true);
+                return;
+            }
             if (gameWorldComponent.isRole(killer, SERoles.INITIATE)) {
                 var shuffledKillerRoles = new ArrayList<>(StupidExpress.getEnableRoles());
                 shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || !role.canUseKiller()
@@ -87,12 +96,16 @@ public class EventRegister {
                 Role newInitiateRole;
                 newInitiateRole = SERoles.AMNESIAC;
 
+                // 技能可用
                 for (ServerPlayer player : level.getPlayers(p -> gameWorldComponent.isRole(p, SERoles.INITIATE))) {
                     // 清除物品栏中的所有刀
                     clearAllKnives(player);
-                    StupidRoleUtils.changeRole(player, newInitiateRole, true);
-                    StupidRoleUtils.sendWelcomeAnnouncement((ServerPlayer) killer);
+                    if (gameWorldComponent.isSkillAvailable) {
+                        StupidRoleUtils.changeRole(player, newInitiateRole, true);
+                        StupidRoleUtils.sendWelcomeAnnouncement((ServerPlayer) killer);
+                    }
                 }
+
                 GameFunctions.killPlayer(killer, true, null, StupidExpress.id("failed_initiation"));
                 return;
             }
@@ -105,6 +118,11 @@ public class EventRegister {
             var gameWorldComponent = GameWorldComponent.KEY.get(level);
             if (!gameWorldComponent.isRole(victim, SERoles.INITIATE))
                 return;
+            if (!gameWorldComponent.isSkillAvailable) {
+                victim.displayClientMessage(
+                        Component.translatable("message.stupid_express.generic.skill_not_available"), true);
+                return;
+            }
             Role newInitiateRole;
 
             if (killer == null) {
