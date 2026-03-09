@@ -218,6 +218,10 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         List<ServerPlayer> players = serverLevel.getServer().getPlayerList().getPlayers();
         players_stats.clear();
         for (var player : players) {
+            var ppc = PlayerPsychoComponent.KEY.get(player);
+            if (ppc.psychoTicks > 0) {
+                ppc.stopPsycho();
+            }
             boolean isAlive = GameFunctions.isPlayerAliveAndSurvival(player);
             if (isAlive) {
                 players_stats.put(player.getUUID(), PlayerStatsBeforeRefugee.SaveFromPlayer(player, true));
@@ -240,6 +244,10 @@ public class RefugeeComponent implements AutoSyncedComponent, ServerTickingCompo
         }
         WorldModifierComponent worldModifierComponent = WorldModifierComponent.KEY.get(this.level);
         for (var player : players) {
+            var ppc = PlayerPsychoComponent.KEY.get(player);
+            if (ppc.psychoTicks > 0) {
+                ppc.stopPsycho();
+            }
             var r = gameWorldComponent.getRole(player);
             if (r != null) {
                 if (r.identifier().getPath().equals(TMMRoles.LOOSE_END.identifier().getPath())) {
